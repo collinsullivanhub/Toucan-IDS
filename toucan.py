@@ -158,6 +158,22 @@ class perty_colors:
     SBlack ='\033[0;30m'
 
 
+def get_mac_gateway(ip_address):
+
+    response, unanswered = srp(Ether(dst='ff:ff:ff:ff:ff:ff')/ARP(pdst=ip_address), \
+        timeout=2, retry=2)
+
+    for s, r in response:
+        return r[Ether].src
+    return None
+
+    logging.info('Gateway Layer 2 address is: %s' % r[Ether].src)
+
+    global GATEWAY_MAC 
+
+    GATEWAY_MAC = "%s" % r[Ether].src
+
+
 def arp_network_range(iprange="%s" % n_range):
 
     logging.info('Sending ARPs to network range %s' % n_range)
@@ -174,12 +190,12 @@ def arp_network_range(iprange="%s" % n_range):
         
         collection.append(result)
 
-    for elem in collection:
+    for host in collection:
 
-        print elem
+        print host
 
  
-def arp_display(packet):
+def arp_display(packet, GATEWAY_MAC):
 
     if packet[ARP].op == 1: 
 
@@ -192,6 +208,12 @@ def arp_display(packet):
         logging.info('[*] Response- %s L3 address is %s' % (packet[ARP].hwsrc, packet[ARP].psrc))
 
         return '[*] Response- %s L3 address is %s' % (packet[ARP].hwsrc, packet[ARP].psrc)
+
+    if packet[ARP].op == 2 and packet[ARP].psrc == GATEWAY_IP and packet[ARP].hwsrc != GATEWAY_MAC:
+
+        print "[*]WARNING: GATEWAY IMPERSONTATION DETECTED. POSSIBLE MITM ATTACK FROM %s" % (packet[ARP].hwsrc)
+
+        attacker_L2 = packet[ARP].hwsrc
       
 
 #   psuedo code---------------------------------------------
@@ -206,7 +228,7 @@ def na_packet_discovery(neighbor_adv_packet):
 
     print "[*]Neighbor advertisement discovered: %s" % (neighbor_adv_packet.summary())
 
-    print '[*]Neighbor solicitation source: %s, destination: %s ' % (neighbor_adv_packet[IPv6].src, neighbor_adv_packet[IPv6].dst)  
+    print '[*]Neighbor advertisement source: %s, destination: %s ' % (neighbor_adv_packet[IPv6].src, neighbor_adv_packet[IPv6].dst)  
 
     logging.info('Neighbor advertisement source: %s, destination: %s' % (neighbor_adv_packet[IPv6].src, neighbor_adv_packet[IPv6].dst))
 
@@ -233,31 +255,16 @@ def detect_deauth(deauth_packet):
 
 def detect_router_advertisement_flood(ra_packet):
 
-  if ra_packet.haslayer(IPv6) and ra_packet.haslayer(ICMPv6ND_RA):
+  if ra_packet.[IPv6].dst == "FF02::1":
 
-    print 'Router advertisement discovered from %s ' % (ra_packet[IPv6].src)
+    print "[*]Router advertisement discovered: %s" % (ra_packet.summary())
+
+    print '[*]Router advertisement discovered from %s with L2 address of ' % (ra_packet[IPv6].src, ra_packet[Ether].src)
 
     logging.info('RA from %s' % (ra_packet[IPv6].src))
 
 
-
-def get_mac_gateway(ip_address):
-
-    response, unanswered = srp(Ether(dst='ff:ff:ff:ff:ff:ff')/ARP(pdst=ip_address), \
-        timeout=2, retry=2)
-
-    for s, r in response:
-        return r[Ether].src
-    return None
-
-    logging.info('Gateway Layer 2 address is: %s' % r[Ether].src)
-
-    global GATEWAY_MAC 
-
-    GATEWAY_MAC = "%s" % r[Ether].src
-
-
-def defenseive_arps(GATEWAY_IP, GATEWAY_MAC):
+def defenseive_arps(GATEWAY_IP, GATEWAY_MAC, victim_L3, victim_MAC):
 
     un_poison_victim = ARP()
     un_poison_victim.op = 2
@@ -305,21 +312,29 @@ def monitor_traffic():
 
     print 'Traffic detected: ', packet
 
+
 def sniff_arps():
 
   sniff(filter = "arp", prn = arp_display)
+
 
 def sniff_deauth():
 
   sniff(iface="%s" % interface, prn = detect_deauth)
 
+
 def sniff_ns():
 
   sniff(iface="%s" % interface, prn = ns_packet_discovery) 
 
+
 def sniff_na():
 
   sniff(iface="%s" % interface, prn = na_packet_discovery)
+
+def sniff_ra():
+
+  sniff(iface="%s" % interface, prn = detect_router_advertisement_flood)
 
 
 if __name__ == '__main__':
@@ -338,8 +353,8 @@ if __name__ == '__main__':
 
     Thread(target = sniff_na).start()
 
-    Thread(target = detect_router_advertisement_flood).start()
+    Thread(target = sniff_ra).start()
 
     except KeyboardInterrupt:
 
-      sys.exit()
+    sys.exit()
