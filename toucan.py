@@ -6,10 +6,10 @@
 #-------------------------
 
 #--------------------------------------------------------------------------------------------------------------------------------
-# Monitors a LANs and will protect against spoofing attacks for MITM purposes
+# Monitors a LAN and will protect against spoofing attacks for MITM purposes
 # 1. Scans Network for Active Hosts
 # 2. Scans hosts for Layer 2 Addresses and will "attack back" when a MITM is discovered by correcting poisoned hosts
-# 3. Will send ALERT packet to DG (need to write protocol for this still)
+# 3. Will send ALERT 
 # Needs to be run as ROOT
 #--------------------------------------------------------------------------------------------------------------------------------
 
