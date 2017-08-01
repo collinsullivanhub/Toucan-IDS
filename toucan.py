@@ -38,6 +38,7 @@ from scapy.error import Scapy_Exception
 from scapy.all import sr1,IP,ICMP
 from scapy.all import srp
 from scapy.all import Ether, ARP, conf
+from scapy.all import IPv6
 import os
 import sys
 import threading
@@ -127,6 +128,9 @@ attacker_L2 = ''
 attacker_MAC = ''
 victim_MAC = ''
 victim_L3 = ''
+RA_attacker_L3 = ''
+RA_attacker_L2 = ''
+GATEWAY_MAC = ''
 
 GATEWAY_IP = raw_input("Enter your Gateway IP: ")
 logging.info('Gateway IP: %s' % GATEWAY_IP)
@@ -169,8 +173,6 @@ def get_mac_gateway(ip_address):
 
     logging.info('Gateway Layer 2 address is: %s' % r[Ether].src)
 
-    global GATEWAY_MAC 
-
     GATEWAY_MAC = "%s" % r[Ether].src
 
 
@@ -195,7 +197,7 @@ def arp_network_range(iprange="%s" % n_range):
         print host
 
  
-def arp_display(packet, GATEWAY_MAC):
+def arp_display(packet):
 
     if packet[ARP].op == 1: 
 
@@ -211,16 +213,12 @@ def arp_display(packet, GATEWAY_MAC):
 
     if packet[ARP].op == 2 and packet[ARP].psrc == GATEWAY_IP and packet[ARP].hwsrc != GATEWAY_MAC:
 
-        print "[*]WARNING: GATEWAY IMPERSONTATION DETECTED. POSSIBLE MITM ATTACK FROM %s" % (packet[ARP].hwsrc)
+        print "\033[31m[*]WARNING: GATEWAY IMPERSONTATION DETECTED. POSSIBLE MITM ATTACK FROM %s\033[31m" % (packet[ARP].hwsrc)
+
+        global attacker_L2
 
         attacker_L2 = packet[ARP].hwsrc
       
-
-#   psuedo code---------------------------------------------
-#   if hacker_is_found: (ARP policy violated)
-#       attacker_L2 = '%s' % attacker_ARP_hwsrc
-#-----------------------------------------------------------
-
 
 def na_packet_discovery(neighbor_adv_packet):
 
@@ -244,22 +242,32 @@ def ns_packet_discovery(neighbor_sol_packet):
     logging.info('Neighbor solicitation source: %s, destination: %s' % (neighbor_sol_packet[IPv6].src, neighbor_sol_packet[IPv6].dst))
 
 
+
 def detect_deauth(deauth_packet):
 
   if deauth_packet.haslayer(Dot11) and deauth_packet.type == 0 and deauth_packet.subtype == 0xC:
 
     print "DEAUTH DETECTED: %s" % (deauth_packet.summary())
 
-    logging.warning('Deauth detected. Responding...')
+    print "Deauthentication Detected from: %s" % (deauth_packet[IPv4].psrc, deauth_packet[Ether].hwsrc)
+
+    logging.warning('Deauth detected')
+
+    logging.warning('Responding to deauthentication.')
 
 
 def detect_router_advertisement_flood(ra_packet):
 
-  if ra_packet.[IPv6].dst == "FF02::1":
+  if ra_packet[Ether].dst == "FF02::1":
 
-    print "[*]Router advertisement discovered: %s" % (ra_packet.summary())
+    print "[*]Router advertisement flood discovered: %s" % (ra_packet.summary())
 
-    print '[*]Router advertisement discovered from %s with L2 address of ' % (ra_packet[IPv6].src, ra_packet[Ether].src)
+    print '[*]Router advertisement flood discovered from %s with L2 address of ' % (ra_packet[Ether].src, ra_packet[Ether].src)
+
+    global RA_attacker_L3
+    global RA_attacker_L2
+    RA_attacker_L3 = (ra_packet[IPv6].src)
+    RA_attacker_L2 = (ra_packet[Ether].src)
 
     logging.info('RA from %s' % (ra_packet[IPv6].src))
 
@@ -283,23 +291,22 @@ def defenseive_arps(GATEWAY_IP, GATEWAY_MAC, victim_L3, victim_MAC):
     time.sleep(2)
 
 
-def defensive_deauth(GATEWAY_MAC):
+def defensive_deauth(GATEWAY_MAC, attacker_L2):
 
   conf.iface = interface
   bssid = GATEWAY_MAC 
-#  global attacker_L2
-  hacker = attacker_L2
   count = 77
   conf.verb = 0 
 
-  packet = RadioTap()/Dot11(type=0,subtype=12,addr1=hacker,addr2=bssid,addr3=bssid)/Dot11Deauth(reason=7) 
+  packet = RadioTap()/Dot11(type=0,subtype=12,addr1=attacker_L2,addr2=bssid,addr3=bssid)/Dot11Deauth(reason=7) 
 
-  logging.info('Intruder at %s is being kicked off network' % hacker)
+  logging.info('Intruder at %s is being kicked off network' % attacker_L2)
 
   for n in range(int(count)):
 
     sendp(packet)
-    print 'Removing malicious host at:' + hacker + 'off of network.'
+
+    print 'Removing malicious host at:' + attacker_L2 + 'off of network.'
 
 
 def monitor_traffic():
@@ -355,6 +362,4 @@ if __name__ == '__main__':
 
     Thread(target = sniff_ra).start()
 
-    except KeyboardInterrupt:
 
-    sys.exit()
