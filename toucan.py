@@ -93,7 +93,7 @@ toucan = """\033[34m
                                                    -s+yyso:+o-```````````````
                                                     osssyoo:/o.               
                                                     :o+osys+:o/                        .....-://oo/---////:.////:.////:.
-                                                    .s/oyyyo+/o-                        ``..-. TOUCAN WIRELESS INTRUSION DETECTION SYSTEM
+                                                    .s/oyyyo+/o-                        ``..-. TOUCAN INTRUSION DETECTION SYSTEM
                                                      -+/+yho+o++.                            `+o///---////:.////:.////:.
                                                      .+/+hhs//s:`                             
                                                       //ohyys:oo`
@@ -107,25 +107,44 @@ toucan = """\033[34m
                                                           `.+/os++"                              "The world is a jungle in general, and the
                                                            `-//:-.                               networking game contributes many animals."
 """
-os.system("espeak 'Welcome to Toucan Network Defender'")
+os.system("espeak 'Welcome to Toucan IDS'")
 
 print toucan
+
+class colors:
+
+    Red ='\033[31m'
+
+    Green ='\033[32m'
+
+    Yellow ='\033[33m'
+
+    Blue ='\033[34m'
+
+    Pink ='\033[35m'
+
+    Cyan ='\033[36m'
+
+    White ='\033[37m'
+
+    ENDC = '\033[0m'
+
 
 time_current = time.strftime("%I:%M:%S")
 logging.info('%s' % time_current)
 date_current = time.strftime("%d/%m/%Y\n")
 logging.info('%s' % date_current)
 
-print """
+print colors.Yellow + """
 Toucan is a Wireless Intrusion Detection System written in python. Capabilities include scanning and defending hosts
 on a network by actively monitoring traffic for both man in the middle and deauthentication attacks. This program is
 not to be used on an unauthorized network and the creator is not responsible for any damage done. Using this program
 means you understand and agree to these conditions.
-"""
+""" + colors.ENDC
 
 counter = 0
 attacker_L2 = ''
-attacker_MAC = ''
+attacker_L3 = ''
 victim_MAC = ''
 victim_L3 = ''
 RA_attacker_L3 = ''
@@ -141,25 +160,14 @@ logging.info('Interface: %s' % interface)
 n_range = raw_input("\nEnter your network range to defend (in format 10.0.0.1/24): ")
 logging.info('Network range to defend: %s' % n_range)
 
-print"[*] Gateway Locked in..."
+print colors.Red + "[*] Gateway Locked in..." 
 time.sleep(.2)
-print"[*] Interface configured..."
+print "[*] Interface configured..."
 time.sleep(.2)
 print"[*] Network Range set..."
 time.sleep(.2)
-print"[*] Commensing..."
+print"[*] Commensing..." + colors.ENDC
 print"\n"
-
-class perty_colors:
-
-    Red ='\033[31m'
-    Green ='\033[32m'
-    Yellow ='\033[33m'
-    Blue ='\033[34m'
-    Pink ='\033[35m'
-    Cyan ='\033[36m'
-    White ='\033[37m'
-    SBlack ='\033[0;30m'
 
 
 def get_mac_gateway(ip_address):
@@ -294,8 +302,11 @@ def defenseive_arps(GATEWAY_IP, GATEWAY_MAC, victim_L3, victim_MAC):
 def defensive_deauth(GATEWAY_MAC, attacker_L2):
 
   conf.iface = interface
+  
   bssid = GATEWAY_MAC 
+
   count = 77
+
   conf.verb = 0 
 
   packet = RadioTap()/Dot11(type=0,subtype=12,addr1=attacker_L2,addr2=bssid,addr3=bssid)/Dot11Deauth(reason=7) 
@@ -339,6 +350,7 @@ def sniff_na():
 
   sniff(iface="%s" % interface, prn = na_packet_discovery)
 
+
 def sniff_ra():
 
   sniff(iface="%s" % interface, prn = detect_router_advertisement_flood)
@@ -347,6 +359,8 @@ def sniff_ra():
 if __name__ == '__main__':
 
     GATEWAY_MAC = get_mac_gateway(GATEWAY_IP)
+
+    print colors.Yellow + "Gateway Layer 2 Locked in address is: " + GATEWAY_MAC + colors.ENDC
 
     print "[*] Gateway %s is at %s" % (GATEWAY_IP, GATEWAY_MAC)
 
@@ -361,5 +375,3 @@ if __name__ == '__main__':
     Thread(target = sniff_na).start()
 
     Thread(target = sniff_ra).start()
-
-
