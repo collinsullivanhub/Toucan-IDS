@@ -49,7 +49,9 @@ from struct import *
 import time
 import pyshark
 
+
 logging.basicConfig(filename='toucan.log',level=logging.DEBUG)
+
 
 print "\033[31m'                                                                                                        ............ "
 print "\033[31m'                                                                                                ..............-.-----. "
@@ -61,10 +63,10 @@ print "\033[31m'                                            .-///.--:/-.`..-:+//
 print "\033[31m'                                            .--/:::-.``-:+-.--/-/+/-----      hmdhssysy/://:::::."
 print "\033[31m'                                                    ````....-:---.``.``````+mddhddddmd//+oyds."
 print "\033[31m'                                            ..::--...-````....---...```````ommmmddmmmmmsdmmNs"
-print "\033[37m'                                            ..-.-:-...``````..-::-:-`.````ommdddmmmmmdddmmmh."
-print "\033[37m'                                            ...-::...```````:--:/::```-+hmmddhdmmdyhhhhmmm+`"
-print "\033[37m'                                           .---.-:...```````-.-::+--/sdmmdhhhyyddddhhddmmm-"
-print "\033[37m'                                            -.`.--...``````.:/oshdddmddddhhyyyssdmdddddmmm."
+print "\033[31m'                                            ..-.-:-...``````..-::-:-`.````ommdddmmmmmdddmmmh."
+print "\033[31m'                                            ...-::...```````:--:/::```-+hmmddhdmmdyhhhhmmm+`"
+print "\033[31m'                                           .---.-:...```````-.-::+--/sdmmdhhhyyddddhhddmmm-"
+print "\033[31m'                                            -.`.--...``````.:/oshdddmddddhhyyyssdmdddddmmm."
 print "\033[37m'                                                .....````-+ydmmNmmmmddddmmhyyyssosydmdmmmmd."
 print "\033[37m'                                                `...```.+hmmmmmmmddddddmNNmhyyyssooosyhdmNNh`"
 print "\033[37m'                                                .````.odddddddhdddddmmmNNNmdyyysosoosyyhddh/"
@@ -92,7 +94,7 @@ print "\033[34m'                                                   oo+yyo/so/.``
 print "\033[34m'                                                   -s+yyso:+o-```````````````"
 print "\033[34m'                                                    osssyoo:/o.               "
 print "\033[34m'                                                    :o+osys+:o/                        .....-://oo/---////:.////:.////:."
-print "\033[34m'                                                    .s/oyyyo+/o-                        ``..-. TOUCAN INTRUSION DETECTION SYSTEM"
+print "\033[37m'                                                    .s/oyyyo+/o-                        ``..-. TOUCAN INTRUSION DETECTION SYSTEM"
 print "\033[34m'                                                     -+/+yho+o++.                            `+o///---////:.////:.////:."
 print "\033[34m'                                                     .+/+hhs//s:`                             "
 print "\033[34m'                                                      //ohyys:oo`"
@@ -105,6 +107,7 @@ print "\033[34m'                                                        `//oshss
 print "\033[34m'                                                         ./+ys++os"
 print "\033[34m'                                                          `.+/os++                              The world is a jungle in general, and the"
 print "\033[34m'                                                           `-//:-.                               networking game contributes many animals."
+
 
 os.system("espeak 'Welcome to Toucan IDS'")
 
@@ -134,10 +137,13 @@ logging.info('%s' % date_current)
 
 print colors.Yellow + """
 Toucan is a Wireless Intrusion Detection System written in python. Capabilities include scanning and defending hosts
-on a network by actively monitoring traffic for both man in the middle and deauthentication attacks. This program is
+on a network by actively monitoring traffic for several types of known attacks by maleficent users. This program is
 not to be used on an unauthorized network and the creator is not responsible for any damage done. Using this program
 means you understand and agree to these conditions.
 """ + colors.ENDC
+
+print time_current
+print date_current
 
 counter = 0
 attacker_L2 = ''
@@ -412,5 +418,4 @@ if __name__ == '__main__':
     Thread(target = sniff_dns).start()
 
     Thread(target = sniff_mdns).start()
-
-    
+ 
