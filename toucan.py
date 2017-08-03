@@ -1,8 +1,8 @@
 #-------------------------
-# Toucan IDS
-# Author: SplitHor1zon
+# Toucan WIDS 
+# Author: Collin Sullivan
 # Year: 2017
-# Version: 1.0.2
+# Version: in the works!
 #-------------------------
 
 #--------------------------------------------------------------------------------------------------------------------------------
@@ -270,16 +270,11 @@ def detect_deauth(deauth_packet):
 
 def detect_router_advertisement_flood(ra_packet):
 
-  if ra_packet[Ether].dst == "FF02::1":
+  if ra_packet.haslayer(IPv6) and ra_packet.haslayer(ICMPv6ND_RA):
 
-    print "[*]Router advertisement flood discovered: %s" % (ra_packet.summary())
+    print "\033[32m[*]Router advertisement discovered: %s\033[0m" % (ra_packet.summary())
 
-    print '[*]Router advertisement flood discovered from %s with L2 address of ' % (ra_packet[Ether].src, ra_packet[Ether].src)
-
-    global RA_attacker_L3
-    global RA_attacker_L2
-    RA_attacker_L3 = (ra_packet[IPv6].src)
-    RA_attacker_L2 = (ra_packet[Ether].src)
+    print '[*]Router advertisement discovered from %s with L2 address of ' % (ra_packet[IPv6].src, ra_packet[ICMPv6ND_RA].src_ll_addr)
 
     logging.info('RA from %s' % (ra_packet[IPv6].src))
 
@@ -333,16 +328,39 @@ def defensive_deauth(GATEWAY_MAC, attacker_L2):
 
     print 'Removing malicious host at:' + attacker_L2 + 'off of network.'
 
+ 
+def print_dns_info(pkt):
 
-def monitor_traffic():
+    if pkt.dns.qry_name:
 
-  monitor = pyshark.LiveCapture(interface='%s' % interface)
+        print 'DNS Request from %s to %s' % (pkt.ip.src, pkt.dns.qry_name)
 
-  monitor.sniff(timeout=50)
+    elif pkt.dns.resp_name:
 
-  for packet in monitor.sniff_continuously(packet_count=5):
+        print 'DNS Response from %s to %s' % (pkt.ip.src, pkt.ip.dst)
 
-    print 'Traffic detected: ', packet
+
+def print_mdns_info(pkt):
+
+  print '\033[35mMDNS Request from %s to %s\033[0m' % (pkt.ip.src, pkt.ip.dst)
+
+
+def sniff_mdns():
+
+  cap = pyshark.LiveCapture(interface='%s' % interface, bpf_filter='udp port 5353')
+   
+  cap.sniff(packet_count=10)  
+
+  cap.apply_on_packets(print_mdns_info, timeout=100)
+
+
+def sniff_dns():
+
+  cap = pyshark.LiveCapture(interface='%s' % interface, bpf_filter='udp port 53')
+   
+  cap.sniff(packet_count=10)  
+
+  cap.apply_on_packets(print_dns_info, timeout=100)
 
 
 def sniff_arps():
@@ -393,3 +411,9 @@ if __name__ == '__main__':
     Thread(target = sniff_na).start()
 
     Thread(target = sniff_ra).start()
+
+    Thread(target = sniff_dns).start()
+
+    Thread(target = sniff_mdns).start()
+
+    
