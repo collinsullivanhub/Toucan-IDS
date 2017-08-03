@@ -1,8 +1,8 @@
 #-------------------------
 # Toucan WIDS 
-# Author: Collin Sullivan
+# Author: Splithor1zon (Collin Sullivan)
 # Year: 2017
-# Version: in the works!
+# Version: 1.0.0
 #-------------------------
 
 #--------------------------------------------------------------------------------------------------------------------------------
@@ -289,7 +289,7 @@ def defenseive_arps(GATEWAY_IP, GATEWAY_MAC, victim_L3, victim_MAC):
 
     un_poison_victim.pdst = victim_L3
 
-    un_poison_victim.hwdst = GATEWAY_MAC
+    un_poison_victim.hwsrc = GATEWAY_MAC
 
     un_poison_gateway = ARP()
 
@@ -299,7 +299,7 @@ def defenseive_arps(GATEWAY_IP, GATEWAY_MAC, victim_L3, victim_MAC):
 
     un_poison_gateway.pdst = gateway_ip
 
-    un_poison_gateway.hwdst = victim_MAC
+    un_poison_gateway.hwsrc = victim_MAC
 
     send(un_poison_victim)
     
@@ -342,7 +342,7 @@ def print_dns_info(pkt):
 
 def print_mdns_info(pkt):
 
-  print '\033[35mMDNS Request from %s to %s\033[0m' % (pkt.ip.src, pkt.ip.dst)
+  print '\033[35mMDNS Request from %s to %s\033[0m' % (pkt.src, pkt.dst)
 
 
 def sniff_mdns():
@@ -351,7 +351,7 @@ def sniff_mdns():
    
   cap.sniff(packet_count=10)  
 
-  cap.apply_on_packets(print_mdns_info, timeout=100)
+  cap.apply_on_packets(print_mdns_info)
 
 
 def sniff_dns():
@@ -360,12 +360,13 @@ def sniff_dns():
    
   cap.sniff(packet_count=10)  
 
-  cap.apply_on_packets(print_dns_info, timeout=100)
+  cap.apply_on_packets(print_dns_info)
 
 
 def sniff_arps():
 
   sniff(filter = "arp", prn = arp_display)
+
 
 def sniff_arps_2():
 
@@ -415,5 +416,7 @@ if __name__ == '__main__':
     Thread(target = sniff_dns).start()
 
     Thread(target = sniff_mdns).start()
+
+
 
     
