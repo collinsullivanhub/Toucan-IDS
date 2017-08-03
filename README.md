@@ -4,7 +4,7 @@ Toucan is an IDS written in Python that alerts and defends against several commo
 
 If Toucan detects malificent activity, it can respond. For example, if gratuitous ARPs are discovered being sent across a network, Toucan will unpoison the default gateway and unpoison the victim. 
 
-Toucan will also monitor for DNS and MDNS traffic for the situation in which a MITM has occured (and somehow gone unnoticed), any sort of DNS poisoning can be monitored.
+Toucan will also monitor for DNS and MDNS traffic for the situation in which a MITM has occured (and has somehow gone undetected), so any sort of DNS poisoning can be monitored.
 
 *I have included an example log file also in which I ran the program on a /24 network and did an arp-scan just to generate some activity
 
@@ -15,3 +15,9 @@ Toucan will also monitor for DNS and MDNS traffic for the situation in which a M
 - (enter interface) wlp2s0
 
 Blue team - Best team
+
+Libs:
+
+-Scapy
+-Pyshark
+-Signal
