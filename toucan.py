@@ -149,9 +149,8 @@ victim_MAC = ''
 victim_L3 = ''
 RA_attacker_L3 = ''
 RA_attacker_L2 = ''
-GATEWAY_MAC = '90:9d:7d:8a:db:fc'
 
-GATEWAY_IP = raw_input("Enter your Gateway IP: ")
+GATEWAY_IP = raw_input("Enter your Gateway Layer 3 Address: ")
 logging.info('Gateway IP: %s' % GATEWAY_IP)
 
 interface = raw_input("\nEnter your Network Interface: ")
@@ -326,18 +325,18 @@ def defensive_deauth(GATEWAY_MAC, attacker_L2):
 
     sendp(packet)
 
-    print 'Removing malicious host at:' + attacker_L2 + 'off of network.'
+    print '\033[32mRemoving malicious host at with Layer 2 address:' + attacker_L2 + 'off of network.\033[0m'
 
  
 def print_dns_info(pkt):
 
     if pkt.dns.qry_name:
 
-        print 'DNS Request from %s to %s' % (pkt.ip.src, pkt.dns.qry_name)
+        print '\033[35mDNS Request from %s to %s\033[35m' % (pkt.ip.src, pkt.dns.qry_name)
 
     elif pkt.dns.resp_name:
 
-        print 'DNS Response from %s to %s' % (pkt.ip.src, pkt.ip.dst)
+        print '\033[35mDNS Response from %s to %s\033[0m' % (pkt.ip.src, pkt.ip.dst)
 
 
 def print_mdns_info(pkt):
@@ -416,7 +415,6 @@ if __name__ == '__main__':
     Thread(target = sniff_dns).start()
 
     Thread(target = sniff_mdns).start()
-
 
 
     
