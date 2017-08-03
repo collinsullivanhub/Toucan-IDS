@@ -149,7 +149,7 @@ victim_MAC = ''
 victim_L3 = ''
 RA_attacker_L3 = ''
 RA_attacker_L2 = ''
-GATEWAY_MAC = ''
+GATEWAY_MAC = '90:9d:7d:8a:db:fc'
 
 GATEWAY_IP = raw_input("Enter your Gateway IP: ")
 logging.info('Gateway IP: %s' % GATEWAY_IP)
@@ -211,21 +211,25 @@ def arp_display(packet):
 
         logging.info('[*] Probe- %s is asking for L2 of %s' % (packet[ARP].psrc, packet[ARP].pdst))
 
-        return '[*] Probe- %s is asking for L2 of %s' % (packet[ARP].psrc, packet[ARP].pdst)
+        return '\033[31m[*] Probe- %s is asking for L2 of %s\033[0m' % (packet[ARP].psrc, packet[ARP].pdst)
 
     if packet[ARP].op == 2: 
 
         logging.info('[*] Response- %s L3 address is %s' % (packet[ARP].hwsrc, packet[ARP].psrc))
 
-        return '[*] Response- %s L3 address is %s' % (packet[ARP].hwsrc, packet[ARP].psrc)
+        return '\033[33m[*] Response- %s L3 address is %s\033[0m' % (packet[ARP].hwsrc, packet[ARP].psrc)
 
-    if packet[ARP].op == 2 and packet[ARP].psrc == GATEWAY_IP and packet[ARP].hwsrc != GATEWAY_MAC:
 
-        print "\033[31m[*]WARNING: GATEWAY IMPERSONTATION DETECTED. POSSIBLE MITM ATTACK FROM %s\033[31m" % (packet[ARP].hwsrc)
+def arp_display_2(packet):
 
-        global attacker_L2
+  if packet[ARP].op == 1 and packet[ARP].psrc != GATEWAY_IP and packet[ARP].hwsrc == GATEWAY_MAC:
 
-        attacker_L2 = packet[ARP].hwsrc
+      print "\033[31m[*]WARNING: GATEWAY IMPERSONTATION DETECTED. POSSIBLE MITM ATTACK FROM %s\033[31m" % (packet[ARP].psrc)
+
+  if packet[ARP].op == 2 and packet[ARP].psrc != GATEWAY_IP and packet[Ether].src == GATEWAY_MAC:
+
+      print "\033[31m[*]WARNING: GATEWAY IMPERSONTATION DETECTED. POSSIBLE MITM ATTACK FROM %s\033[31m" % (packet[ARP].psrc)
+
       
 
 def na_packet_discovery(neighbor_adv_packet):
@@ -243,9 +247,9 @@ def ns_packet_discovery(neighbor_sol_packet):
 
   if neighbor_sol_packet.haslayer(IPv6) and neighbor_sol_packet.haslayer(ICMPv6ND_NS):
 
-    print "[*]Neighbor solicitation discovered: %s" % (neighbor_sol_packet.summary())
+    print "\033[32m[*]Neighbor solicitation discovered: %s\033[0m" % (neighbor_sol_packet.summary())
 
-    print '[*]Neighbor solicitation source: %s, destination: %s' % (neighbor_sol_packet[IPv6].src, neighbor_sol_packet[IPv6].dst)  
+    print '\033[32m[*]Neighbor solicitation source: %s, destination: %s\033[0m' % (neighbor_sol_packet[IPv6].src, neighbor_sol_packet[IPv6].dst)  
 
     logging.info('Neighbor solicitation source: %s, destination: %s' % (neighbor_sol_packet[IPv6].src, neighbor_sol_packet[IPv6].dst))
 
@@ -283,19 +287,29 @@ def detect_router_advertisement_flood(ra_packet):
 def defenseive_arps(GATEWAY_IP, GATEWAY_MAC, victim_L3, victim_MAC):
 
     un_poison_victim = ARP()
+
     un_poison_victim.op = 2
+
     un_poison_victim.psrc = gateway_ip
+
     un_poison_victim.pdst = victim_L3
+
     un_poison_victim.hwdst = GATEWAY_MAC
 
     un_poison_gateway = ARP()
+
     un_poison_gateway.op = 2
+
     un_poison_gateway.psrc = victim_L3
+
     un_poison_gateway.pdst = gateway_ip
+
     un_poison_gateway.hwdst = victim_MAC
 
     send(un_poison_victim)
+    
     send(un_poison_gateway)
+
     time.sleep(2)
 
 
@@ -335,6 +349,10 @@ def sniff_arps():
 
   sniff(filter = "arp", prn = arp_display)
 
+def sniff_arps_2():
+
+  sniff(filter = "arp", prn = arp_display_2)
+
 
 def sniff_deauth():
 
@@ -360,13 +378,13 @@ if __name__ == '__main__':
 
     GATEWAY_MAC = get_mac_gateway(GATEWAY_IP)
 
-    print colors.Yellow + "Gateway Layer 2 Locked in address is: " + GATEWAY_MAC + colors.ENDC
-
-    print "[*] Gateway %s is at %s" % (GATEWAY_IP, GATEWAY_MAC)
+    print colors.Red + "[*] Gateway %s is at %s" % (GATEWAY_IP, GATEWAY_MAC) + colors.ENDC
 
     arp_network_range()
 
     Thread(target = sniff_arps).start()
+
+    Thread(target = sniff_arps_2).start()
 
     Thread(target = sniff_deauth).start()
 
