@@ -51,65 +51,62 @@ import pyshark
 
 logging.basicConfig(filename='toucan.log',level=logging.DEBUG)
 
-toucan = """\033[34m
-                                                                                                        ............
-                                                                                                ..............-.-----.
-                                         .-.                                               ..--.........:---:-------:-
-                                           .--                                          .-:-........:-:-:---....``````.
-                                            `.-.`````````.-:-.                     .-//:-.....--:::----..
-                                            `..--..`````.-:+:-..-//:.           -+sdmmo-..-.--/::----.
-                                            .-///.--:/-.`..-:+///-.:/:.        +hm   h/.--+::-----.
-                                            .--/:::-.``-:+-.--/-/+/-----      hmdhssysy/://:::::.
-                                                    ````....-:---.``.``````+mddhddddmd//+oyds.
-                                            ..::--...-````....---...```````ommmmddmmmmmsdmmNs
-                                            ..-.-:-...``````..-::-:-`.````ommdddmmmmmdddmmmh.
-                                            ...-::...```````:--:/::```-+hmmddhdmmdyhhhhmmm+`
-                                           .---.-:...```````-.-::+--/sdmmdhhhyyddddhhddmmm-
-                                            -.`.--...``````.:/oshdddmddddhhyyyssdmdddddmmm.
-                                                .....````-+ydmmNmmmmddddmmhyyyssosydmdmmmmd.
-                                                `...```.+hmmmmmmmddddddmNNmhyyyssooosyhdmNNh`
-                                                .````.odddddddhdddddmmmNNNmdyyysosoosyyhddh/
-                                                   +dmdddddhddddhdddmmNNNmdyyysoossyyhddh+
-                                                 -ydddddddddddddmddhdmmdddddhyyyyyyhhddh+
-                              ``.`.`            dddddddddddddddhdhydmhhyhmmdhyyyhhddhy:
-                                .-:-..`.       dddddhdddddyssyhhyyyyddyhhhmmmmdddddds.```.----...````.-..
-                                 .-:+/:..    /dddddhdddho///osyyssssydddddmNNNNNNNms....:::--------.--:-.
-                                         /:-. :oyhhhhhhs+//:://ossssssyhdmmNNNNNNNd+---://:::----//-----:.
-                                            +::::++oss/ss+:::-:osysssssydmmNNNmds:-:/++o:-:::.-:--.-....
-                                            -yyyo++//+/+/ssy++/--:oossyyyhhdmmhss:...+o+/:::-.---........
-                                            ddhyyysysso+ysh:-:::::/+syhhhdhy+-`-:.`.s+/:----..........
-                                           +mdhhhyymyhshy+o+/:-.-:///+oss+:.`````::-s/::::+:::-
-                                           ymddhyhhdssy+:-:+ys/:..-/+/:---````````.:+/:---/---.
-                                           ddh+hdmhs+s+----/hhssoo+-://oyyo.````````-//:-:--..
-                                           dy+.hmdy+//::-:-ohhyyyoso+::yssy:..````````-/++:-..
-                                          :y+.-ydhs+---::.`:ooo++/:/sooh+yy/+::::-----:-+so+::-:-....``.........`
-                                          :/:`--/ys+-.-:.````....``.--:/sh+/::::-....-----...........`.-.-.-:```...```.-````--
-                                          ./.````ss/---/+-             :o/+o+o++/::::--::--.--..:--//-:-:::--...-.````..````.`
-                                                 oy+---::+-            ...-:/-://oooooos+ooo+/+//+//::/:--.
-                                                 .hs:-:+::+-            ....-.-````````....-..-..---...
-                                                  sy://so/:+-
-                                                  -h/ososo///.  
-                                                   oo+yyo/so/.``````.--...........-----.-.......`
-                                                   -s+yyso:+o-```````````````
-                                                    osssyoo:/o.               
-                                                    :o+osys+:o/                        .....-://oo/---////:.////:.////:.
-                                                    .s/oyyyo+/o-                        ``..-. TOUCAN INTRUSION DETECTION SYSTEM
-                                                     -+/+yho+o++.                            `+o///---////:.////:.////:.
-                                                     .+/+hhs//s:`                             
-                                                      //ohyys:oo`
-                                                      .s:ssyys:s:
-                                                        //+oyyy+/+
-                                                       `-o/oyyo+s+
-                                                        /ooshs:/s-                               
-                                                        .o:oyho/oo                               
-                                                        `//oshss+o                              
-                                                         ./+ys++os
-                                                          `.+/os++"                              "The world is a jungle in general, and the
-                                                           `-//:-.                               networking game contributes many animals."
-"""
-os.system("espeak 'Welcome to Toucan IDS'")
+print "\033[31m'                                                                                                        ............ "
+print "\033[31m'                                                                                                ..............-.-----. "
+print "\033[31m'                                         .-.                                               ..--.........:---:-------:- "
+print "\033[31m'                                           .--                                          .-:-........:-:-:---....``````. "
+print "\033[31m'                                            `.-.`````````.-:-.                     .-//:-.....--:::----.. "
+print "\033[31m'                                            `..--..`````.-:+:-..-//:.           -+sdmmo-..-.--/::----. "
+print "\033[31m'                                            .-///.--:/-.`..-:+///-.:/:.        +hm   h/.--+::-----. "
+print "\033[31m'                                            .--/:::-.``-:+-.--/-/+/-----      hmdhssysy/://:::::."
+print "\033[31m'                                                    ````....-:---.``.``````+mddhddddmd//+oyds."
+print "\033[31m'                                            ..::--...-````....---...```````ommmmddmmmmmsdmmNs"
+print "\033[37m'                                            ..-.-:-...``````..-::-:-`.````ommdddmmmmmdddmmmh."
+print "\033[37m'                                            ...-::...```````:--:/::```-+hmmddhdmmdyhhhhmmm+`"
+print "\033[37m'                                           .---.-:...```````-.-::+--/sdmmdhhhyyddddhhddmmm-"
+print "\033[37m'                                            -.`.--...``````.:/oshdddmddddhhyyyssdmdddddmmm."
+print "\033[37m'                                                .....````-+ydmmNmmmmddddmmhyyyssosydmdmmmmd."
+print "\033[37m'                                                `...```.+hmmmmmmmddddddmNNmhyyyssooosyhdmNNh`"
+print "\033[37m'                                                .````.odddddddhdddddmmmNNNmdyyysosoosyyhddh/"
+print "\033[37m'                                                   +dmdddddhddddhdddmmNNNmdyyysoossyyhddh+"
+print "\033[37m'                                                 -ydddddddddddddmddhdmmdddddhyyyyyyhhddh+"
+print "\033[37m'                              ``.`.`            dddddddddddddddhdhydmhhyhmmdhyyyhhddhy:"
+print "\033[37m'                                .-:-..`.       dddddhdddddyssyhhyyyyddyhhhmmmmdddddds.```.----...````.-.."
+print "\033[37m'                                 .-:+/:..    /dddddhdddho///osyyssssydddddmNNNNNNNms....:::--------.--:-."
+print "\033[37m'                                         /:-. :oyhhhhhhs+//:://ossssssyhdmmNNNNNNNd+---://:::----//-----:."
+print "\033[37m'                                            +::::++oss/ss+:::-:osysssssydmmNNNmds:-:/++o:-:::.-:--.-...."
+print "\033[37m'                                            -yyyo++//+/+/ssy++/--:oossyyyhhdmmhss:...+o+/:::-.---........"
+print "\033[37m'                                            ddhyyysysso+ysh:-:::::/+syhhhdhy+-`-:.`.s+/:----.........."
+print "\033[37m'                                           +mdhhhyymyhshy+o+/:-.-:///+oss+:.`````::-s/::::+:::-"
+print "\033[37m'                                           ymddhyhhdssy+:-:+ys/:..-/+/:---````````.:+/:---/---."
+print "\033[34m'                                           ddh+hdmhs+s+----/hhssoo+-://oyyo.````````-//:-:--.."
+print "\033[34m'                                           dy+.hmdy+//::-:-ohhyyyoso+::yssy:..````````-/++:-.."
+print "\033[34m'                                          :y+.-ydhs+---::.`:ooo++/:/sooh+yy/+::::-----:-+so+::-:-....``.........`"
+print "\033[34m'                                          :/:`--/ys+-.-:.````....``.--:/sh+/::::-....-----...........`.-.-.-:```...```.-````--"
+print "\033[34m'                                          ./.````ss/---/+-             :o/+o+o++/::::--::--.--..:--//-:-:::--...-.````..````.`"
+print "\033[34m'                                                 oy+---::+-            ...-:/-://oooooos+ooo+/+//+//::/:--."
+print "\033[34m'                                                 .hs:-:+::+-            ....-.-````````....-..-..---..."
+print "\033[34m'                                                  sy://so/:+-"
+print "\033[34m'                                                  -h/ososo///.  "
+print "\033[34m'                                                   oo+yyo/so/.``````.--...........-----.-.......`"
+print "\033[34m'                                                   -s+yyso:+o-```````````````"
+print "\033[34m'                                                    osssyoo:/o.               "
+print "\033[34m'                                                    :o+osys+:o/                        .....-://oo/---////:.////:.////:."
+print "\033[34m'                                                    .s/oyyyo+/o-                        ``..-. TOUCAN INTRUSION DETECTION SYSTEM"
+print "\033[34m'                                                     -+/+yho+o++.                            `+o///---////:.////:.////:."
+print "\033[34m'                                                     .+/+hhs//s:`                             "
+print "\033[34m'                                                      //ohyys:oo`"
+print "\033[34m'                                                      .s:ssyys:s:"
+print "\033[34m'                                                        //+oyyy+/+"
+print "\033[34m'                                                       `-o/oyyo+s+"
+print "\033[34m'                                                        /ooshs:/s-  "                             
+print "\033[34m'                                                        .o:oyho/oo   "                            
+print "\033[34m'                                                        `//oshss+o    "                          
+print "\033[34m'                                                         ./+ys++os"
+print "\033[34m'                                                          `.+/os++                              The world is a jungle in general, and the"
+print "\033[34m'                                                           `-//:-.                               networking game contributes many animals."
 
-print toucan
+os.system("espeak 'Welcome to Toucan IDS'")
 
 class colors:
 
@@ -415,6 +412,5 @@ if __name__ == '__main__':
     Thread(target = sniff_dns).start()
 
     Thread(target = sniff_mdns).start()
-
 
     
