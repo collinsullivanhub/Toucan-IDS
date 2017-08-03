@@ -1,6 +1,6 @@
 #-------------------------
-# Toucan WIDS 
-# Author: Collin Sullivan
+# Toucan IDS
+# Author: SplitHor1zon
 # Year: 2017
 # Version: 1.0.2
 #-------------------------
