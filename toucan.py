@@ -263,7 +263,7 @@ def detect_deauth(deauth_packet):
 
     print "DEAUTH DETECTED: %s" % (deauth_packet.summary())
 
-    print "Deauthentication Detected from: %s" % (deauth_packet[IPv4].psrc, deauth_packet[Ether].hwsrc)
+    print "Deauthentication Detected from: %s" % (deauth_packet[IPv4].psrc, deauth_packet[Ether].src)
 
     logging.warning('Deauth detected')
 
@@ -276,7 +276,7 @@ def detect_router_advertisement_flood(ra_packet):
 
     print "\033[32m[*]Router advertisement discovered: %s\033[0m" % (ra_packet.summary())
 
-#    print '[*]Router advertisement discovered from %s with L2 address of ' % (ra_packet[IPv6].src, ra_packet[ICMPv6ND_RA].src_ll_addr)
+    print '[*]Router advertisement discovered from %s with L2 address of %s' % (ra_packet[IPv6].src, ra_packet[Ether].src)
 
     logging.info('RA from %s' % (ra_packet[IPv6].src))
 
@@ -330,42 +330,6 @@ def defensive_deauth(GATEWAY_MAC, attacker_L2):
 
     print '\033[32mRemoving malicious host at with Layer 2 address:' + attacker_L2 + 'off of network.\033[0m'
 
- 
-def print_dns_info(pkt):
-
-    if pkt.dns.qry_name:
-
-        print '\033[35mDNS Request from %s to %s through gateway at %s\033[35m' % (pkt.ip.src, pkt.dns.qry_name, pkt.ip.dst)
-
-    elif pkt.dns.resp_name:
-
-        print '\033[35mDNS Response from %s to %s\033[0m' % (pkt.ip.src, pkt.ip.dst)
-
-
-def print_mdns_info(pkt):
-
-  if pkt.ip.dst == "224.0.0.251":
-
-    print '\033[35mMDNS Request from %s to %s\033[0m' % (pkt.ip.src, pkt.ip.dst)
-
-
-def sniff_mdns():
-
-  cap = pyshark.LiveCapture(interface='%s' % interface, bpf_filter='udp port 5353')
-   
-  cap.sniff(packet_count=10)  
-
-#  cap.apply_on_packets(print_mdns_info)
-
-
-def sniff_dns():
-
-  cap = pyshark.LiveCapture(interface='%s' % interface, bpf_filter='udp port 53')
-   
-  cap.sniff(packet_count=10)  
-
-  cap.apply_on_packets(print_dns_info)
-
 
 def sniff_arps():
 
@@ -417,7 +381,4 @@ if __name__ == '__main__':
 
     Thread(target = sniff_ra).start()
 
-    Thread(target = sniff_dns).start()
-
-    Thread(target = sniff_mdns).start()
 
