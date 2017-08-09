@@ -1,16 +1,19 @@
 # Toucan
 
-Toucan is an IDS written in Python that alerts and defends against several common types of network attacks. Toucan has the ability to scan for MITM attacks on both IPv4 and IPv6 networks by scanning for gratuitous neighbor advertisements and ARP replies. Toucan will also monitor for deauthentication attacks and router advertisement floods (IPv6). 
+Toucan is an IDS written in Python that alerts and defends against several common types of network attacks. For example, "Man in the middle" attacks will be used by any hacker worth their salt to intercept traffic on a network. This is accomplished by sending gratuitous ARPs across a network to "poison" the default gateway and hosts. While ARPs are sent on IPv4 networks to poison targets, IPv6 networks also fall victim to impersonation through gratuitous neighbor advertisements being sent.
 
-If Toucan detects malificent activity, it can respond. For example, if gratuitous ARPs are discovered being sent across a network, Toucan will unpoison the default gateway and unpoison the victim. 
+If Toucan detects maleficent activity, it can respond. For example, if gratuitous ARPs or Neighbor Adervisements are discovered being sent across a network, Toucan will unpoison the default gateway and the victim, blacklist the attacker's L2 and deauth them from the network.
 
-Toucan will also monitor for DNS and MDNS traffic for the situation in which a MITM has occured (and has somehow gone undetected), so any sort of DNS poisoning can be monitored.
+Toucan will also defend against:
+-Deauthentication attacks
+-Router Advertisement floods (IPv6)
+
 
 *I have included an example log file also in which I ran the program on a /24 network and did an arp-scan just to generate some activity
 
 # Usage:
 - sudo python toucan.py 
-- (enter DG) 192.168.0.1
+- (enter Default Gateway) 192.168.0.1
 - (enter network to monitor) 192.168.0.0/24
 - (enter interface) wlp2s0
 
@@ -18,6 +21,5 @@ Libs:
 
 -Scapy
 -Pyshark
--Signal
 
-Remember, blue team is the best team 
+Blue team is the best team, always
