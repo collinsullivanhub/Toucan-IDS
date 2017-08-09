@@ -27,7 +27,7 @@
 
 # TO DO:
 # 1. Option parser for fast use - but then you don't get to seee my toucan =( 
-# 2. Write alert protocol
+# 2. Write custom network alert protocol
 
 #--------------------------------------------------------------------------------------------------------------------------------
 
@@ -94,7 +94,7 @@ print "\033[34m'                                                   oo+yyo/so/.``
 print "\033[34m'                                                   -s+yyso:+o-```````````````"
 print "\033[34m'                                                    osssyoo:/o.               "
 print "\033[34m'                                                    :o+osys+:o/                        .....-://oo/---////:.////:.////:."
-print "\033[37m'                                                    .s/oyyyo+/o-                        ``..-. TOUCAN INTRUSION DETECTION SYSTEM"
+print "\033[34m'                                                    .s/oyyyo+/o-                        ``..-. TOUCAN INTRUSION DETECTION SYSTEM"
 print "\033[34m'                                                     -+/+yho+o++.                            `+o///---////:.////:.////:."
 print "\033[34m'                                                     .+/+hhs//s:`                             "
 print "\033[34m'                                                      //ohyys:oo`"
@@ -276,7 +276,7 @@ def detect_router_advertisement_flood(ra_packet):
 
     print "\033[32m[*]Router advertisement discovered: %s\033[0m" % (ra_packet.summary())
 
-    print '[*]Router advertisement discovered from %s with L2 address of ' % (ra_packet[IPv6].src, ra_packet[ICMPv6ND_RA].src_ll_addr)
+#    print '[*]Router advertisement discovered from %s with L2 address of ' % (ra_packet[IPv6].src, ra_packet[ICMPv6ND_RA].src_ll_addr)
 
     logging.info('RA from %s' % (ra_packet[IPv6].src))
 
@@ -335,7 +335,7 @@ def print_dns_info(pkt):
 
     if pkt.dns.qry_name:
 
-        print '\033[35mDNS Request from %s to %s\033[35m' % (pkt.ip.src, pkt.dns.qry_name)
+        print '\033[35mDNS Request from %s to %s through gateway at %s\033[35m' % (pkt.ip.src, pkt.dns.qry_name, pkt.ip.dst)
 
     elif pkt.dns.resp_name:
 
@@ -344,7 +344,9 @@ def print_dns_info(pkt):
 
 def print_mdns_info(pkt):
 
-  print '\033[35mMDNS Request from %s to %s\033[0m' % (pkt.src, pkt.dst)
+  if pkt.ip.dst == "224.0.0.251":
+
+    print '\033[35mMDNS Request from %s to %s\033[0m' % (pkt.ip.src, pkt.ip.dst)
 
 
 def sniff_mdns():
@@ -353,7 +355,7 @@ def sniff_mdns():
    
   cap.sniff(packet_count=10)  
 
-  cap.apply_on_packets(print_mdns_info)
+#  cap.apply_on_packets(print_mdns_info)
 
 
 def sniff_dns():
@@ -418,4 +420,4 @@ if __name__ == '__main__':
     Thread(target = sniff_dns).start()
 
     Thread(target = sniff_mdns).start()
- 
+
