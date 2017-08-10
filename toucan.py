@@ -387,20 +387,20 @@ if __name__ == '__main__':
     
         print ("""\033[32m
                   TOUCAN MENU 
-        _______________________________
+        _________________________________
 
-        - 1.Scan for hosts to protect -
-        - 2.Start Monitoring          -
-        - 3.Exit                      -
-        _______________________________
+        - [1] Scan for hosts to protect -
+        - [2] Start Monitoring          -
+        - [3] Exit                      -
+        _________________________________
 
         \033[0m""")
     
-        ans=raw_input("Please select an option: ") 
+        ans=raw_input("\033[33mPlease select an option: \033[0m") 
     
         if ans=="1": 
           
-          print "[*]Sending ARPs to scan network range..."
+          print "\033[35m[*]Sending ARPs to scan network range...\033[0m"
 
           arp_network_range()
 
@@ -420,7 +420,7 @@ if __name__ == '__main__':
     
         elif ans=="3":
     
-          print("\n Exiting...") 
+          print("\n\033[35m Exiting...\033[0m") 
 
           ans = None
 
@@ -428,5 +428,4 @@ if __name__ == '__main__':
     
         elif ans !="":
     
-          print("\n Not Valid Option...") 
-
+          print("\033[35m[!]Not Valid Option...\033[0m") 
