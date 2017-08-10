@@ -54,59 +54,59 @@ logging.basicConfig(filename='toucan.log',level=logging.DEBUG)
 
 
 print "\033[31m'                                                                                                        ............ "
-print "\033[31m'                                                                                                ..............-.-----. "
-print "\033[31m'                                         .-.                                               ..--.........:---:-------:- "
+print "\033[33m'                                                                                                ..............-.-----. "
+print "\033[32m'                                         .-.                                               ..--.........:---:-------:- "
 print "\033[31m'                                           .--                                          .-:-........:-:-:---....``````. "
-print "\033[31m'                                            `.-.`````````.-:-.                     .-//:-.....--:::----.. "
+print "\033[32m'                                            `.-.`````````.-:-.                     .-//:-.....--:::----.. "
 print "\033[31m'                                            `..--..`````.-:+:-..-//:.           -+sdmmo-..-.--/::----. "
-print "\033[31m'                                            .-///.--:/-.`..-:+///-.:/:.        +hm   h/.--+::-----. "
+print "\033[32m'                                            .-///.--:/-.`..-:+///-.:/:.        +hm   h/.--+::-----. "
 print "\033[31m'                                            .--/:::-.``-:+-.--/-/+/-----      hmdhssysy/://:::::."
 print "\033[31m'                                                    ````....-:---.``.``````+mddhddddmd//+oyds."
-print "\033[31m'                                            ..::--...-````....---...```````ommmmddmmmmmsdmmNs"
+print "\033[32m'                                            ..::--...-````....---...```````ommmmddmmmmmsdmmNs"
 print "\033[31m'                                            ..-.-:-...``````..-::-:-`.````ommdddmmmmmdddmmmh."
 print "\033[31m'                                            ...-::...```````:--:/::```-+hmmddhdmmdyhhhhmmm+`"
 print "\033[31m'                                           .---.-:...```````-.-::+--/sdmmdhhhyyddddhhddmmm-"
 print "\033[31m'                                            -.`.--...``````.:/oshdddmddddhhyyyssdmdddddmmm."
 print "\033[37m'                                                .....````-+ydmmNmmmmddddmmhyyyssosydmdmmmmd."
-print "\033[37m'                                                `...```.+hmmmmmmmddddddmNNmhyyyssooosyhdmNNh`"
-print "\033[37m'                                                .````.odddddddhdddddmmmNNNmdyyysosoosyyhddh/"
-print "\033[37m'                                                   +dmdddddhddddhdddmmNNNmdyyysoossyyhddh+"
-print "\033[37m'                                                 -ydddddddddddddmddhdmmdddddhyyyyyyhhddh+"
-print "\033[37m'                              ``.`.`            dddddddddddddddhdhydmhhyhmmdhyyyhhddhy:"
-print "\033[37m'                                .-:-..`.       dddddhdddddyssyhhyyyyddyhhhmmmmdddddds.```.----...````.-.."
-print "\033[37m'                                 .-:+/:..    /dddddhdddho///osyyssssydddddmNNNNNNNms....:::--------.--:-."
-print "\033[37m'                                         /:-. :oyhhhhhhs+//:://ossssssyhdmmNNNNNNNd+---://:::----//-----:."
-print "\033[37m'                                            +::::++oss/ss+:::-:osysssssydmmNNNmds:-:/++o:-:::.-:--.-...."
-print "\033[37m'                                            -yyyo++//+/+/ssy++/--:oossyyyhhdmmhss:...+o+/:::-.---........"
-print "\033[37m'                                            ddhyyysysso+ysh:-:::::/+syhhhdhy+-`-:.`.s+/:----.........."
+print "\033[32m'                                                `...```.+hmmmmmmmddddddmNNmhyyyssooosyhdmNNh`"
+print "\033[33m'                                                .````.odddddddhdddddmmmNNNmdyyysosoosyyhddh/"
+print "\033[33m'                                                   +dmdddddhddddhdddmmNNNmdyyysoossyyhddh+"
+print "\033[31m'                                                 -ydddddddddddddmddhdmmdddddhyyyyyyhhddh+"
+print "\033[31m'                              ``.`.`            dddddddddddddddhdhydmhhyhmmdhyyyhhddhy:"
+print "\033[32m'                                .-:-..`.       dddddhdddddyssyhhyyyyddyhhhmmmmdddddds.```.----...````.-.."
+print "\033[33m'                                 .-:+/:..    /dddddhdddho///osyyssssydddddmNNNNNNNms....:::--------.--:-."
+print "\033[35m'                                         /:-. :oyhhhhhhs+//:://ossssssyhdmmNNNNNNNd+---://:::----//-----:."
+print "\033[33m'                                            +::::++oss/ss+:::-:osysssssydmmNNNmds:-:/++o:-:::.-:--.-...."
+print "\033[31m'                                            -yyyo++//+/+/ssy++/--:oossyyyhhdmmhss:...+o+/:::-.---........"
+print "\033[34m'                                            ddhyyysysso+ysh:-:::::/+syhhhdhy+-`-:.`.s+/:----.........."
 print "\033[37m'                                           +mdhhhyymyhshy+o+/:-.-:///+oss+:.`````::-s/::::+:::-"
-print "\033[37m'                                           ymddhyhhdssy+:-:+ys/:..-/+/:---````````.:+/:---/---."
-print "\033[34m'                                           ddh+hdmhs+s+----/hhssoo+-://oyyo.````````-//:-:--.."
-print "\033[34m'                                           dy+.hmdy+//::-:-ohhyyyoso+::yssy:..````````-/++:-.."
-print "\033[34m'                                          :y+.-ydhs+---::.`:ooo++/:/sooh+yy/+::::-----:-+so+::-:-....``.........`"
-print "\033[34m'                                          :/:`--/ys+-.-:.````....``.--:/sh+/::::-....-----...........`.-.-.-:```...```.-````--"
-print "\033[34m'                                          ./.````ss/---/+-             :o/+o+o++/::::--::--.--..:--//-:-:::--...-.````..````.`"
-print "\033[34m'                                                 oy+---::+-            ...-:/-://oooooos+ooo+/+//+//::/:--."
-print "\033[34m'                                                 .hs:-:+::+-            ....-.-````````....-..-..---..."
-print "\033[34m'                                                  sy://so/:+-"
-print "\033[34m'                                                  -h/ososo///.  "
-print "\033[34m'                                                   oo+yyo/so/.``````.--...........-----.-.......`"
-print "\033[34m'                                                   -s+yyso:+o-```````````````"
-print "\033[34m'                                                    osssyoo:/o.               "
-print "\033[34m'                                                    :o+osys+:o/                        .....-://oo/---////:.////:.////:."
-print "\033[34m'                                                    .s/oyyyo+/o-                        ``..-. TOUCAN INTRUSION DETECTION SYSTEM"
-print "\033[34m'                                                     -+/+yho+o++.                            `+o///---////:.////:.////:."
-print "\033[34m'                                                     .+/+hhs//s:`                             "
-print "\033[34m'                                                      //ohyys:oo`"
-print "\033[34m'                                                      .s:ssyys:s:"
-print "\033[34m'                                                        //+oyyy+/+"
-print "\033[34m'                                                       `-o/oyyo+s+"
-print "\033[34m'                                                        /ooshs:/s-  "                             
-print "\033[34m'                                                        .o:oyho/oo   "                            
-print "\033[34m'                                                        `//oshss+o    "                          
-print "\033[34m'                                                         ./+ys++os"
-print "\033[34m'                                                          `.+/os++                              The world is a jungle in general, and the"
-print "\033[34m'                                                           `-//:-.                               networking game contributes many animals."
+print "\033[33m'                                           ymddhyhhdssy+:-:+ys/:..-/+/:---````````.:+/:---/---."
+print "\033[32m'                                           ddh+hdmhs+s+----/hhssoo+-://oyyo.````````-//:-:--.."
+print "\033[31m'                                           dy+.hmdy+//::-:-ohhyyyoso+::yssy:..````````-/++:-.."
+print "\033[32m'                                          :y+.-ydhs+---::.`:ooo++/:/sooh+yy/+::::-----:-+so+::-:-....``.........`"
+print "\033[32m'                                          :/:`--/ys+-.-:.````....``.--:/sh+/::::-....-----...........`.-.-.-:```...```.-````--"
+print "\033[32m'                                          ./.````ss/---/+-             :o/+o+o++/::::--::--.--..:--//-:-:::--...-.````..````.`"
+print "\033[32m'                                                 oy+---::+-            ...-:/-://oooooos+ooo+/+//+//::/:--."
+print "\033[32m'                                                 .hs:-:+::+-            ....-.-````````....-..-..---..."
+print "\033[32m'                                                  sy://so/:+-"
+print "\033[32m'                                                  -h/ososo///.  "
+print "\033[32m'                                                   oo+yyo/so/.``````.--...........-----.-.......`"
+print "\033[32m'                                                   -s+yyso:+o-```````````````"
+print "\033[32m'                                                    osssyoo:/o.               "
+print "\033[32m'                                                    :o+osys+:o/                        .....-://oo/---////:.////:.////:."
+print "\033[31m'                                                    .s/oyyyo+/o-                        ``..-. TOUCAN INTRUSION DETECTION SYSTEM"
+print "\033[32m'                                                     -+/+yho+o++.                            `+o///---////:.////:.////:."
+print "\033[32m'                                                     .+/+hhs//s:`                             "
+print "\033[32m'                                                      //ohyys:oo`"
+print "\033[32m'                                                      .s:ssyys:s:"
+print "\033[32m'                                                        //+oyyy+/+"
+print "\033[32m'                                                       `-o/oyyo+s+"
+print "\033[32m'                                                        /ooshs:/s-  "                             
+print "\033[32m'                                                        .o:oyho/oo   "                            
+print "\033[32m'                                                        `//oshss+o    "                          
+print "\033[32m'                                                         ./+ys++os"
+print "\033[32m'                                                          `.+/os++                              The world is a jungle in general, and the"
+print "\033[32m'                                                           `-//:-.                               networking game contributes many animals."
 
 
 os.system("espeak 'Welcome to Toucan IDS'")
@@ -146,11 +146,17 @@ print time_current
 print date_current
 
 counter = 0
+
 attacker_L2 = ''
+
 attacker_L3 = ''
+
 victim_MAC = ''
+
 victim_L3 = ''
+
 RA_attacker_L3 = ''
+
 RA_attacker_L2 = ''
 
 GATEWAY_IP = raw_input("Enter your Gateway Layer 3 Address: ")
@@ -211,26 +217,26 @@ def arp_display(packet):
 
     if packet[ARP].op == 1: 
 
-        logging.info('[*] Probe- %s is asking for L2 of %s' % (packet[ARP].psrc, packet[ARP].pdst))
+        logging.info('[1] ARP Request- %s is asking for L2 of %s' % (packet[ARP].psrc, packet[ARP].pdst))
 
-        return '\033[31m[*] Probe- %s is asking for L2 of %s\033[0m' % (packet[ARP].psrc, packet[ARP].pdst)
+        return '\033[31m[2] ARP Request- %s is asking for L2 of %s\033[0m' % (packet[ARP].psrc, packet[ARP].pdst)
 
     if packet[ARP].op == 2: 
 
-        logging.info('[*] Response- %s L3 address is %s' % (packet[ARP].hwsrc, packet[ARP].psrc))
+        logging.info('[1] ARP Response- %s L3 address is %s' % (packet[ARP].hwsrc, packet[ARP].psrc))
 
-        return '\033[33m[*] Response- %s L3 address is %s\033[0m' % (packet[ARP].hwsrc, packet[ARP].psrc)
+        return '\033[33m[2] ARP Response- %s L3 address is %s\033[0m' % (packet[ARP].hwsrc, packet[ARP].psrc)
 
 
 def arp_display_2(packet):
 
   if packet[ARP].op == 1 and packet[ARP].psrc != GATEWAY_IP and packet[ARP].hwsrc == GATEWAY_MAC:
 
-      print "\033[31m[*]WARNING: GATEWAY IMPERSONTATION DETECTED. POSSIBLE MITM ATTACK FROM %s\033[31m" % (packet[ARP].psrc)
+      print "\033[31m[!]WARNING: GATEWAY IMPERSONTATION DETECTED. POSSIBLE MITM ATTACK FROM %s\033[31m" % (packet[ARP].psrc)
 
   if packet[ARP].op == 2 and packet[ARP].psrc != GATEWAY_IP and packet[Ether].src == GATEWAY_MAC:
 
-      print "\033[31m[*]WARNING: GATEWAY IMPERSONTATION DETECTED. POSSIBLE MITM ATTACK FROM %s\033[31m" % (packet[ARP].psrc)
+      print "\033[31m[!]WARNING: GATEWAY IMPERSONTATION DETECTED. POSSIBLE MITM ATTACK FROM %s\033[31m" % (packet[ARP].psrc)
 
       
 
@@ -259,11 +265,11 @@ def ns_packet_discovery(neighbor_sol_packet):
 
 def detect_deauth(deauth_packet):
 
-  if deauth_packet.haslayer(Dot11) and deauth_packet.type == 0 and deauth_packet.subtype == 0xC:
+  if deauth_packet.haslayer(Dot11) and deauth_packet.haslayer(Dot11Deauth):
 
-    print "DEAUTH DETECTED: %s" % (deauth_packet.summary())
+    print "\033[31m[!] DEAUTH DETECTED: %s\033[0m" % (deauth_packet.summary())
 
-    print "Deauthentication Detected from: %s" % (deauth_packet[IPv4].psrc, deauth_packet[Ether].src)
+    print "\033[31m[!] Deauthentication Detected from: %s on Access Point %s\033[0m" % (deauth_packet[Dot11].addr1, deauth_packet[Dot11].addr2)
 
     logging.warning('Deauth detected')
 
@@ -276,9 +282,9 @@ def detect_router_advertisement_flood(ra_packet):
 
     print "\033[32m[*]Router advertisement discovered: %s\033[0m" % (ra_packet.summary())
 
-    print '[*]Router advertisement discovered from %s with L2 address of %s' % (ra_packet[IPv6].src, ra_packet[Ether].src)
+    print '[*]Router advertisement discovered from %s with Layer 2 address: %s' % (ra_packet[IPv6].src, ra_packet[Ether].src)
 
-    logging.info('RA from %s' % (ra_packet[IPv6].src))
+    logging.info('Router advertisement from %s with Layer 2 address: %s' % (ra_packet[IPv6].src, ra_packet[Ether].src))
 
 
 def defenseive_arps(GATEWAY_IP, GATEWAY_MAC, victim_L3, victim_MAC):
@@ -308,6 +314,10 @@ def defenseive_arps(GATEWAY_IP, GATEWAY_MAC, victim_L3, victim_MAC):
     send(un_poison_gateway)
 
     time.sleep(2)
+
+    print "Sent defensive ARP to restore %s" % victim_L3
+
+    print "Sent defensive ARP to restore %s" % GATEWAY_IP
 
 
 def defensive_deauth(GATEWAY_MAC, attacker_L2):
@@ -365,7 +375,9 @@ if __name__ == '__main__':
 
     GATEWAY_MAC = get_mac_gateway(GATEWAY_IP)
 
-    print colors.Red + "[*] Gateway %s is at %s" % (GATEWAY_IP, GATEWAY_MAC) + colors.ENDC
+    print colors.Red + "[*] Gateway %s is locked in at %s" % (GATEWAY_IP, GATEWAY_MAC) + colors.ENDC
+
+    print "[*]Sending ARPs to scan network range..."
 
     arp_network_range()
 
@@ -380,5 +392,4 @@ if __name__ == '__main__':
     Thread(target = sniff_na).start()
 
     Thread(target = sniff_ra).start()
-
 
