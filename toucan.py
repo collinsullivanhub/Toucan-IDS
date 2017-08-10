@@ -27,7 +27,6 @@
 
 # TO DO:
 # 1. Option parser for fast use - but then you don't get to seee my toucan =( 
-# 2. Write custom network alert protocol
 
 #--------------------------------------------------------------------------------------------------------------------------------
 
@@ -160,13 +159,13 @@ RA_attacker_L3 = ''
 
 RA_attacker_L2 = ''
 
-GATEWAY_IP = raw_input("Enter your Gateway Layer 3 Address: ")
+GATEWAY_IP = raw_input("\033[33mEnter your Gateway Layer 3 Address: \033[0m")
 logging.info('Gateway IP: %s' % GATEWAY_IP)
 
-interface = raw_input("\nEnter your Network Interface: ")
+interface = raw_input("\033[32m\nEnter your Network Interface: \033[0m")
 logging.info('Interface: %s' % interface)
 
-n_range = raw_input("\nEnter your network range to defend (in format 10.0.0.1/24): ")
+n_range = raw_input("\033[31m\nEnter your network range to defend (in format 10.0.0.1/24): \033[0m")
 logging.info('Network range to defend: %s' % n_range)
 
 
@@ -373,7 +372,7 @@ if __name__ == '__main__':
 
     print"[*] Network Range set..."
     time.sleep(.2)
-    
+
     print"[*] Commensing..." + colors.ENDC
     print"\n"
 
@@ -381,19 +380,53 @@ if __name__ == '__main__':
 
     print colors.Red + "[*] Gateway %s is locked in at %s" % (GATEWAY_IP, GATEWAY_MAC) + colors.ENDC
 
-    print "[*]Sending ARPs to scan network range..."
 
-    arp_network_range()
+    ans=True
+    
+    while ans:
+    
+        print ("""\033[32m
+                  TOUCAN MENU 
+        _______________________________
 
-    Thread(target = sniff_arps).start()
+        - 1.Scan for hosts to protect -
+        - 2.Start Monitoring          -
+        - 3.Exit                      -
+        _______________________________
 
-    Thread(target = sniff_arps_2).start()
+        \033[0m""")
+    
+        ans=raw_input("Please select an option: ") 
+    
+        if ans=="1": 
+          
+          print "[*]Sending ARPs to scan network range..."
 
-    Thread(target = sniff_deauth).start()
+          arp_network_range()
 
-    Thread(target = sniff_ns).start()
+        elif ans=="2":
+    
+            Thread(target = sniff_arps).start()       
 
-    Thread(target = sniff_na).start()
+            Thread(target = sniff_arps_2).start()       
 
-    Thread(target = sniff_ra).start()
+            Thread(target = sniff_deauth).start()       
+
+            Thread(target = sniff_ns).start()       
+
+            Thread(target = sniff_na).start()       
+
+            Thread(target = sniff_ra).start() 
+    
+        elif ans=="3":
+    
+          print("\n Exiting...") 
+
+          ans = None
+
+          sys.exit()
+    
+        elif ans !="":
+    
+          print("\n Not Valid Option...") 
 
