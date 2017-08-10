@@ -22,9 +22,9 @@ Toucan will also defend against:
 # Video Demo:
 https://www.youtube.com/watch?v=ulYhPxZss1Y
 
-Libs:
+# Additional Library Requirements
 
-- Scapy
 - Pyshark
+- Scapy
 
-Blue team is the best team, always
+Blue team is the best team, always.
