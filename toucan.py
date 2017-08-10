@@ -130,8 +130,9 @@ class colors:
     ENDC = '\033[0m'
 
 
-time_current = time.strftime("%I:%M:%S")
+time_current = time.strftime("%I:%M:%S\n")
 logging.info('%s' % time_current)
+
 date_current = time.strftime("%d/%m/%Y\n")
 logging.info('%s' % date_current)
 
@@ -167,15 +168,6 @@ logging.info('Interface: %s' % interface)
 
 n_range = raw_input("\nEnter your network range to defend (in format 10.0.0.1/24): ")
 logging.info('Network range to defend: %s' % n_range)
-
-print colors.Red + "[*] Gateway Locked in..." 
-time.sleep(.2)
-print "[*] Interface configured..."
-time.sleep(.2)
-print"[*] Network Range set..."
-time.sleep(.2)
-print"[*] Commensing..." + colors.ENDC
-print"\n"
 
 
 def get_mac_gateway(ip_address):
@@ -219,11 +211,11 @@ def arp_display(packet):
 
         logging.info('[1] ARP Request- %s is asking for L2 of %s' % (packet[ARP].psrc, packet[ARP].pdst))
 
-        return '\033[31m[2] ARP Request- %s is asking for L2 of %s\033[0m' % (packet[ARP].psrc, packet[ARP].pdst)
+        return '\033[31m[1] ARP Request- %s is asking for L2 of %s\033[0m' % (packet[ARP].psrc, packet[ARP].pdst)
 
     if packet[ARP].op == 2: 
 
-        logging.info('[1] ARP Response- %s L3 address is %s' % (packet[ARP].hwsrc, packet[ARP].psrc))
+        logging.info('[2] ARP Response- %s L3 address is %s' % (packet[ARP].hwsrc, packet[ARP].psrc))
 
         return '\033[33m[2] ARP Response- %s L3 address is %s\033[0m' % (packet[ARP].hwsrc, packet[ARP].psrc)
 
@@ -372,6 +364,18 @@ def sniff_ra():
 
 
 if __name__ == '__main__':
+
+    print colors.Red + "[*] Gateway Locked in..." 
+    time.sleep(.2)
+
+    print "[*] Interface configured..."
+    time.sleep(.2)
+
+    print"[*] Network Range set..."
+    time.sleep(.2)
+    
+    print"[*] Commensing..." + colors.ENDC
+    print"\n"
 
     GATEWAY_MAC = get_mac_gateway(GATEWAY_IP)
 
