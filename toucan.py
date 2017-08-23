@@ -207,28 +207,52 @@ def arp_network_range(iprange="%s" % n_range):
  
 def arp_display(packet):
 
+    global attacker_L2
+
     if packet[ARP].op == 1: 
 
         logging.info('[1] ARP Request- %s is asking for L2 of %s' % (packet[ARP].psrc, packet[ARP].pdst))
 
+        print "Request Ethernet Info: [Source] = %s + [Destination] = %s" % (packet[Ether].src, packet[Ether].dst)
+
         return '\033[31m[1] ARP Request- %s is asking for L2 of %s\033[0m' % (packet[ARP].psrc, packet[ARP].pdst)
+
+
+    if packet[ARP].op == 1 and packet[ARP].psrc == GATEWAY_IP and packet[Ether].src != GATEWAY_MAC:
+
+        return "\033[31m[!]WARNING: GATEWAY IMPERSONTATION DETECTED. POSSIBLE MITM ATTACK FROM %s\033[31m" % (packet[ARP].hwsrc)
+
+        attacker_L2 = packet[ARP.hwsrc]
+
+
+    if packet[ARP].op == 1 and packet[ARP].psrc != GATEWAY_IP and packet[ARP].hwsrc == GATEWAY_MAC:
+
+        print "\033[31m[!]WARNING: GATEWAY IMPERSONTATION DETECTED. POSSIBLE MITM ATTACK FROM %s\033[31m" % (packet[ARP].hwsrc)
+
+        attacker_L2 = packet[ARP.hwsrc]
+
 
     if packet[ARP].op == 2: 
 
-        logging.info('[2] ARP Response- %s L3 address is %s' % (packet[ARP].hwsrc, packet[ARP].psrc))
+        logging.info('[2] ARP Response- %s has layer 2 address: %s' % (packet[ARP].psrc, packet[ARP].hwsrc))
 
-        return '\033[33m[2] ARP Response- %s L3 address is %s\033[0m' % (packet[ARP].hwsrc, packet[ARP].psrc)
+        print "Reponse Ethernet Info: [Source] = %s + [Destination] = %s" % (packet[Ether].src, packet[Ether].dst)
+
+        return '\033[33m[2] ARP Response- %s has layer 2 address: %s\033[0m' % (packet[ARP].psrc, packet[ARP].hwsrc)
 
 
-def arp_display_2(packet):
+    if packet[ARP].op == 2 and packet[ARP].psrc == GATEWAY_IP and packet[Ether].src != GATEWAY_MAC:
 
-  if packet[ARP].op == 1 and packet[ARP].psrc != GATEWAY_IP and packet[ARP].hwsrc == GATEWAY_MAC:
+        print "\033[31m[!]WARNING: GATEWAY IMPERSONTATION DETECTED. POSSIBLE MITM ATTACK FROM %s\033[31m" % (packet[ARP].hwsrc)
 
-      print "\033[31m[!]WARNING: GATEWAY IMPERSONTATION DETECTED. POSSIBLE MITM ATTACK FROM %s\033[31m" % (packet[ARP].psrc)
+        attacker_L2 = packet[ARP.hwsrc]
 
-  if packet[ARP].op == 2 and packet[ARP].psrc != GATEWAY_IP and packet[Ether].src == GATEWAY_MAC:
 
-      print "\033[31m[!]WARNING: GATEWAY IMPERSONTATION DETECTED. POSSIBLE MITM ATTACK FROM %s\033[31m" % (packet[ARP].psrc)
+    if packet[ARP].op == 2 and packet[ARP].psrc != GATEWAY_IP and packet[ARP].hwsrc == GATEWAY_MAC:
+
+        print "\033[31m[!]WARNING: GATEWAY IMPERSONTATION DETECTED. POSSIBLE MITM ATTACK FROM %s\033[31m" % (packet[ARP].hwsrc)
+
+        attacker_L2 = packet[ARP.hwsrc]
 
       
 
@@ -338,11 +362,6 @@ def sniff_arps():
   sniff(filter = "arp", prn = arp_display)
 
 
-def sniff_arps_2():
-
-  sniff(filter = "arp", prn = arp_display_2)
-
-
 def sniff_deauth():
 
   sniff(iface="%s" % interface, prn = detect_deauth)
@@ -412,9 +431,7 @@ if __name__ == '__main__':
 
         elif ans=="2":
     
-            Thread(target = sniff_arps).start()       
-
-            Thread(target = sniff_arps_2).start()       
+            Thread(target = sniff_arps).start()             
 
             Thread(target = sniff_deauth).start()       
 
