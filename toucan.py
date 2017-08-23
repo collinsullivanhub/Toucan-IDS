@@ -203,6 +203,7 @@ def arp_network_range(iprange="%s" % n_range):
 
         print host
 
+
  
 def arp_display(packet):
 
@@ -381,17 +382,22 @@ if __name__ == '__main__':
     print colors.Red + "[*] Gateway %s is locked in at %s" % (GATEWAY_IP, GATEWAY_MAC) + colors.ENDC
 
 
-    ans=True
+    ans = True
     
     while ans:
     
         print ("""\033[32m
-                  TOUCAN MENU 
+        _________________________________
+        _________________________________
+
+        -         TOUCAN MENU           -
+        _________________________________
         _________________________________
 
         - [1] Scan for hosts to protect -
         - [2] Start Monitoring          -
         - [3] Exit                      -
+        _________________________________
         _________________________________
 
         \033[0m""")
@@ -429,3 +435,4 @@ if __name__ == '__main__':
         elif ans !="":
     
           print("\033[35m[!]Not Valid Option...\033[0m") 
+
