@@ -17,7 +17,7 @@
 #                    GNU GENERAL PUBLIC LICENSE
 #                      Version 3, 29 June 2007
 
-# Copyright (C) 2007 Free Software Foundation, Inc. <http://fsf.org/>
+# Copyright (C) William Collin Sullivan <wcsullivan@oru.edu>
 # Everyone is permitted to copy and distribute verbatim copies
 # of this license document, but changing it is not allowed.
 #--------------------------------------------------------------------------------------------------------------------------------
@@ -260,9 +260,9 @@ def na_packet_discovery(neighbor_adv_packet):
 
   if neighbor_adv_packet.haslayer(IPv6) and neighbor_adv_packet.haslayer(ICMPv6ND_NA):
 
-    print "[*]Neighbor advertisement discovered: %s" % (neighbor_adv_packet.summary())
+    print "[NA] Neighbor advertisement discovered: %s" % (neighbor_adv_packet.summary())
 
-    print '[*]Neighbor advertisement source: %s, destination: %s ' % (neighbor_adv_packet[IPv6].src, neighbor_adv_packet[IPv6].dst)  
+    print '[NA] Neighbor advertisement source: %s, destination: %s ' % (neighbor_adv_packet[IPv6].src, neighbor_adv_packet[IPv6].dst)  
 
     logging.info('Neighbor advertisement source: %s, destination: %s' % (neighbor_adv_packet[IPv6].src, neighbor_adv_packet[IPv6].dst))
 
@@ -275,9 +275,9 @@ def ns_packet_discovery(neighbor_sol_packet):
 
   if neighbor_sol_packet.haslayer(IPv6) and neighbor_sol_packet.haslayer(ICMPv6ND_NS):
 
-    print "\033[32m[*]Neighbor solicitation discovered: %s\033[0m" % (neighbor_sol_packet.summary())
+    print "\033[32m[NS] Neighbor solicitation discovered: %s\033[0m" % (neighbor_sol_packet.summary())
 
-    print '\033[32m[*]Neighbor solicitation source: %s, destination: %s\033[0m' % (neighbor_sol_packet[IPv6].src, neighbor_sol_packet[IPv6].dst)  
+    print '\033[32m[NS] Neighbor solicitation source: %s, destination: %s\033[0m' % (neighbor_sol_packet[IPv6].src, neighbor_sol_packet[IPv6].dst)  
 
     logging.info('Neighbor solicitation source: %s, destination: %s' % (neighbor_sol_packet[IPv6].src, neighbor_sol_packet[IPv6].dst))
 
@@ -302,7 +302,7 @@ def detect_router_advertisement_flood(ra_packet):
 
     print "\033[32m[*]Router advertisement discovered: %s\033[0m" % (ra_packet.summary())
 
-    print '[*]Router advertisement discovered from %s with Layer 2 address: %s' % (ra_packet[IPv6].src, ra_packet[Ether].src)
+    print '[RA] Router advertisement discovered from %s with Layer 2 address: %s' % (ra_packet[IPv6].src, ra_packet[Ether].src)
 
     logging.info('Router advertisement from %s with Layer 2 address: %s' % (ra_packet[IPv6].src, ra_packet[Ether].src))
 
@@ -463,4 +463,6 @@ if __name__ == '__main__':
         elif ans !="":
     
           print("\033[35m[!]Not Valid Option...\033[0m") 
+
+
 
