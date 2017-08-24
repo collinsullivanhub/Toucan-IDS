@@ -204,7 +204,6 @@ def arp_network_range(iprange="%s" % n_range):
         print host
 
 
- 
 def arp_display(packet):
 
     global attacker_L2
@@ -249,11 +248,6 @@ def arp_display(packet):
 
         return '\033[33m[2] ARP Response- %s has layer 2 address: %s\033[0m' % (packet[ARP].psrc, packet[ARP].hwsrc)
 
-        attacker_L2 = packet[ARP].hwsrc
-
-        victim_L3 = packet[ARP].dst
-
-        victim_MAC = packet[Ether].dst
 
     if packet[ARP].op == 2 and packet[ARP].psrc == GATEWAY_IP and packet[Ether].src != GATEWAY_MAC:
 
@@ -425,9 +419,9 @@ if __name__ == '__main__':
     print colors.Red + "[*] Gateway %s is locked in at %s" % (GATEWAY_IP, GATEWAY_MAC) + colors.ENDC
 
 
-    ans = True
+    answer = True
     
-    while ans:
+    while answer:
     
         print ("""\033[32m
         _________________________________
@@ -448,15 +442,15 @@ if __name__ == '__main__':
 
         \033[0m""")
     
-        ans=raw_input("\033[33mPlease select an option: \033[0m") 
+        answer =raw_input("\033[33mPlease select an option: \033[0m") 
     
-        if ans=="1": 
+        if answer =="1": 
           
           print "\033[35m[*]Sending ARPs to scan network range...\033[0m"
 
           arp_network_range()
 
-        elif ans=="2":
+        elif answer =="2":
     
             Thread(target = sniff_arps).start()             
 
@@ -468,18 +462,19 @@ if __name__ == '__main__':
 
             Thread(target = sniff_ra).start() 
     
-        elif ans=="3":
+        elif answer =="3":
     
             defensive_deauth()
 
-        elif ans=="4":
+        elif answer =="4":
 
           print("\n\033[35m Exiting...\033[0m") 
 
-          ans = None
+          answer = None
 
           sys.exit()
     
-        elif ans !="":
+        elif answer !="":
     
           print("\033[35m[!]Not Valid Option...\033[0m") 
+
