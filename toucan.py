@@ -213,7 +213,7 @@ def arp_display(packet):
 
         logging.info('[1] ARP Request- %s is asking for L2 of %s' % (packet[ARP].psrc, packet[ARP].pdst))
 
-        print "Request Ethernet Info: [Source] = %s + [Destination] = %s" % (packet[Ether].src, packet[Ether].dst)
+        print "\033[31m[1] ARP Request Ethernet Info: [Source] = %s + [Destination] = %s\033[0m" % (packet[Ether].src, packet[Ether].dst)
 
         return '\033[31m[1] ARP Request- %s is asking for L2 of %s\033[0m' % (packet[ARP].psrc, packet[ARP].pdst)
 
@@ -236,7 +236,7 @@ def arp_display(packet):
 
         logging.info('[2] ARP Response- %s has layer 2 address: %s' % (packet[ARP].psrc, packet[ARP].hwsrc))
 
-        print "Reponse Ethernet Info: [Source] = %s + [Destination] = %s" % (packet[Ether].src, packet[Ether].dst)
+        print "[2] Reponse Ethernet Info: [Source] = %s + [Destination] = %s" % (packet[Ether].src, packet[Ether].dst)
 
         return '\033[33m[2] ARP Response- %s has layer 2 address: %s\033[0m' % (packet[ARP].psrc, packet[ARP].hwsrc)
 
@@ -265,6 +265,10 @@ def na_packet_discovery(neighbor_adv_packet):
     print '[*]Neighbor advertisement source: %s, destination: %s ' % (neighbor_adv_packet[IPv6].src, neighbor_adv_packet[IPv6].dst)  
 
     logging.info('Neighbor advertisement source: %s, destination: %s' % (neighbor_adv_packet[IPv6].src, neighbor_adv_packet[IPv6].dst))
+
+  #if neighbor_adv_packet[IPv6].src == GATEWAY_IP and neighbor_adv_packet[ICMPv6NDOptDstLLAddr].lladdr != GATEWAY_MAC:
+
+    #print '\033[31m[!]WARNING: IPv6 GATEWAY IMPERSONATION DETECTED. POSSIBLE MITM ATTACK FROM: %s (L2): %s\033[0m' % (neighbor_adv_packet[IPv6].src, neighbor_adv_packet[Ether].src)
 
 
 def ns_packet_discovery(neighbor_sol_packet):
@@ -410,12 +414,15 @@ if __name__ == '__main__':
         _________________________________
 
         -         TOUCAN MENU           -
+
+        Its' a menu.. but not for toucans
         _________________________________
         _________________________________
 
         - [1] Scan for hosts to protect -
         - [2] Start Monitoring          -
-        - [3] Exit                      -
+        - [3] Send Defensive ARPs       -
+        - [4] Exit                      -
         _________________________________
         _________________________________
 
@@ -443,6 +450,10 @@ if __name__ == '__main__':
     
         elif ans=="3":
     
+            defensive_deauth()
+
+        elif ans=="4":
+
           print("\n\033[35m Exiting...\033[0m") 
 
           ans = None
