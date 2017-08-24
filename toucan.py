@@ -208,6 +208,9 @@ def arp_network_range(iprange="%s" % n_range):
 def arp_display(packet):
 
     global attacker_L2
+    global attacker_L3
+    global victim_L3
+    global victim_MAC
 
     if packet[ARP].op == 1: 
 
@@ -222,15 +225,21 @@ def arp_display(packet):
 
         return "\033[31m[!]WARNING: GATEWAY IMPERSONTATION DETECTED. POSSIBLE MITM ATTACK FROM %s\033[31m" % (packet[ARP].hwsrc)
 
-        attacker_L2 = packet[ARP.hwsrc]
+        attacker_L2 = packet[ARP].hwsrc
 
+        victim_L3 = packet[ARP].dst
+
+        victim_MAC = packet[Ether].dst
 
     if packet[ARP].op == 1 and packet[ARP].psrc != GATEWAY_IP and packet[ARP].hwsrc == GATEWAY_MAC:
 
         print "\033[31m[!]WARNING: GATEWAY IMPERSONTATION DETECTED. POSSIBLE MITM ATTACK FROM %s\033[31m" % (packet[ARP].hwsrc)
 
-        attacker_L2 = packet[ARP.hwsrc]
+        attacker_L2 = packet[ARP].hwsrc
 
+        victim_L3 = packet[ARP].dst
+
+        victim_MAC = packet[Ether].dst
 
     if packet[ARP].op == 2: 
 
@@ -240,20 +249,31 @@ def arp_display(packet):
 
         return '\033[33m[2] ARP Response- %s has layer 2 address: %s\033[0m' % (packet[ARP].psrc, packet[ARP].hwsrc)
 
+        attacker_L2 = packet[ARP].hwsrc
+
+        victim_L3 = packet[ARP].dst
+
+        victim_MAC = packet[Ether].dst
 
     if packet[ARP].op == 2 and packet[ARP].psrc == GATEWAY_IP and packet[Ether].src != GATEWAY_MAC:
 
         print "\033[31m[!]WARNING: GATEWAY IMPERSONTATION DETECTED. POSSIBLE MITM ATTACK FROM %s\033[31m" % (packet[ARP].hwsrc)
 
-        attacker_L2 = packet[ARP.hwsrc]
+        attacker_L2 = packet[ARP].hwsrc
 
+        victim_L3 = packet[ARP].dst
+
+        victim_MAC = packet[Ether].dst
 
     if packet[ARP].op == 2 and packet[ARP].psrc != GATEWAY_IP and packet[ARP].hwsrc == GATEWAY_MAC:
 
         print "\033[31m[!]WARNING: GATEWAY IMPERSONTATION DETECTED. POSSIBLE MITM ATTACK FROM %s\033[31m" % (packet[ARP].hwsrc)
 
-        attacker_L2 = packet[ARP.hwsrc]
+        attacker_L2 = packet[ARP].hwsrc
 
+        victim_L3 = packet[ARP].dst
+
+        victim_MAC = packet[Ether].dst
       
 
 def na_packet_discovery(neighbor_adv_packet):
@@ -463,5 +483,4 @@ if __name__ == '__main__':
         elif ans !="":
     
           print("\033[35m[!]Not Valid Option...\033[0m") 
-
 
