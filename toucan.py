@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #-------------------------
 # Toucan WIDS 
 # Author: Splithor1zon (Collin Sullivan)
@@ -129,6 +130,28 @@ class colors:
     ENDC = '\033[0m'
 
 
+def print_progress(iteration, total, prefix='', suffix='', decimals=1, bar_length=100):
+    """
+    @params:
+        iteration   - Required  : current iteration (Int)
+        total       - Required  : total iterations (Int)
+        prefix      - Optional  : prefix string (Str)
+        suffix      - Optional  : suffix string (Str)
+        decimals    - Optional  : positive number of decimals in percent complete (Int)
+        bar_length  - Optional  : character length of bar (Int)
+    """
+    str_format = "{0:." + str(decimals) + "f}"
+    percents = str_format.format(100 * (iteration / float(total)))
+    filled_length = int(round(bar_length * iteration / float(total)))
+    bar = '\033[32m█\033[0m' * filled_length + '-' * (bar_length - filled_length)
+
+    sys.stdout.write('\r%s |%s| %s%s %s' % (prefix, bar, percents, '%', suffix)),
+
+    if iteration == total:
+        sys.stdout.write('\n')
+    sys.stdout.flush()
+
+
 time_current = time.strftime("%I:%M:%S\n")
 logging.info('%s' % time_current)
 
@@ -219,7 +242,6 @@ def arp_display(packet):
 
         return '\033[31m[1] ARP Request- %s is asking for L2 of %s\033[0m' % (packet[ARP].psrc, packet[ARP].pdst)
 
-
     if packet[ARP].op == 1 and packet[ARP].psrc == GATEWAY_IP and packet[Ether].src != GATEWAY_MAC:
 
         return "\033[31m[!]WARNING: GATEWAY IMPERSONTATION DETECTED. POSSIBLE MITM ATTACK FROM %s\033[31m" % (packet[ARP].hwsrc)
@@ -247,7 +269,6 @@ def arp_display(packet):
         print "[2] Reponse Ethernet Info: [Source] = %s + [Destination] = %s" % (packet[Ether].src, packet[Ether].dst)
 
         return '\033[33m[2] ARP Response- %s has layer 2 address: %s\033[0m' % (packet[ARP].psrc, packet[ARP].hwsrc)
-
 
     if packet[ARP].op == 2 and packet[ARP].psrc == GATEWAY_IP and packet[Ether].src != GATEWAY_MAC:
 
@@ -280,9 +301,9 @@ def na_packet_discovery(neighbor_adv_packet):
 
     logging.info('Neighbor advertisement source: %s, destination: %s' % (neighbor_adv_packet[IPv6].src, neighbor_adv_packet[IPv6].dst))
 
-  #if neighbor_adv_packet[IPv6].src == GATEWAY_IP and neighbor_adv_packet[ICMPv6NDOptDstLLAddr].lladdr != GATEWAY_MAC:
+  if neighbor_adv_packet[IPv6].src == GATEWAY_IP and neighbor_adv_packet[ICMPv6NDOptDstLLAddr].lladdr != GATEWAY_MAC:
 
-    #print '\033[31m[!]WARNING: IPv6 GATEWAY IMPERSONATION DETECTED. POSSIBLE MITM ATTACK FROM: %s (L2): %s\033[0m' % (neighbor_adv_packet[IPv6].src, neighbor_adv_packet[Ether].src)
+    print '\033[31m[!]WARNING: IPv6 GATEWAY IMPERSONATION DETECTED. POSSIBLE MITM ATTACK FROM: %s (L2): %s\033[0m' % (neighbor_adv_packet[IPv6].src, neighbor_adv_packet[Ether].src)
 
 
 def ns_packet_discovery(neighbor_sol_packet):
@@ -355,7 +376,7 @@ def defenseive_arps(GATEWAY_IP, GATEWAY_MAC, victim_L3, victim_MAC):
     print "Sent defensive ARP to restore %s" % GATEWAY_IP
 
 
-def defensive_deauth(GATEWAY_MAC, attacker_L2):
+def defensive_deauth(GATEWAY_MAC, Attacker_Deauth_Layer2):
 
   conf.iface = interface
   
@@ -365,15 +386,15 @@ def defensive_deauth(GATEWAY_MAC, attacker_L2):
 
   conf.verb = 0 
 
-  packet = RadioTap()/Dot11(type=0,subtype=12,addr1=attacker_L2,addr2=bssid,addr3=bssid)/Dot11Deauth(reason=7) 
+  packet = RadioTap()/Dot11(type=0, subtype=12, addr1=Attacker_Deauth_Layer2, addr2=bssid, addr3=bssid)/Dot11Deauth(reason=7) 
 
-  logging.info('Intruder at %s is being kicked off network' % attacker_L2)
+  logging.info('Intruder at %s is being kicked off network' % Attacker_Deauth_Layer2)
 
   for n in range(int(count)):
 
     sendp(packet)
 
-    print '\033[32mRemoving malicious host at with Layer 2 address:' + attacker_L2 + 'off of network.\033[0m'
+    print '\033[32mRemoving malicious host at with Layer 2 address:' + Attacker_Deauth_Layer2 + 'off of network.\033[0m'
 
 
 def sniff_arps():
@@ -403,6 +424,8 @@ def sniff_ra():
 
 if __name__ == '__main__':
 
+    print_progress(iteration = 100, total = 100)
+
     print colors.Red + "[*] Gateway Locked in..." 
     time.sleep(.2)
 
@@ -424,8 +447,9 @@ if __name__ == '__main__':
     
     while answer:
     
-        print ("""\033[32m
-        _________________________________
+        answer =raw_input("""\033[33m
+
+         _________________________________
         _________________________________
 
         -         TOUCAN MENU           -
@@ -441,9 +465,8 @@ if __name__ == '__main__':
         _________________________________
         _________________________________
 
-        \033[0m""")
-    
-        answer =raw_input("\033[33mPlease select an option: \033[0m") 
+
+        Please select an option: \033[0m""") 
     
         if answer =="1": 
           
@@ -464,6 +487,10 @@ if __name__ == '__main__':
             Thread(target = sniff_ra).start() 
     
         elif answer =="3":
+
+            DeauthAttacker = raw_input("Please enter attacker's address: ")
+
+            Attacker_Deauth_Layer2 = get_mac_gateway(DeauthAttacker)
     
             defensive_deauth()
 
@@ -478,4 +505,5 @@ if __name__ == '__main__':
         elif answer !="":
     
           print("\033[35m[!]Not Valid Option...\033[0m") 
+
 
