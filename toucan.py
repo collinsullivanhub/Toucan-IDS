@@ -230,7 +230,7 @@ def arp_display(packet):
 
         victim_MAC = packet[Ether].dst
 
-    if packet[ARP].op == 1 and packet[ARP].psrc != GATEWAY_IP and packet[ARP].hwsrc == GATEWAY_MAC:
+    if packet[ARP].op == 1 and packet[ARP].psrc == GATEWAY_IP and packet[ARP].hwsrc != GATEWAY_MAC:
 
         print "\033[31m[!]WARNING: GATEWAY IMPERSONTATION DETECTED. POSSIBLE MITM ATTACK FROM %s\033[31m" % (packet[ARP].hwsrc)
 
@@ -259,7 +259,7 @@ def arp_display(packet):
 
         victim_MAC = packet[Ether].dst
 
-    if packet[ARP].op == 2 and packet[ARP].psrc != GATEWAY_IP and packet[ARP].hwsrc == GATEWAY_MAC:
+    if packet[ARP].op == 2 and packet[ARP].psrc == GATEWAY_IP and packet[ARP].hwsrc != GATEWAY_MAC:
 
         print "\033[31m[!]WARNING: GATEWAY IMPERSONTATION DETECTED. POSSIBLE MITM ATTACK FROM %s\033[31m" % (packet[ARP].hwsrc)
 
