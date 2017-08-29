@@ -192,7 +192,7 @@ n_range = raw_input("\033[31m\nEnter your network range to defend (in format 10.
 logging.info('Network range to defend: %s' % n_range)
 
 
-def get_mac_gateway(ip_address):
+def get_mac_address(ip_address):
 
     response, unanswered = srp(Ether(dst='ff:ff:ff:ff:ff:ff')/ARP(pdst=ip_address), \
         timeout=2, retry=2)
@@ -343,7 +343,7 @@ def detect_router_advertisement_flood(ra_packet):
     logging.info('Router advertisement from %s with Layer 2 address: %s' % (ra_packet[IPv6].src, ra_packet[Ether].src))
 
 
-def defenseive_arps(GATEWAY_IP, GATEWAY_MAC, victim_L3, victim_MAC):
+def defensive_arps(GATEWAY_IP, GATEWAY_MAC, victim_L3, victim_MAC):
 
     un_poison_victim = ARP()
 
@@ -438,7 +438,7 @@ if __name__ == '__main__':
     print"[*] Commensing..." + colors.ENDC
     print"\n"
 
-    GATEWAY_MAC = get_mac_gateway(GATEWAY_IP)
+    GATEWAY_MAC = get_mac_address(GATEWAY_IP)
 
     print colors.Red + "[*] Gateway %s is locked in at %s" % (GATEWAY_IP, GATEWAY_MAC) + colors.ENDC
 
@@ -448,24 +448,19 @@ if __name__ == '__main__':
     while answer:
     
         answer =raw_input("""\033[33m
-
          _________________________________
         _________________________________
-
         -         TOUCAN MENU           -
-
         Its' a menu.. but not for toucans
         _________________________________
         _________________________________
-
         - [1] Scan for hosts to protect -
         - [2] Start Monitoring          -
-        - [3] Send Defensive ARPs       -
-        - [4] Exit                      -
+        - [3] Deauthenticate Attacker   -
+        - [4] Send Defensive ARPs       -
+        - [5] Exit                      -
         _________________________________
         _________________________________
-
-
         Please select an option: \033[0m""") 
     
         if answer =="1": 
@@ -490,11 +485,15 @@ if __name__ == '__main__':
 
             DeauthAttacker = raw_input("Please enter attacker's address: ")
 
-            Attacker_Deauth_Layer2 = get_mac_gateway(DeauthAttacker)
+            Attacker_Deauth_Layer2 = get_mac_address(DeauthAttacker)
     
             defensive_deauth()
 
-        elif answer =="4":
+        elif answer == "4":
+
+            defensive_arps()
+
+        elif answer =="5":
 
           print("\n\033[35m Exiting...\033[0m") 
 
@@ -505,5 +504,4 @@ if __name__ == '__main__':
         elif answer !="":
     
           print("\033[35m[!]Not Valid Option...\033[0m") 
-
 
