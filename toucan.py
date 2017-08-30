@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 #-------------------------
 # Toucan WIDS 
 # Author: Splithor1zon (Collin Sullivan)
@@ -33,12 +34,12 @@
 
 import logging
 import socket, sys
-from scapy.all import *
 from scapy.error import Scapy_Exception
 from scapy.all import sr1,IP,ICMP
 from scapy.all import srp
 from scapy.all import Ether, ARP, conf
 from scapy.all import IPv6
+from scapy.all import *
 import os
 import sys
 import threading
@@ -106,8 +107,8 @@ print "\033[32m'                                                        .o:oyho/
 print "\033[32m'                                                        `//oshss+o    "                          
 print "\033[32m'                                                         ./+ys++os"
 print "\033[32m'                                                          `.+/os++                              The world is a jungle in general, and the"
-print "\033[32m'                                                           `-//:-.                               networking game contributes many animals."
-
+print "\033[32m'                                                           `-//:-.                              networking game contributes many animals."
+print "\033[32m'                                                                                                - RFC 826"
 
 os.system("espeak 'Welcome to Toucan IDS'")
 
@@ -216,11 +217,13 @@ def arp_network_range(iprange="%s" % n_range):
 
     for snd, rcv in ans:
 
-        result = rcv.sprintf(r"%ARP.psrc% %Ether.src%").split()
+        result = rcv.sprintf(r"%ARP.psrc%")
+        result_2 = rcv.sprintf(r"Ether.src%")
 
         logging.info('%s' % result)
         
         collection.append(result)
+        collection.append(result_2)
 
     for host in collection:
 
@@ -326,9 +329,8 @@ def detect_deauth(deauth_packet):
 
     print "\033[31m[!] Deauthentication Detected from: %s on Access Point %s\033[0m" % (deauth_packet[Dot11].addr1, deauth_packet[Dot11].addr2)
 
-    logging.warning('Deauth detected')
-
-    logging.warning('Responding to deauthentication.')
+    logging.warning('Deauth detected from %s' % (deauth_packet[Dot11].addr1))
+    logging.warning('Sending option to repond to deauthentication...')
 
     #need to write deauth response
 
