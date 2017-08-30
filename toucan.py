@@ -425,9 +425,11 @@ def sniff_ra():
 
 
 if __name__ == '__main__':
-
+    
+    print"\n"
     print_progress(iteration = 100, total = 100)
-
+    print"\n"
+    
     print colors.Red + "[*] Gateway Locked in..." 
     time.sleep(.2)
 
