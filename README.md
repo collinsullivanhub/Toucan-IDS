@@ -24,7 +24,8 @@ https://www.youtube.com/watch?v=ulYhPxZss1Y
 
 # Additional Library Requirements
 
-- Pyshark
-- Scapy
+- Pyshark (https://github.com/KimiNewt/pyshark)
+- Scapy (https://github.com/secdev/scapy)
+- Espeak (http://espeak.sourceforge.net/)
 
 Blue team is the best team, always.
