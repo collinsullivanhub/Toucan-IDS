@@ -6,10 +6,6 @@ Toucan is an IDS written in Python that alerts and defends against several commo
 
 If Toucan detects maleficent activity, it can respond. For example, if gratuitous ARPs are discovered being sent across a network, Toucan can unpoison the default gateway and the victim, blacklist the attacker's L2 and deauth them from the network.
 
-Toucan will also defend against:
--Deauthentication attacks
--Router Advertisement floods (IPv6)
-
 
 *I have included an example log file also in which I ran the program on a /24 network and did an arp-scan just to generate some activity
 
