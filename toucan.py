@@ -95,7 +95,7 @@ print "\033[32m'                                                   oo+yyo/so/.``
 print "\033[32m'                                                   -s+yyso:+o-```````````````"
 print "\033[32m'                                                    osssyoo:/o.               "
 print "\033[32m'                                                    :o+osys+:o/                        .....-://oo/---////:.////:.////:."
-print "\033[31m'                                                    .s/oyyyo+/o-                        ``..-. TOUCAN INTRUSION DETECTION SYSTEM"
+print "\033[31m'                                                    .s/oyyyo+/o-                        ``..-.          TOUCAN "
 print "\033[32m'                                                     -+/+yho+o++.                            `+o///---////:.////:.////:."
 print "\033[32m'                                                     .+/+hhs//s:`                             "
 print "\033[32m'                                                      //ohyys:oo`"
@@ -109,6 +109,7 @@ print "\033[32m'                                                         ./+ys++
 print "\033[32m'                                                          `.+/os++                              The world is a jungle in general, and the"
 print "\033[32m'                                                           `-//:-.                              networking game contributes many animals."
 print "\033[32m'                                                                                                - RFC 826"
+print "\033[32m'Written by: Collin Sullivan, a.k.a Splithor1zon\033[0m"
 
 os.system("espeak 'Welcome to Toucan IDS'")
 
@@ -142,9 +143,12 @@ def print_progress(iteration, total, prefix='', suffix='', decimals=1, bar_lengt
         bar_length  - Optional  : character length of bar (Int)
     """
     str_format = "{0:." + str(decimals) + "f}"
+
     percents = str_format.format(100 * (iteration / float(total)))
+
     filled_length = int(round(bar_length * iteration / float(total)))
-    bar = '\033[32m█\033[0m' * filled_length + '-' * (bar_length - filled_length)
+
+    bar = '\033[32m■\033[0m' * filled_length + '-' * (bar_length - filled_length)
 
     sys.stdout.write('\r%s |%s| %s%s %s' % (prefix, bar, percents, '%', suffix)),
 
@@ -169,29 +173,6 @@ means you understand and agree to these conditions.
 print time_current
 print date_current
 
-counter = 0
-
-attacker_L2 = ''
-
-attacker_L3 = ''
-
-victim_MAC = ''
-
-victim_L3 = ''
-
-RA_attacker_L3 = ''
-
-RA_attacker_L2 = ''
-
-GATEWAY_IP = raw_input("\033[33mEnter your Gateway Layer 3 Address: \033[0m")
-logging.info('Gateway IP: %s' % GATEWAY_IP)
-
-interface = raw_input("\033[32m\nEnter your Network Interface: \033[0m")
-logging.info('Interface: %s' % interface)
-
-n_range = raw_input("\033[31m\nEnter your network range to defend (in format 10.0.0.1/24): \033[0m")
-logging.info('Network range to defend: %s' % n_range)
-
 
 def get_mac_address(ip_address):
 
@@ -206,10 +187,23 @@ def get_mac_address(ip_address):
 
     GATEWAY_MAC = "%s" % r[Ether].src
 
+def get_mac_address_v6(ip_address):
 
-def arp_network_range(iprange="%s" % n_range):
+    response, unanswered = srp(Ether(dst='33:33:00:00:00:02')/IPv6(dst="FF02::2")/ICMPv6ND_RS(code = 133), \
+        timeout = 2, retry = 2)
 
-    logging.info('Sending ARPs to network range %s' % n_range)
+    for s, r in response:
+        return r[Ether].src
+    return None
+
+    logging.info('Gateway Layer 2 address is: %s' % r[Ether].src)
+
+    GATEWAY_MAC = "%s" % r[Ether].src
+
+
+def arp_network_range(iprange):
+
+    logging.info('Sending ARPs to network range')
 
     ans, unans = srp(Ether(dst="ff:ff:ff:ff:ff:ff")/ARP(pdst=iprange), timeout=5)
 
@@ -218,7 +212,7 @@ def arp_network_range(iprange="%s" % n_range):
     for snd, rcv in ans:
 
         result = rcv.sprintf(r"%ARP.psrc%")
-        result_2 = rcv.sprintf(r"Ether.src%")
+        result_2 = rcv.sprintf(r"%Ether.src%")
 
         logging.info('%s' % result)
         
@@ -300,7 +294,9 @@ def na_packet_discovery(neighbor_adv_packet):
 
     print "[NA] Neighbor advertisement discovered: %s" % (neighbor_adv_packet.summary())
 
-    print '[NA] Neighbor advertisement source: %s, destination: %s ' % (neighbor_adv_packet[IPv6].src, neighbor_adv_packet[IPv6].dst)  
+    print "[NA-Ether] Neighbor advertisement layer 2 information: Source- %s, Destination- %s" % (neighbor_adv_packet[Ether].src, neighbor_adv_packet[Ether].dst)
+
+    print '[NA] Neighbor advertisement layer 3 information: Source- %s, Destination- %s ' % (neighbor_adv_packet[IPv6].src, neighbor_adv_packet[IPv6].dst)  
 
     logging.info('Neighbor advertisement source: %s, destination: %s' % (neighbor_adv_packet[IPv6].src, neighbor_adv_packet[IPv6].dst))
 
@@ -320,17 +316,22 @@ def ns_packet_discovery(neighbor_sol_packet):
     logging.info('Neighbor solicitation source: %s, destination: %s' % (neighbor_sol_packet[IPv6].src, neighbor_sol_packet[IPv6].dst))
 
 
-
 def detect_deauth(deauth_packet):
 
-  if deauth_packet.haslayer(Dot11) and deauth_packet.haslayer(Dot11Deauth):
+    wifi_interface = raw_input("Please enter your wireless interface to sniff on: ")
 
-    print "\033[31m[!] DEAUTH DETECTED: %s\033[0m" % (deauth_packet.summary())
+    os.system('sudo ifconfig %s down') % wifi_interface
+    os.system('sudo iwconfig %s mode monitor') % wifi_interface
+    os.system('sudo ifconfig %s up') % wifi_interface
 
-    print "\033[31m[!] Deauthentication Detected from: %s on Access Point %s\033[0m" % (deauth_packet[Dot11].addr1, deauth_packet[Dot11].addr2)
+    if deauth_packet.haslayer(Dot11) and deauth_packet.haslayer(Dot11Deauth):
 
-    logging.warning('Deauth detected from %s' % (deauth_packet[Dot11].addr1))
-    logging.warning('Sending option to repond to deauthentication...')
+        print "\033[31m[!] DEAUTH DETECTED: %s\033[0m" % (deauth_packet.summary())
+
+        print "\033[31m[!] Deauthentication Detected from: %s on Access Point %s\033[0m" % (deauth_packet[Dot11].addr1, deauth_packet[Dot11].addr2)
+
+        logging.warning('Deauth detected from %s' % (deauth_packet[Dot11].addr1))
+        logging.warning('Sending option to repond to deauthentication...')
 
     #need to write deauth response
 
@@ -425,26 +426,64 @@ def sniff_ra():
 
 
 if __name__ == '__main__':
-    
-    print"\n"
-    print_progress(iteration = 100, total = 100)
-    print"\n"
+
+    counter = 0
+
+    attacker_L2 = ''    
+
+    attacker_L3 = ''    
+
+    victim_MAC = '' 
+
+    victim_L3 = ''  
+
+    RA_attacker_L3 = '' 
+
+    RA_attacker_L2 = '' 
+
+    GATEWAY_IP = raw_input("\033[33mEnter your Gateway Layer 3 Address: \033[0m")   
+
+    logging.info('Gateway IP: %s' % GATEWAY_IP) 
+
+    interface = raw_input("\033[32m\nEnter your Network Interface: \033[0m")    
+
+    logging.info('Interface: %s' % interface)   
+
+    n_range = raw_input("\033[31m\nEnter your network range to defend (in format 10.0.0.1/24): \033[0m")    
+
+    logging.info('Network range to defend: %s' % n_range)
+
+    print "\n"
+    input_one = raw_input("""\033[35m
+Are you defending an IPv4 or IPv6 network?
+1. IPv4
+2. IPv6
+\033[0m""")
+
+    if input_one == "1":
+        GATEWAY_MAC = get_mac_address(GATEWAY_IP)
+    elif input_one == "2":
+        GATEWAY_MAC = get_mac_address_v6(GATEWAY_IP)
     
     print colors.Red + "[*] Gateway Locked in..." 
-    time.sleep(.2)
-
+    print_progress(iteration = 100, total = 100)
+    time.sleep(.4)
+    print"\n"
     print "[*] Interface configured..."
-    time.sleep(.2)
-
+    print_progress(iteration = 100, total = 100)
+    time.sleep(.4)
+    print"\n"   
     print"[*] Network Range set..."
-    time.sleep(.2)
-
+    print_progress(iteration = 100, total = 100)
+    time.sleep(.4)
+    print"\n"
     print"[*] Commensing..." + colors.ENDC
+    print_progress(iteration = 100, total = 100)
     print"\n"
 
     GATEWAY_MAC = get_mac_address(GATEWAY_IP)
 
-    print colors.Red + "[*] Gateway %s is locked in at %s" % (GATEWAY_IP, GATEWAY_MAC) + colors.ENDC
+    print colors.Red + "\n [*] Gateway %s is locked in at %s" % (GATEWAY_IP, GATEWAY_MAC) + colors.ENDC
 
 
     answer = True
@@ -465,13 +504,14 @@ if __name__ == '__main__':
         - [5] Exit                      -
         _________________________________
         _________________________________
+        
         Please select an option: \033[0m""") 
     
         if answer =="1": 
           
           print "\033[35m[*]Sending ARPs to scan network range...\033[0m"
 
-          arp_network_range()
+          network_range = arp_network_range(n_range)
 
         elif answer =="2":
     
@@ -487,7 +527,7 @@ if __name__ == '__main__':
     
         elif answer =="3":
 
-            DeauthAttacker = raw_input("Please enter attacker's address: ")
+            DeauthAttacker = raw_input("Please enter attacker's layer 3 address: ")
 
             Attacker_Deauth_Layer2 = get_mac_address(DeauthAttacker)
     
