@@ -111,7 +111,7 @@ print "\033[32m'                                                           `-//:
 print "\033[32m'                                                                                                - RFC 826"
 print "\033[32m'Written by: Collin Sullivan, a.k.a Splithor1zon\033[0m"
 
-os.system("espeak 'Welcome to Toucan IDS'")
+os.system("espeak 'Welcome to Toucan'")
 
 class colors:
 
@@ -141,11 +141,10 @@ logging.info('%s' % date_current)
 
 
 print colors.Yellow + """
-Toucan is a Wireless Intrusion Detection System written in python. Capabilities include scanning and defending hosts
-on a network by actively monitoring traffic for several types of known attacks by maleficent users. This program is
-not to be used on an unauthorized network and the creator is not responsible for any damage done. Using this program
-means you understand and agree to these conditions.
-""" + colors.ENDC
+Toucan is an Intrusion Detection System. Capabilities include scanning and defending hosts on a network by actively 
+monitoring traffic for different types of known attacks by maleficent users. This program is not to be used on an
+unauthorized network and the creator is not responsible for any damage done. Using this programmeans you understand and agree to these conditions.
+\n""" + colors.ENDC
 
 print time_current
 print date_current
@@ -218,16 +217,18 @@ def arp_network_range(iprange):
 
         eth_collection.append(host_eth_address)
 
+    print "Host List IP Addresses:"
     for host_ip in ip_collection:
-
-        print "Host List IP Addresses:"
         print host_ip
 
+    print "Host List Ethernet Addresses:"
     for host_eth in eth_collection:
-        
-        print "Host List Ethernet Addresses:"
         print host_eth
 
+    with open("toucan_hosts.txt", "w") as output:
+
+        output.write(str(ip_collection))
+        output.write(str(eth_collection))
 
 def arp_display(packet):
 
@@ -537,7 +538,7 @@ Are you sniffing for deauthentication frames?
         os.system('sudo ifconfig %s up') % wifi_interface
 
     elif input_two == "2":
-        break
+        print "Ok"
     
     print colors.Red + "[*] Gateway Locked in..." 
     print_progress(iteration = 100, total = 100)
@@ -649,3 +650,4 @@ Are you sniffing for deauthentication frames?
         elif answer !="":
     
           print("\033[35m[!]Not Valid Option...\033[0m") 
+ 
