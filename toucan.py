@@ -506,6 +506,7 @@ if __name__ == '__main__':
     logging.info('Network range to defend: %s' % n_range)
 
     print "\n"
+    
     input_one = raw_input("""\033[35m
 __________________________________________________________
 __________________________________________________________
@@ -520,11 +521,6 @@ __________________________________________________________
 
 \033[0m\n""")
 
-    if input_one == "1":
-        GATEWAY_MAC = get_mac_address(GATEWAY_IP)
-    elif input_one == "2":
-        GATEWAY_MAC = get_mac_address_v6(GATEWAY_IP)
-
     input_two = raw_input("""\033[35m
 __________________________________________________________
 __________________________________________________________
@@ -537,6 +533,12 @@ Mr. Toucan, are you sniffing for deauthentication frames?
 __________________________________________________________
 __________________________________________________________
 \033[0m\n""")
+
+    if input_one == "1":
+        GATEWAY_MAC = get_mac_address(GATEWAY_IP)
+
+    elif input_one == "2":
+        GATEWAY_MAC = get_mac_address_v6(GATEWAY_IP)
 
     if input_two == "1":
 
@@ -661,4 +663,3 @@ __________________________________________________________
         elif answer !="":
     
           print("\033[35m[!]Not Valid Option...\033[0m") 
-
