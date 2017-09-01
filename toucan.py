@@ -6,7 +6,6 @@
 # Year: 2017
 # Version: 1.0.0
 #-------------------------
-
 #--------------------------------------------------------------------------------------------------------------------------------
 # Monitors a LAN and will protect against spoofing attacks for MITM purposes
 # 1. Scans Network for Active Hosts
