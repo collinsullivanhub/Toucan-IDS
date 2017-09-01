@@ -201,21 +201,32 @@ def arp_network_range(iprange):
 
     ans, unans = srp(Ether(dst="ff:ff:ff:ff:ff:ff")/ARP(pdst=iprange), timeout=5)
 
-    collection = []
+    ip_collection = []
+    eth_collection = []
 
     for snd, rcv in ans:
 
-        result = rcv.sprintf(r"%ARP.psrc%")
-        result_2 = rcv.sprintf(r"%Ether.src%")
+        host_ip_address = rcv.sprintf(r"%ARP.psrc%")
 
-        logging.info('%s' % result)
+        host_eth_address = rcv.sprintf(r"%Ether.src%")
+
+        logging.info('%s' % host_ip_address)
+
+        logging.info('%s' % host_eth_address)
         
-        collection.append(result)
-        collection.append(result_2)
+        ip_collection.append(host_ip_address)
 
-    for host in collection:
+        eth_collection.append(host_eth_address)
 
-        print host
+    for host_ip in ip_collection:
+
+        print "Host List IP Addresses:"
+        print host_ip
+
+    for host_eth in eth_collection:
+        
+        print "Host List Ethernet Addresses:"
+        print host_eth
 
 
 def arp_display(packet):
@@ -638,4 +649,3 @@ Are you sniffing for deauthentication frames?
         elif answer !="":
     
           print("\033[35m[!]Not Valid Option...\033[0m") 
-
