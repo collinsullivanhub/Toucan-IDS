@@ -133,15 +133,7 @@ class colors:
 
 
 def print_progress(iteration, total, prefix='', suffix='', decimals=1, bar_length=100):
-    """
-    @params:
-        iteration   - Required  : current iteration (Int)
-        total       - Required  : total iterations (Int)
-        prefix      - Optional  : prefix string (Str)
-        suffix      - Optional  : suffix string (Str)
-        decimals    - Optional  : positive number of decimals in percent complete (Int)
-        bar_length  - Optional  : character length of bar (Int)
-    """
+
     str_format = "{0:." + str(decimals) + "f}"
 
     percents = str_format.format(100 * (iteration / float(total)))
