@@ -331,12 +331,6 @@ def ns_packet_discovery(neighbor_sol_packet):
 
 def detect_deauth(deauth_packet):
 
-    wifi_interface = raw_input("Please enter your wireless interface to sniff on: ")
-
-    os.system('sudo ifconfig %s down') % wifi_interface
-    os.system('sudo iwconfig %s mode monitor') % wifi_interface
-    os.system('sudo ifconfig %s up') % wifi_interface
-
     if deauth_packet.haslayer(Dot11) and deauth_packet.haslayer(Dot11Deauth):
 
         print "\033[31m[!] DEAUTH DETECTED: %s\033[0m" % (deauth_packet.summary())
@@ -350,13 +344,36 @@ def detect_deauth(deauth_packet):
 
 def detect_router_advertisement_flood(ra_packet):
 
-  if ra_packet.haslayer(IPv6) and ra_packet.haslayer(ICMPv6ND_RA):
+    if ra_packet.haslayer(IPv6) and ra_packet.haslayer(ICMPv6ND_RA):
 
-    print "\033[32m[*]Router advertisement discovered: %s\033[0m" % (ra_packet.summary())
+        print "\033[32m[RA]Router advertisement discovered: %s\033[0m" % (ra_packet.summary())   
 
-    print '[RA] Router advertisement discovered from %s with Layer 2 address: %s' % (ra_packet[IPv6].src, ra_packet[Ether].src)
+        print '[RA] Router advertisement discovered from %s with Layer 2 address: %s' % (ra_packet[IPv6].src, ra_packet[Ether].src) 
 
-    logging.info('Router advertisement from %s with Layer 2 address: %s' % (ra_packet[IPv6].src, ra_packet[Ether].src))
+        logging.info('Router advertisement from %s with Layer 2 address: %s' % (ra_packet[IPv6].src, ra_packet[Ether].src))
+
+    if ra_packet[Ether].src != GATEWAY_MAC:
+
+        print """\033[31m
+
+        [RA] POSSIBLE MALICIOUS ROUTER ADVERTISEMENT DISCOVERED: 
+
+        Layer 2 Source: %s
+        Layer 3 Source: %s 
+        Prefix: %s
+        lladdr: %s
+        \033[0m""" % (ra_packet[Ether].src, ra_packet[IPv6].src, ra_packet[ICMPv6NDOptPrefixInfo].prefix, ra_packet[ICMPv6NDOptSrcLLAddr].lladdr)
+
+
+def detect_router_advertisement_packet(ra_packet):
+
+    if ra_packet.haslayer(IPv6) and ra_packet.haslayer(ICMPv6ND_RA):
+
+        print "\033[32m[RA]Router advertisement discovered: %s\033[0m" % (ra_packet.summary())   
+
+        print '[RA] Router advertisement discovered from %s with Layer 2 address: %s' % (ra_packet[IPv6].src, ra_packet[Ether].src) 
+
+        logging.info('Router advertisement from %s with Layer 2 address: %s' % (ra_packet[IPv6].src, ra_packet[Ether].src))  
 
 
 def defensive_arps(GATEWAY_IP, GATEWAY_MAC, victim_L3, victim_MAC):
@@ -432,13 +449,20 @@ def sniff_na():
 
   sniff(iface="%s" % interface, prn = na_packet_discovery)
 
+
 def sniff_na_ipv6():
 
   sniff(iface="%s" % interface, prn = na_packet_discovery_v6)
 
+
 def sniff_ra():
 
-  sniff(iface="%s" % interface, prn = detect_router_advertisement_flood)
+  sniff(iface="%s" % interface, prn = detect_router_advertisement_packet)
+
+
+def sniff_ra_v6_detect_flood():
+
+  sniff(iface="%s" % interface, prn = detect_router_advertisement_flood)  
 
 
 if __name__ == '__main__':
@@ -472,14 +496,37 @@ if __name__ == '__main__':
     print "\n"
     input_one = raw_input("""\033[35m
 Are you defending an IPv4 or IPv6 network?
+(Type 1 or 2)
+
 1. IPv4
 2. IPv6
-\033[0m""")
+\033[0m\n""")
 
     if input_one == "1":
         GATEWAY_MAC = get_mac_address(GATEWAY_IP)
     elif input_one == "2":
         GATEWAY_MAC = get_mac_address_v6(GATEWAY_IP)
+
+    input_two = raw_input("""\033[35m
+Are you sniffing for deauthentication frames? 
+(Type 1 or 2)
+
+1. Yes
+2. No
+\033[0m\n""")
+
+    if input_two == "1":
+
+        wifi_interface = raw_input("Please enter your wireless interface to sniff on: ")
+
+        os.system('sudo ifconfig %s down') % wifi_interface
+
+        os.system('sudo iwconfig %s mode monitor') % wifi_interface
+
+        os.system('sudo ifconfig %s up') % wifi_interface
+
+    elif input_two == "2":
+        break
     
     print colors.Red + "[*] Gateway Locked in..." 
     print_progress(iteration = 100, total = 100)
@@ -507,20 +554,22 @@ Are you defending an IPv4 or IPv6 network?
     while answer:
     
         answer =raw_input("""\033[33m
-         _________________________________
-        _________________________________
-        -         TOUCAN MENU           -
-        Its' a menu.. but not for toucans
-        _________________________________
-        _________________________________
+        __________________________________
+        __________________________________
+
+        -          TOUCAN MENU           -
+        Its' a menu... but not for toucans
+        __________________________________
+        __________________________________
+
         - [1] Scan for hosts to protect -
         - [2] Start Monitoring (IPv4)   -
         - [3] Start Monitoring (IPv6)   -
         - [4] Deauthenticate Attacker   -
         - [5] Send Defensive ARPs       -
         - [6] Exit                      -
-        _________________________________
-        _________________________________
+        __________________________________
+        __________________________________
         
         Please select an option: \033[0m""") 
     
@@ -560,7 +609,7 @@ Are you defending an IPv4 or IPv6 network?
 
                 Thread(target = sniff_na_ipv6).start()           
 
-                Thread(target = sniff_ra).start() 
+                Thread(target = sniff_ra_v6_detect_flood).start() 
 
             except KeyboardInterrupt:
 
