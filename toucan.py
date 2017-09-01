@@ -132,6 +132,25 @@ class colors:
     ENDC = '\033[0m'
 
 
+time_current = time.strftime("%I:%M:%S\n")
+logging.info('%s' % time_current)
+
+
+date_current = time.strftime("%d/%m/%Y\n")
+logging.info('%s' % date_current)
+
+
+print colors.Yellow + """
+Toucan is a Wireless Intrusion Detection System written in python. Capabilities include scanning and defending hosts
+on a network by actively monitoring traffic for several types of known attacks by maleficent users. This program is
+not to be used on an unauthorized network and the creator is not responsible for any damage done. Using this program
+means you understand and agree to these conditions.
+""" + colors.ENDC
+
+print time_current
+print date_current
+
+
 def print_progress(iteration, total, prefix='', suffix='', decimals=1, bar_length=100):
 
     str_format = "{0:." + str(decimals) + "f}"
@@ -147,23 +166,6 @@ def print_progress(iteration, total, prefix='', suffix='', decimals=1, bar_lengt
     if iteration == total:
         sys.stdout.write('\n')
     sys.stdout.flush()
-
-
-time_current = time.strftime("%I:%M:%S\n")
-logging.info('%s' % time_current)
-
-date_current = time.strftime("%d/%m/%Y\n")
-logging.info('%s' % date_current)
-
-print colors.Yellow + """
-Toucan is a Wireless Intrusion Detection System written in python. Capabilities include scanning and defending hosts
-on a network by actively monitoring traffic for several types of known attacks by maleficent users. This program is
-not to be used on an unauthorized network and the creator is not responsible for any damage done. Using this program
-means you understand and agree to these conditions.
-""" + colors.ENDC
-
-print time_current
-print date_current
 
 
 def get_mac_address(ip_address):
@@ -255,7 +257,7 @@ def arp_display(packet):
 
         logging.info('[2] ARP Response- %s has layer 2 address: %s' % (packet[ARP].psrc, packet[ARP].hwsrc))
 
-        print "[2] Reponse Ethernet Info: [Source] = %s + [Destination] = %s" % (packet[Ether].src, packet[Ether].dst)
+        print "\033[33m[2] Reponse Ethernet Info: [Source] = %s + [Destination] = %s\033[0m" % (packet[Ether].src, packet[Ether].dst)
 
         return '\033[33m[2] ARP Response- %s has layer 2 address: %s\033[0m' % (packet[ARP].psrc, packet[ARP].hwsrc)
 
@@ -292,7 +294,24 @@ def na_packet_discovery(neighbor_adv_packet):
 
     logging.info('Neighbor advertisement source: %s, destination: %s' % (neighbor_adv_packet[IPv6].src, neighbor_adv_packet[IPv6].dst))
 
-  if neighbor_adv_packet[IPv6].src == GATEWAY_IP and neighbor_adv_packet[ICMPv6NDOptDstLLAddr].lladdr != GATEWAY_MAC:
+  if neighbor_adv_packet["IPv6"].src == GATEWAY_IP and neighbor_adv_packet["ICMPv6NDOptDstLLAddr"].lladdr != GATEWAY_MAC:
+
+    print '\033[31m[!]WARNING: IPv6 GATEWAY IMPERSONATION DETECTED. POSSIBLE MITM ATTACK FROM: %s (L2): %s\033[0m' % (neighbor_adv_packet[IPv6].src, neighbor_adv_packet[Ether].src)
+
+
+def na_packet_discovery_v6(neighbor_adv_packet):
+
+  if neighbor_adv_packet.haslayer(IPv6) and neighbor_adv_packet.haslayer(ICMPv6ND_NA):
+
+    print "[NA] Neighbor advertisement discovered: %s" % (neighbor_adv_packet.summary())
+
+    print "[NA-Ether] Neighbor advertisement layer 2 information: Source- %s, Destination- %s" % (neighbor_adv_packet[Ether].src, neighbor_adv_packet[Ether].dst)
+
+    print '[NA] Neighbor advertisement layer 3 information: Source- %s, Destination- %s ' % (neighbor_adv_packet[IPv6].src, neighbor_adv_packet[IPv6].dst)  
+
+    logging.info('Neighbor advertisement source: %s, destination: %s' % (neighbor_adv_packet[IPv6].src, neighbor_adv_packet[IPv6].dst))
+
+  if neighbor_adv_packet["IPv6"].src == GATEWAY_IP and neighbor_adv_packet["ICMPv6NDOptDstLLAddr"].lladdr != GATEWAY_MAC:
 
     print '\033[31m[!]WARNING: IPv6 GATEWAY IMPERSONATION DETECTED. POSSIBLE MITM ATTACK FROM: %s (L2): %s\033[0m' % (neighbor_adv_packet[IPv6].src, neighbor_adv_packet[Ether].src)
 
@@ -302,6 +321,8 @@ def ns_packet_discovery(neighbor_sol_packet):
   if neighbor_sol_packet.haslayer(IPv6) and neighbor_sol_packet.haslayer(ICMPv6ND_NS):
 
     print "\033[32m[NS] Neighbor solicitation discovered: %s\033[0m" % (neighbor_sol_packet.summary())
+
+    print "[NS-Ether] Neighbor solicitation layer 2 information: Source- %s, Destination- %s" % (neighbor_sol_packet[Ether].src, neighbor_sol_packet[Ether].dst)    
 
     print '\033[32m[NS] Neighbor solicitation source: %s, destination: %s\033[0m' % (neighbor_sol_packet[IPv6].src, neighbor_sol_packet[IPv6].dst)  
 
@@ -411,6 +432,9 @@ def sniff_na():
 
   sniff(iface="%s" % interface, prn = na_packet_discovery)
 
+def sniff_na_ipv6():
+
+  sniff(iface="%s" % interface, prn = na_packet_discovery_v6)
 
 def sniff_ra():
 
@@ -490,10 +514,11 @@ Are you defending an IPv4 or IPv6 network?
         _________________________________
         _________________________________
         - [1] Scan for hosts to protect -
-        - [2] Start Monitoring          -
-        - [3] Deauthenticate Attacker   -
-        - [4] Send Defensive ARPs       -
-        - [5] Exit                      -
+        - [2] Start Monitoring (IPv4)   -
+        - [3] Start Monitoring (IPv6)   -
+        - [4] Deauthenticate Attacker   -
+        - [5] Send Defensive ARPs       -
+        - [6] Exit                      -
         _________________________________
         _________________________________
         
@@ -506,18 +531,42 @@ Are you defending an IPv4 or IPv6 network?
           network_range = arp_network_range(n_range)
 
         elif answer =="2":
-    
-            Thread(target = sniff_arps).start()             
 
-            Thread(target = sniff_deauth).start()       
+            try:
 
-            Thread(target = sniff_ns).start()       
+                Thread(target = sniff_arps).start()                 
 
-            Thread(target = sniff_na).start()       
+                Thread(target = sniff_deauth).start()           
 
-            Thread(target = sniff_ra).start() 
-    
+                Thread(target = sniff_ns).start()           
+
+                Thread(target = sniff_na).start()           
+
+                Thread(target = sniff_ra).start() 
+
+            except KeyboardInterrupt:
+
+                sys.exit()
+
         elif answer =="3":
+
+            try:
+
+                Thread(target = sniff_arps).start()                 
+
+                Thread(target = sniff_deauth).start()           
+
+                Thread(target = sniff_ns).start()           
+
+                Thread(target = sniff_na_ipv6).start()           
+
+                Thread(target = sniff_ra).start() 
+
+            except KeyboardInterrupt:
+
+                sys.exit()
+    
+        elif answer =="4":
 
             DeauthAttacker = raw_input("Please enter attacker's layer 3 address: ")
 
@@ -525,11 +574,11 @@ Are you defending an IPv4 or IPv6 network?
     
             defensive_deauth()
 
-        elif answer == "4":
+        elif answer == "5":
 
             defensive_arps()
 
-        elif answer =="5":
+        elif answer =="6":
 
           print("\n\033[35m Exiting...\033[0m") 
 
