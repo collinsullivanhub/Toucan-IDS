@@ -507,11 +507,17 @@ if __name__ == '__main__':
 
     print "\n"
     input_one = raw_input("""\033[35m
-Are you defending an IPv4 or IPv6 network?
+__________________________________________________________
+__________________________________________________________
+
+Mr. Toucan, are you defending an IPv4 or IPv6 network?
 (Type 1 or 2)
 
 1. IPv4
 2. IPv6
+__________________________________________________________
+__________________________________________________________
+
 \033[0m\n""")
 
     if input_one == "1":
@@ -520,11 +526,16 @@ Are you defending an IPv4 or IPv6 network?
         GATEWAY_MAC = get_mac_address_v6(GATEWAY_IP)
 
     input_two = raw_input("""\033[35m
-Are you sniffing for deauthentication frames? 
+__________________________________________________________
+__________________________________________________________
+
+Mr. Toucan, are you sniffing for deauthentication frames? 
 (Type 1 or 2)
 
 1. Yes
 2. No
+__________________________________________________________
+__________________________________________________________
 \033[0m\n""")
 
     if input_two == "1":
@@ -544,15 +555,15 @@ Are you sniffing for deauthentication frames?
     print_progress(iteration = 100, total = 100)
     time.sleep(.4)
     print"\n"
-    print "[*] Interface configured..."
+    print colors.Yellow + "[*] Interface configured..."
     print_progress(iteration = 100, total = 100)
     time.sleep(.4)
     print"\n"   
-    print"[*] Network Range set..."
+    print colors.Green +"[*] Network Range set..."
     print_progress(iteration = 100, total = 100)
     time.sleep(.4)
     print"\n"
-    print"[*] Commensing..." + colors.ENDC
+    print colors.Pink +"[*] Commensing..." + colors.ENDC
     print_progress(iteration = 100, total = 100)
     print"\n"
 
@@ -650,4 +661,4 @@ Are you sniffing for deauthentication frames?
         elif answer !="":
     
           print("\033[35m[!]Not Valid Option...\033[0m") 
- 
+
