@@ -3,8 +3,7 @@
 #-------------------------
 # Toucan WIDS 
 # Author: Splithor1zon (Collin Sullivan)
-# Year: 2017
-# Version: 1.0.0
+# Created: 2017
 #-------------------------
 #--------------------------------------------------------------------------------------------------------------------------------
 # Monitors a LAN and will protect against spoofing attacks for MITM purposes
