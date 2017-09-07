@@ -178,6 +178,7 @@ def get_mac_address(ip_address):
 
     GATEWAY_MAC = "%s" % r[Ether].src
 
+    
 def get_mac_address_v6(ip_address):
 
     response, unanswered = srp(Ether(dst='33:33:00:00:00:02')/IPv6(dst="FF02::2")/ICMPv6ND_RS(code = 133), \
@@ -228,6 +229,7 @@ def arp_network_range(iprange):
         output.write(str(ip_collection))
         output.write(str(eth_collection))
 
+        
 def arp_display(packet):
 
     global attacker_L2
@@ -575,6 +577,8 @@ ____________________________________________________________
     answer = True
     
     while answer:
+        
+    #need to work on this menu a bit 
     
         answer =raw_input("""\033[33m
         __________________________________
@@ -661,4 +665,3 @@ ____________________________________________________________
         elif answer !="":
     
           print("\033[35m[!]Not Valid Option...\033[0m") 
-
