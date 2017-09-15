@@ -5,6 +5,7 @@
 # Author: Splithor1zon (Collin Sullivan)
 # Created: 2017
 #-------------------------
+
 #--------------------------------------------------------------------------------------------------------------------------------
 # Monitors a LAN and will protect against spoofing attacks for MITM purposes
 # 1. Scans Network for Active Hosts
@@ -28,6 +29,7 @@
 # 1. Option parser for fast use - but then you don't get to seee my toucan =( 
 
 #--------------------------------------------------------------------------------------------------------------------------------
+
 
 import logging
 import socket, sys
