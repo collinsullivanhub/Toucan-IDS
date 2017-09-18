@@ -12,7 +12,6 @@ INFO:root:[*] Probe- 192.168.0.2 is asking about 192.168.0.1
 INFO:root:[*] Response- 90:9d:7d:8a:db:fc L3 address is 192.168.0.1
 INFO:root:[*] Probe- 192.168.0.2 is asking about 192.168.0.2
 INFO:root:[*] Probe- 192.168.0.2 is asking about 192.168.0.3
-INFO:root:[*] Probe- 192.168.0.2 is asking about 192.168.0.4
 INFO:root:[*] Probe- 192.168.0.2 is asking about 192.168.0.5
 INFO:root:[*] Probe- 192.168.0.2 is asking about 192.168.0.7
 INFO:root:[*] Response- 20:89:84:ef:cc:d3 L3 address is 192.168.0.7
