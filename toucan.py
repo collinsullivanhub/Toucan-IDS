@@ -201,6 +201,7 @@ def arp_network_range(iprange):
     ans, unans = srp(Ether(dst="ff:ff:ff:ff:ff:ff")/ARP(pdst=iprange), timeout=5)
 
     ip_collection = []
+
     eth_collection = []
 
     for snd, rcv in ans:
@@ -307,10 +308,6 @@ def na_packet_discovery(neighbor_adv_packet):
 
     logging.info('Neighbor advertisement source: %s, destination: %s' % (neighbor_adv_packet[IPv6].src, neighbor_adv_packet[IPv6].dst))
 
-  if neighbor_adv_packet["IPv6"].src == GATEWAY_IP and neighbor_adv_packet["ICMPv6NDOptDstLLAddr"].lladdr != GATEWAY_MAC:
-
-    print '\033[31m[!]WARNING: IPv6 GATEWAY IMPERSONATION DETECTED. POSSIBLE MITM ATTACK FROM: %s (L2): %s\033[0m' % (neighbor_adv_packet[IPv6].src, neighbor_adv_packet[Ether].src)
-
 
 def na_packet_discovery_v6(neighbor_adv_packet):
 
@@ -354,6 +351,7 @@ def detect_deauth(deauth_packet):
         logging.warning('Sending option to repond to deauthentication...')
 
     #need to write deauth response
+
 
 def detect_router_advertisement_flood(ra_packet):
 
