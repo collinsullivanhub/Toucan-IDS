@@ -9,6 +9,10 @@ If Toucan detects maleficent activity, it can respond. For example, if gratuitou
 
 *I have included an example log file also in which I ran the program on a /24 network and did an arp-scan just to generate some activity
 
+# Toucan supports both python 2 and 3! 
+Use toucan.py for Python 2.7
+Use toucan3.py for Python 3.4
+
 # Usage:
 - sudo python toucan.py 
 - (enter Default Gateway) 192.168.0.1
