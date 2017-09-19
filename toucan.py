@@ -325,6 +325,10 @@ def na_packet_discovery_v6(neighbor_adv_packet):
 
     print '\033[31m[!]WARNING: IPv6 GATEWAY IMPERSONATION DETECTED. POSSIBLE MITM ATTACK FROM: %s (L2): %s\033[0m' % (neighbor_adv_packet[IPv6].src, neighbor_adv_packet[Ether].src)
 
+  if neighbor_adv_packet["IPv6"].src == host_ip_address in ip_collection and neighbor_adv_packet["ICMPv6NDOptDstLLAddr"].lladdr != host_eth_address in eth_collection:
+
+    print '\033[31m[!]WARNING: IPv6 GATEWAY IMPERSONATION DETECTED. POSSIBLE MITM ATTACK FROM: %s (L2): %s\033[0m' % (neighbor_adv_packet[IPv6].src, neighbor_adv_packet[Ether].src)
+
 
 def ns_packet_discovery(neighbor_sol_packet):
 
@@ -448,7 +452,7 @@ def sniff_arps():
 
 def sniff_deauth():
 
-  sniff(iface="%s" % interface, prn = detect_deauth)
+  sniff(iface="%s" % wifi_interface prn = detect_deauth)
 
 
 def sniff_ns():
@@ -511,7 +515,7 @@ ____________________________________________________________
 ____________________________________________________________
 -                                                          -
 - Mr. Toucan, are you defending an IPv4 or IPv6 network?   -
-- (Type 1 or 2)                                            -
+-                                                          -
 -                                                          -
 - 1. IPv4                                                  -
 - 2. IPv6                                                  -
@@ -525,7 +529,7 @@ ____________________________________________________________
 ____________________________________________________________
 -                                                          -
 - Mr. Toucan, are you sniffing for deauthentication frames?-
-- (Type 1 or 2)                                            - 
+-                                                          - 
 -                                                          -
 - 1. Yes                                                   -
 - 2. No                                                    -
@@ -533,10 +537,10 @@ ____________________________________________________________
 ____________________________________________________________
 \033[0m\n""")
 
-    if input_one == "1":
+    if input_one == "1" or "yes" or "Yes" or "Y" or "y":
         GATEWAY_MAC = get_mac_address(GATEWAY_IP)
 
-    elif input_one == "2":
+    elif input_one == "2" or "no" or "No" or "N" or "n":
         GATEWAY_MAC = get_mac_address_v6(GATEWAY_IP)
 
     if input_two == "1":
@@ -665,4 +669,4 @@ ____________________________________________________________
     
           print("\033[35m[!]Not Valid Option...\033[0m") 
 
-        
+   
