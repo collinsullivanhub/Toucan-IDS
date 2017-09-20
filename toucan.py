@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 
 #-------------------------
-# Toucan WIDS 
+# Toucan Network Defender
+# 
 # Author: Splithor1zon (Collin Sullivan)
+#
 # Created: 2017
 #-------------------------
 
@@ -10,7 +12,8 @@
 # Monitors a LAN and will protect against spoofing attacks for MITM purposes
 # 1. Scans Network for Active Hosts
 # 2. Scans hosts for Layer 2 Addresses and can "attack back" when a MITM is discovered by correcting poisoned hosts
-# 3. Will send ALERT 
+# 3. Monitors for gratuitous NA
+# 4. Monitors for SYN Scans on a network
 # Needs to be run as ROOT
 #--------------------------------------------------------------------------------------------------------------------------------
 
@@ -390,6 +393,26 @@ def detect_router_advertisement_packet(ra_packet):
 
         logging.info('Router advertisement from %s with Layer 2 address: %s' % (ra_packet[IPv6].src, ra_packet[Ether].src))  
 
+def detect_syn_scan(syn_packet):
+
+    if syn_packet.haslayer(IP) and syn_packet[TCP].flags == "S":
+
+        print "________________________________________________"
+
+        print "------------------------------------------------"
+        print "Syn discovered"
+        print "------------------------------------------------"
+        print "\n"
+        print "L2 Address: %s" % (syn_packet[Ether].src)
+        print "------------------------------------------------"
+        print "Source Port: %s" % (syn_packet[TCP].sport)
+        print "Destination Port: %s" % (syn_packet[TCP].dport)
+        print "------------------------------------------------"
+        print "Source L3: %s" % (syn_packet[IP].src)
+        print "Destination L3: %s" % (syn_packet[IP].dst) 
+        print "------------------------------------------------"
+        print "________________________________________________"
+
 
 def defensive_arps(GATEWAY_IP, GATEWAY_MAC, victim_L3, victim_MAC):
 
@@ -478,6 +501,11 @@ def sniff_ra():
 def sniff_ra_v6_detect_flood():
 
   sniff(iface="%s" % interface, prn = detect_router_advertisement_flood)  
+
+
+def sniff_syn_scan():
+
+    sniff(iface = "%s" % interface, prn = detect_syn_scan)
 
 
 if __name__ == '__main__':
@@ -623,6 +651,8 @@ ____________________________________________________________
 
                 Thread(target = sniff_ra).start() 
 
+                Thread(target = sniff_syn_scan).start()
+
             except KeyboardInterrupt:
 
                 sys.exit()
@@ -639,7 +669,9 @@ ____________________________________________________________
 
                 Thread(target = sniff_na_ipv6).start()           
 
-                Thread(target = sniff_ra_v6_detect_flood).start() 
+                Thread(target = sniff_ra_v6_detect_flood).start()
+
+                Thread(target = sniff_syn_scan).start() 
 
             except KeyboardInterrupt:
 
@@ -669,4 +701,4 @@ ____________________________________________________________
     
           print("\033[35m[!]Not Valid Option...\033[0m") 
 
-   
+  
