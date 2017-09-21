@@ -395,7 +395,7 @@ def detect_router_advertisement_packet(ra_packet):
 
 def detect_syn_scan(syn_packet):
 
-    if syn_packet.haslayer(IP) and syn_packet[TCP].flags == "S":
+    if syn_packet.haslayer(TCP) and syn_packet[TCP].flags == "S":
 
         print "________________________________________________"
 
@@ -514,7 +514,7 @@ if __name__ == '__main__':
 
     attacker_L2 = ''    
 
-    attacker_L3 = ''    
+    attacker_L3 = ''    s
 
     victim_MAC = '' 
 
