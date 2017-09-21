@@ -475,7 +475,7 @@ def sniff_arps():
 
 def sniff_deauth():
 
-  sniff(iface="%s" % wifi_interface prn = detect_deauth)
+  sniff(iface="%s" % wifi_interface, prn = detect_deauth)
 
 
 def sniff_ns():
@@ -701,4 +701,4 @@ ____________________________________________________________
     
           print("\033[35m[!]Not Valid Option...\033[0m") 
 
-  
+   
