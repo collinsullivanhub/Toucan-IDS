@@ -643,7 +643,7 @@ ____________________________________________________________
 
                 Thread(target = sniff_arps).start()                 
 
-                Thread(target = sniff_deauth).start()           
+            #    Thread(target = sniff_deauth).start()           
 
                 Thread(target = sniff_ns).start()           
 
@@ -663,7 +663,7 @@ ____________________________________________________________
 
                 Thread(target = sniff_arps).start()                 
 
-                Thread(target = sniff_deauth).start()           
+            #    Thread(target = sniff_deauth).start()           
 
                 Thread(target = sniff_ns).start()           
 
@@ -700,3 +700,5 @@ ____________________________________________________________
         elif answer !="":
     
           print("\033[35m[!]Not Valid Option...\033[0m") 
+
+   
