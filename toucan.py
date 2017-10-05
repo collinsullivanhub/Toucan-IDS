@@ -393,6 +393,7 @@ def detect_router_advertisement_packet(ra_packet):
 
         logging.info('Router advertisement from %s with Layer 2 address: %s' % (ra_packet[IPv6].src, ra_packet[Ether].src))  
 
+
 def detect_syn_scan(syn_packet):
 
     if syn_packet.haslayer(TCP) and syn_packet[TCP].flags == "S":
@@ -420,7 +421,7 @@ def defensive_arps(GATEWAY_IP, GATEWAY_MAC, victim_L3, victim_MAC):
 
     un_poison_victim.op = 2
 
-    un_poison_victim.psrc = gateway_ip
+    un_poison_victim.psrc = GATEWAY_IP
 
     un_poison_victim.pdst = victim_L3
 
@@ -432,7 +433,7 @@ def defensive_arps(GATEWAY_IP, GATEWAY_MAC, victim_L3, victim_MAC):
 
     un_poison_gateway.psrc = victim_L3
 
-    un_poison_gateway.pdst = gateway_ip
+    un_poison_gateway.pdst = GATEWAY_IP
 
     un_poison_gateway.hwsrc = victim_MAC
 
@@ -445,6 +446,23 @@ def defensive_arps(GATEWAY_IP, GATEWAY_MAC, victim_L3, victim_MAC):
     print "Sent defensive ARP to restore %s" % victim_L3
 
     print "Sent defensive ARP to restore %s" % GATEWAY_IP
+
+
+def restore_range(iprange, GATEWAY_IP, GATEWAY_MAC):
+
+    logging.info('Restoring whole subnet')
+
+    un_poison_range = ARP()
+
+    un_poison_range.op = 2
+
+    un_poison_range.psrc = GATEWAY_IP
+
+    un_poison_range.pdst = iprange
+
+    send(un_poison_range)
+
+    time.sleep(2)
 
 
 def defensive_deauth(GATEWAY_MAC, Attacker_Deauth_Layer2):
@@ -514,7 +532,7 @@ if __name__ == '__main__':
 
     attacker_L2 = ''    
 
-    attacker_L3 = ''    s
+    attacker_L3 = ''    
 
     victim_MAC = '' 
 
@@ -542,7 +560,7 @@ if __name__ == '__main__':
 ____________________________________________________________
 ____________________________________________________________
 -                                                          -
-- Mr. Toucan, are you defending an IPv4 or IPv6 network?   -
+- Fellow Toucan, are you defending an IPv4 or IPv6 network?-
 -                                                          -
 -                                                          -
 - 1. IPv4                                                  -
@@ -556,7 +574,8 @@ ____________________________________________________________
 ____________________________________________________________
 ____________________________________________________________
 -                                                          -
-- Mr. Toucan, are you sniffing for deauthentication frames?-
+Fellow Toucan, are you sniffing for deauthentication frames?
+- 
 -                                                          - 
 -                                                          -
 - 1. Yes                                                   -
@@ -625,7 +644,8 @@ ____________________________________________________________
         - [3] Start Monitoring (IPv6)   -
         - [4] Deauthenticate Attacker   -
         - [5] Send Defensive ARPs       -
-        - [6] Exit                      -
+        - [6] Send Def ARPs to Subnet   -
+        - [7] Exit                      -
         __________________________________
         __________________________________
         
@@ -641,9 +661,7 @@ ____________________________________________________________
 
             try:
 
-                Thread(target = sniff_arps).start()                 
-
-            #    Thread(target = sniff_deauth).start()           
+                Thread(target = sniff_arps).start()                            
 
                 Thread(target = sniff_ns).start()           
 
@@ -661,9 +679,7 @@ ____________________________________________________________
 
             try:
 
-                Thread(target = sniff_arps).start()                 
-
-            #    Thread(target = sniff_deauth).start()           
+                Thread(target = sniff_arps).start()                            
 
                 Thread(target = sniff_ns).start()           
 
@@ -679,9 +695,13 @@ ____________________________________________________________
     
         elif answer =="4":
 
+            GATEWAY_MAC = raw_input("Enter L2 of Dfeault Gateway: ")
+
             DeauthAttacker = raw_input("Please enter attacker's layer 3 address: ")
 
             Attacker_Deauth_Layer2 = get_mac_address(DeauthAttacker)
+
+            print "Sending Deauthentication Packets to %s " % (Attacker_Deauth_Layer2)
     
             defensive_deauth()
 
@@ -689,7 +709,13 @@ ____________________________________________________________
 
             defensive_arps()
 
-        elif answer =="6":
+        elif answer == "6":
+
+            n_range = "Enter subnet to unpoison (in format 10.0.0.1/24): \n"
+
+            un_poison_range(n_range)
+
+        elif answer =="7":
 
           print("\n\033[35m Exiting...\033[0m") 
 
@@ -700,5 +726,3 @@ ____________________________________________________________
         elif answer !="":
     
           print("\033[35m[!]Not Valid Option...\033[0m") 
-
-   
