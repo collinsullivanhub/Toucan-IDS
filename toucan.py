@@ -282,6 +282,8 @@ def arp_display(packet):
 
         print "\033[31m[!]WARNING: GATEWAY IMPERSONTATION DETECTED. POSSIBLE MITM ATTACK FROM %s\033[31m" % (packet[ARP].hwsrc)
 
+        os.system("espeak 'WARNING GATEWAY IMPERSONATION DETECTED from %s'" % (packet[ARP].hwsrc)) 
+
         attacker_L2 = packet[ARP].hwsrc
 
         victim_L3 = packet[ARP].dst
