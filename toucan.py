@@ -717,7 +717,9 @@ ____________________________________________________________
 
             n_range = raw_input("Enter subnet to unpoison (in format 10.0.0.1/24): \n")
 
-            un_poison_range(n_range)
+            GATEWAY_MAC = raw_input("Enter gateway mac address: ")
+
+            un_poison_range(n_range, GATEWAY_IP, GATEWAY_MAC)
 
         elif answer =="7":
 
