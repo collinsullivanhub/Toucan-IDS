@@ -715,7 +715,7 @@ ____________________________________________________________
 
         elif answer == "6":
 
-            n_range = "Enter subnet to unpoison (in format 10.0.0.1/24): \n"
+            n_range = raw_input("Enter subnet to unpoison (in format 10.0.0.1/24): \n")
 
             un_poison_range(n_range)
 
