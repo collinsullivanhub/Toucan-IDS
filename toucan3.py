@@ -639,14 +639,18 @@ ____________________________________________________________
 
             defensive_arps()
 
-        elif answer =="6":
+        elif answer == "6":
+
+            n_range = input("Enter subnet to unpoison (in format 10.0.0.1/24): \n")
+
+            un_poison_range(n_range)
+
+        elif answer =="7":
 
           print("\n\033[35m Exiting...\033[0m") 
 
           answer = None
-
-          sys.exit()
-    
+            
         elif answer !="":
     
           print("\033[35m[!]Not Valid Option...\033[0m") 
