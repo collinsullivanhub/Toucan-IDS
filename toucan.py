@@ -450,7 +450,7 @@ def defensive_arps(GATEWAY_IP, GATEWAY_MAC, victim_L3, victim_MAC):
     print "Sent defensive ARP to restore %s" % GATEWAY_IP
 
 
-def restore_range(iprange, GATEWAY_IP, GATEWAY_MAC):
+def un_poison_range(n_range, GATEWAY_IP, GATEWAY_MAC):
 
     logging.info('Restoring whole subnet')
 
@@ -459,8 +459,10 @@ def restore_range(iprange, GATEWAY_IP, GATEWAY_MAC):
     un_poison_range.op = 2
 
     un_poison_range.psrc = GATEWAY_IP
+    
+    un_poison_range.hwsrc = GATEWAY_MAC
 
-    un_poison_range.pdst = iprange
+    un_poison_range.pdst = n_range
 
     send(un_poison_range)
 
