@@ -573,18 +573,17 @@ ____________________________________________________________
         answer =input("""\033[33m
         __________________________________
         __________________________________
-
         -          TOUCAN MENU           -
         Its' a menu... but not for toucans
         __________________________________
         __________________________________
-
         - [1] Scan for hosts to protect -
         - [2] Start Monitoring (IPv4)   -
         - [3] Start Monitoring (IPv6)   -
         - [4] Deauthenticate Attacker   -
         - [5] Send Defensive ARPs       -
-        - [6] Exit                      -
+        - [6] Send Def ARPs to Subnet   -
+        - [7] Exit                      -
         __________________________________
         __________________________________
         
