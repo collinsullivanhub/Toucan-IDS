@@ -600,10 +600,22 @@ def defensive_deauth(GATEWAY_MAC, Attacker_Deauth_Layer2):
 
     print '\033[32mRemoving malicious host at with Layer 2 address:' + Attacker_Deauth_Layer2 + 'off of network.\033[0m'
 
+def scan_network_bssids(pkt) :
+
+  if pkt.haslayer(Dot11) :
+        if pkt.type == 0 and pkt.subtype == 8 :
+            if pkt.addr2 not in ap_list :
+                networks_discovered_list.append(pkt.addr2)
+                print "\033[33mAP MAC:\033[0m\033[31m %s \033[0m\033[33mBSSID:\033[31m %s " %(pkt.addr2, pkt.info)
+
 
 def sniff_arps():
 
   sniff(filter = "arp", prn = arp_display)
+
+def sniff_networks():
+
+    sniff(iface="%s" % wifi_interface, prn = scan_network_bssids)
 
 
 def sniff_deauth():
@@ -748,23 +760,25 @@ ____________________________________________________________
     #need to work on this menu a bit 
     
         answer =raw_input("""\033[33m
-        __________________________________
-        __________________________________
+        ____________________________________
+        ____________________________________
 
-        -          TOUCAN MENU           -
-        Its' a menu... but not for toucans
-        __________________________________
-        __________________________________
+         -           TOUCAN MENU           -
+         Its' a menu... but not for toucans
+        ____________________________________
+        ____________________________________
 
-        - [1] Scan for hosts to protect -
-        - [2] Start Monitoring (IPv4)   -
-        - [3] Start Monitoring (IPv6)   -
-        - [4] Deauthenticate Attacker   -
-        - [5] Send Defensive ARPs       -
-        - [6] Send Def ARPs to Subnet   -
-        - [7] Exit                      -
-        __________________________________
-        __________________________________
+        - [1] Scan for hosts to protect    -
+        - [2] Start Monitoring (IPv4)      -
+        - [3] Start Monitoring (IPv6)      -
+        - [4] Deauthenticate Attacker      -
+        - [5] Send Defensive ARPs          -
+        - [6] Send Def ARPs to Subnet      -
+        - [7] Monitor for networks         -   
+        - [8] Create Host Accept/Deny List -      
+        - [9] Exit                         -
+        ____________________________________
+        ____________________________________
         
         Please select an option: \033[0m""") 
     
@@ -843,7 +857,34 @@ ____________________________________________________________
 
             un_poison_range(n_range, GATEWAY_IP, GATEWAY_MAC)
 
-        elif answer =="7":
+        elif answer == "7":
+
+            wifi_interface = raw_input("Please enter your wireless interface to sniff on: ")    
+
+            os.system('sudo ifconfig %s down') % wifi_interface 
+
+            os.system('sudo iwconfig %s mode monitor') % wifi_interface 
+
+            os.system('sudo ifconfig %s up') % wifi_interface
+
+            sniff_networks()
+
+        elif answer == "8":
+
+            l2_deny_list = []
+
+                while True:
+                    l2_deny_list = raw_input("Layer 2 Adresses you want to monitor for: ")
+
+                    deny_List = deny_List.append(l2_deny_list)
+
+                    fd = open("toucan_deny_list","w")
+
+                    fd.write(l2_deny_list)
+
+                    logging.info("Populating deny list")
+
+        elif answer =="9":
 
           print("\n\033[35m Exiting...\033[0m") 
 
@@ -854,3 +895,7 @@ ____________________________________________________________
         elif answer !="":
     
           print("\033[35m[!]Not Valid Option...\033[0m") 
+
+          print("exiting...")
+
+          sys.exit()
