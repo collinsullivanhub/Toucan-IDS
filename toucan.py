@@ -14,6 +14,7 @@
 # 2. Scans hosts for Layer 2 Addresses and can "attack back" when a MITM is discovered by correcting poisoned hosts
 # 3. Monitors for gratuitous NA
 # 4. Monitors for SYN Scans on a network
+# 5. You can make a deny list from which toucan will pull addresses to monitor for
 # Needs to be run as ROOT
 #--------------------------------------------------------------------------------------------------------------------------------
 
@@ -22,6 +23,7 @@
 #                      Version 3, 29 June 2007
 
 # Copyright (C) William Collin Sullivan <wcsullivan@oru.edu>
+#
 # Everyone is permitted to copy and distribute verbatim copies
 # of this license document, but changing it is not allowed.
 #--------------------------------------------------------------------------------------------------------------------------------
