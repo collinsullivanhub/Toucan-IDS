@@ -346,7 +346,11 @@ def arp_display(packet):
     global victim_L3
     global victim_MAC
 
-    arp_display.counter += 1
+    if packet[ARP].op == 1 and '%s' % (packet[Ether].src) in open('toucan_deny_list.txt').read():
+
+        print "ARP Request discovered from unauthorized host at: %s , %s" % (packet[ARP].psrc, packet[Ether].src)
+
+        logging.info('ARP Request discovered from unauthorized host at: %s , %s' % (packet[ARP].psrc, packet[Ether].src))
 
     if packet[ARP].op == 1: 
 
@@ -383,6 +387,12 @@ def arp_display(packet):
         print "\033[33m[2] Reponse Ethernet Info: [Source] = %s + [Destination] = %s\033[0m" % (packet[Ether].src, packet[Ether].dst)
 
         return '\033[33m[2] ARP Response- %s has layer 2 address: %s\033[0m' % (packet[ARP].psrc, packet[ARP].hwsrc)
+
+    if packet[ARP].op == 2 and '%s' % (packet[Ether].src) in open('toucan_deny_list.txt').read():
+
+        print "ARP Reply discovered from unauthorized host at: %s , %s" % (packet[ARP].psrc, packet[ARP.pdst])
+
+        logging.info('ARP Reply discovered from unauthorized host at: %s , %s' % (packet[ARP].psrc, packet[ARP.pdst]))
 
     if packet[ARP].op == 2 and packet[ARP].psrc == GATEWAY_IP and packet[Ether].src != GATEWAY_MAC:
 
@@ -439,6 +449,12 @@ def na_packet_discovery_v6(neighbor_adv_packet):
   if neighbor_adv_packet["IPv6"].src == host_ip_address in ip_collection and neighbor_adv_packet["ICMPv6NDOptDstLLAddr"].lladdr != host_eth_address in eth_collection:
 
     print '\033[31m[!]WARNING: IPv6 GATEWAY IMPERSONATION DETECTED. POSSIBLE MITM ATTACK FROM: %s (L2): %s\033[0m' % (neighbor_adv_packet[IPv6].src, neighbor_adv_packet[Ether].src)
+
+  if neighbor_adv_packet["ICMPv6NDOptDstLLAddr"].lladdr in open('toucan_deny_list.txt').read():
+
+    print "Neighbor Advertisement disovereed from host on monitor list: %s " % (["ICMPv6NDOptDstLLAddr"].lladdr)
+
+    logging.info('ARP Request discovered from unauthorized host at: %s ' % (["ICMPv6NDOptDstLLAddr"].lladdr))
 
 
 def ns_packet_discovery(neighbor_sol_packet):
@@ -526,6 +542,8 @@ def detect_syn_scan(syn_packet):
         print "Destination L3: %s" % (syn_packet[IP].dst) 
         print "------------------------------------------------"
         print "________________________________________________"
+
+
 
 
 def defensive_arps(GATEWAY_IP, GATEWAY_MAC, victim_L3, victim_MAC):
@@ -655,6 +673,9 @@ def sniff_syn_scan():
 
 if __name__ == '__main__':
 
+    l2_deny_list = []
+    l3_deny_list = []
+
     ra_counter = 0
 
     arp_display.counter = 0
@@ -735,18 +756,17 @@ ____________________________________________________________
     print colors.Red + "[*] Gateway Locked in..." 
     print_progress(iteration = 100, total = 100)
     time.sleep(.4)
-    print"\n"
+
     print colors.Yellow + "[*] Interface configured..."
     print_progress(iteration = 100, total = 100)
-    time.sleep(.4)
-    print"\n"   
+    time.sleep(.4)  
+
     print colors.Green +"[*] Network Range set..."
     print_progress(iteration = 100, total = 100)
     time.sleep(.4)
-    print"\n"
+
     print colors.Pink +"[*] Commensing..." + colors.ENDC
     print_progress(iteration = 100, total = 100)
-    print"\n"
 
     GATEWAY_MAC = get_mac_address(GATEWAY_IP)
 
@@ -775,7 +795,7 @@ ____________________________________________________________
         - [5] Send Defensive ARPs          -
         - [6] Send Def ARPs to Subnet      -
         - [7] Monitor for networks         -   
-        - [8] Create Host Accept/Deny List -      
+        - [8] Create Deny List             -      
         - [9] Exit                         -
         ____________________________________
         ____________________________________
@@ -791,7 +811,6 @@ ____________________________________________________________
         elif answer =="2":
 
             os.system('cls' if os.name == 'nt' else 'clear')
-
 
             try:
 
@@ -871,16 +890,21 @@ ____________________________________________________________
 
         elif answer == "8":
 
-            l2_deny_list = []
-
                 while True:
+
                     l2_deny_list = raw_input("Layer 2 Adresses you want to monitor for: ")
 
-                    deny_List = deny_List.append(l2_deny_list)
-
-                    fd = open("toucan_deny_list","w")
+                    fd = open("toucan_deny_list.txt","w")
 
                     fd.write(l2_deny_list)
+
+                    logging.info("Populating deny list")
+
+                    l3_deny_list = raw_input("Layer 2 Adresses you want to monitor for: ")
+
+                    fd = open("toucan_deny_list_l3.txt","w")
+
+                    fd.write(l3_deny_list)
 
                     logging.info("Populating deny list")
 
@@ -899,3 +923,4 @@ ____________________________________________________________
           print("exiting...")
 
           sys.exit()
+
