@@ -14,7 +14,6 @@
 # 2. Scans hosts for Layer 2 Addresses and can "attack back" when a MITM is discovered by correcting poisoned hosts
 # 3. Monitors for gratuitous NA
 # 4. Monitors for SYN Scans on a network
-# 5. You can make a deny list from which toucan will pull addresses to monitor for
 # Needs to be run as ROOT
 #--------------------------------------------------------------------------------------------------------------------------------
 
@@ -23,7 +22,6 @@
 #                      Version 3, 29 June 2007
 
 # Copyright (C) William Collin Sullivan <wcsullivan@oru.edu>
-#
 # Everyone is permitted to copy and distribute verbatim copies
 # of this license document, but changing it is not allowed.
 #--------------------------------------------------------------------------------------------------------------------------------
@@ -463,11 +461,11 @@ def ns_packet_discovery(neighbor_sol_packet):
 
   if neighbor_sol_packet.haslayer(IPv6) and neighbor_sol_packet.haslayer(ICMPv6ND_NS):
 
-    print "\033[33m[NS] Neighbor solicitation discovered: %s\033[0m" % (neighbor_sol_packet.summary())
+    print "\033[35m[NS] Neighbor solicitation discovered: %s\033[0m" % (neighbor_sol_packet.summary())
 
     print "[NS-Ether] Neighbor solicitation layer 2 information: Source- %s, Destination- %s" % (neighbor_sol_packet[Ether].src, neighbor_sol_packet[Ether].dst)    
 
-    print '\033[32m[NS] Neighbor solicitation source: %s, destination: %s\033[0m' % (neighbor_sol_packet[IPv6].src, neighbor_sol_packet[IPv6].dst)  
+    print '\033[35m[NS] Neighbor solicitation source: %s, destination: %s\033[0m' % (neighbor_sol_packet[IPv6].src, neighbor_sol_packet[IPv6].dst)  
 
     logging.info('Neighbor solicitation source: %s, destination: %s' % (neighbor_sol_packet[IPv6].src, neighbor_sol_packet[IPv6].dst))
 
@@ -622,10 +620,12 @@ def defensive_deauth(GATEWAY_MAC, Attacker_Deauth_Layer2):
 
 def scan_network_bssids(pkt) :
 
+  ap_list = []
+
   if pkt.haslayer(Dot11) :
         if pkt.type == 0 and pkt.subtype == 8 :
             if pkt.addr2 not in ap_list :
-                networks_discovered_list.append(pkt.addr2)
+                ap_list.append(pkt.addr2)
                 print "\033[33mAP MAC:\033[0m\033[31m %s \033[0m\033[33mBSSID:\033[31m %s " %(pkt.addr2, pkt.info)
 
 
@@ -882,11 +882,17 @@ ____________________________________________________________
 
             wifi_interface = raw_input("Please enter your wireless interface to sniff on: ")    
 
-            os.system('sudo ifconfig %s down') % wifi_interface 
+            os.system('sudo ifconfig %s down' % wifi_interface) 
 
-            os.system('sudo iwconfig %s mode monitor') % wifi_interface 
+            print "Shut %s down...\n" % wifi_interface 
 
-            os.system('sudo ifconfig %s up') % wifi_interface
+            os.system('sudo iwconfig %s mode monitor'% wifi_interface) 
+
+            print "Placing %s into monitor mode...\n" % wifi_interface
+
+            os.system('sudo ifconfig %s up' % wifi_interface) 
+
+            print "%s is now up and in monitor mode...\n" % wifi_interface
 
             sniff_networks()
 
