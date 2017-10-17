@@ -30,8 +30,12 @@
 
 # TO DO:
 # 1. Option parser for fast use - but then you don't get to seee my toucan =( 
+# 2. Fix lists for accept/deny
+# 3. MySQL
 
 #--------------------------------------------------------------------------------------------------------------------------------
+
+
 
 
 import logging
@@ -429,6 +433,12 @@ def na_packet_discovery(neighbor_adv_packet):
 
     logging.info('Neighbor advertisement source: %s, destination: %s' % (neighbor_adv_packet[IPv6].src, neighbor_adv_packet[IPv6].dst))
 
+  if neighbor_adv_packet[Ether].src in open('toucan_deny_list.txt').read():
+
+      print "Neighbor advertisement discovered from unauthorized host at: %s" % (neighbor_adv_packet[Ether].src)
+
+      logging.info('Neighbor advertisement discovered from unauthorized host at: %s' % (neighbor_adv_packet[Ether].src))
+
 
 def na_packet_discovery_v6(neighbor_adv_packet):
 
@@ -456,6 +466,12 @@ def na_packet_discovery_v6(neighbor_adv_packet):
 
     logging.info('ARP Request discovered from unauthorized host at: %s ' % (["ICMPv6NDOptDstLLAddr"].lladdr))
 
+  if neighbor_adv_packet[Ether].src in open('toucan_deny_list.txt').read():
+
+    print "Neighbor advertisement discovered from unauthorized host at: %s" % (neighbor_adv_packet[Ether].src)
+
+    logging.info('Neighbor advertisement discovered from unauthorized host at: %s' % (neighbor_adv_packet[Ether].src))
+
 
 def ns_packet_discovery(neighbor_sol_packet):
 
@@ -468,6 +484,12 @@ def ns_packet_discovery(neighbor_sol_packet):
     print '\033[35m[NS] Neighbor solicitation source: %s, destination: %s\033[0m' % (neighbor_sol_packet[IPv6].src, neighbor_sol_packet[IPv6].dst)  
 
     logging.info('Neighbor solicitation source: %s, destination: %s' % (neighbor_sol_packet[IPv6].src, neighbor_sol_packet[IPv6].dst))
+
+  if neighbor_sol_packet[Ether].src in open('toucan_deny_list.txt').read():
+
+    print "Neighbor advertisement discovered from unauthorized host at: %s" % (neighbor_sol_packet[Ether].src)
+
+    logging.info('Neighbor advertisement discovered from unauthorized host at: %s' % (neighbor_sol_packet[Ether].src))
 
 
 def detect_deauth(deauth_packet):
@@ -482,6 +504,12 @@ def detect_deauth(deauth_packet):
 
         logging.warning('Sending option to repond to deauthentication...')
 
+    if deauth_packet.haslayer(Dot11Deauth) and deauth_packet[Dot11Deauth].addr1 not in open('toucan_accept_list.txt').read():
+
+        print "\033[31m[!]Deauthenticaion packet detected from host not in accept group. Address: %s" % (deauth_packet[Dot11Deauth].addr1)
+
+        logging.warning('Deauthenticaion packet detected from host not in accept group. Address: %s' % (deauth_packet[Dot11Deauth].addr1))
+
 
 def detect_router_advertisement_flood(ra_packet):
 
@@ -492,6 +520,12 @@ def detect_router_advertisement_flood(ra_packet):
         print '[RA] Router advertisement discovered from %s with Layer 2 address: %s' % (ra_packet[IPv6].src, ra_packet[Ether].src) 
 
         logging.info('Router advertisement from %s with Layer 2 address: %s' % (ra_packet[IPv6].src, ra_packet[Ether].src))
+
+    if ra_packet[Ether].src in open('toucan_deny_list.txt').read():
+
+        print "Router advertisement discovered from unauthorized host at: %s" % (neighbor_sol_packet[Ether].src)
+
+        logging.info('Router advertisement discovered from unauthorized host at: %s' % (neighbor_sol_packet[Ether].src))
 
 
     if ra_packet[Ether].src != GATEWAY_MAC:
@@ -521,6 +555,12 @@ def detect_router_advertisement_packet(ra_packet):
 
         ra_counter += 1
 
+    if ra_packet[Ether].src in open('toucan_deny_list.txt').read():
+
+        print "Router advertisement discovered from unauthorized host at: %s" % (ra_packet[Ether].src)
+
+        logging.info('Router advertisement discovered from unauthorized host at: %s' % (ra_packet[Ether].src))
+
 
 def detect_syn_scan(syn_packet):
 
@@ -542,7 +582,13 @@ def detect_syn_scan(syn_packet):
         print "------------------------------------------------"
         print "________________________________________________"
 
+    if syn_packet.haslayer(TCP) and syn_packet[TCP].flags == "S" and syn_packet[TCP].dport == "22" or syn_packet[Ether].src in open('toucan_deny_list.txt').read():
 
+        print "Possible SYN scan discovered from %s, host is probing SSH" % (syn_packet[IP].src)
+
+    if syn_packet.haslayer(TCP) and syn_packet[TCP].flags == "S" and syn_packet[TCP].dport == "23" or syn_packet[Ether].src in open('toucan_deny_list.txt').read():
+
+        print "Possible SYN scan discovered from %s, host is probing Telnet" % (syn_packet[IP].src)
 
 
 def defensive_arps(GATEWAY_IP, GATEWAY_MAC, victim_L3, victim_MAC):
@@ -627,6 +673,10 @@ def scan_network_bssids(pkt) :
                 ap_list.append(pkt.addr2)
                 print "\033[33mAP MAC:\033[0m\033[31m %s \033[0m\033[33mBSSID:\033[31m %s " %(pkt.addr2, pkt.info)
 
+#Multithreading
+
+#These are all functions that sniff for a certain packet and then use prn to use the proper above function on trigger
+
 
 def sniff_arps():
 
@@ -675,6 +725,8 @@ def sniff_syn_scan():
 
 if __name__ == '__main__':
 
+    #these lists will come into use
+
     l2_deny_list = []
     l3_deny_list = []
 
@@ -722,6 +774,7 @@ ____________________________________________________________
 
 \033[0m\n""")
 
+
     input_two = raw_input("""\033[35m
 ____________________________________________________________
 ____________________________________________________________
@@ -735,6 +788,7 @@ Fellow Toucan, are you sniffing for deauthentication frames?
 ____________________________________________________________
 ____________________________________________________________
 \033[0m\n""")
+
 
     if input_one == "1" or "yes" or "Yes" or "Y" or "y":
         GATEWAY_MAC = get_mac_address(GATEWAY_IP)
@@ -751,6 +805,7 @@ ____________________________________________________________
         os.system('sudo iwconfig %s mode monitor') % wifi_interface
 
         os.system('sudo ifconfig %s up') % wifi_interface
+
 
     elif input_two == "2":
         print "Ok"
@@ -811,6 +866,7 @@ ____________________________________________________________
 
           network_range = arp_network_range(n_range)
 
+
         elif answer =="2":
 
             os.system('cls' if os.name == 'nt' else 'clear')
@@ -833,6 +889,7 @@ ____________________________________________________________
 
                 sys.exit()
 
+
         elif answer =="3":
 
             os.system('cls' if os.name == 'nt' else 'clear')
@@ -854,6 +911,7 @@ ____________________________________________________________
             except KeyboardInterrupt:
 
                 sys.exit()
+                
     
         elif answer =="4":
 
@@ -914,7 +972,9 @@ ____________________________________________________________
                     logging.info("Populating deny list...")
 
 
-        elif answer == "9":
+        elif answer == "9":\
+
+                  while True:
 
                     l2_accept_list = raw_input("Enter all L2 Addresses you want to allow: ")
 
