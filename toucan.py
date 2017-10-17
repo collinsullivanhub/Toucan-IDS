@@ -476,12 +476,11 @@ def detect_deauth(deauth_packet):
 
         print "\033[31m[!] DEAUTH DETECTED: %s\033[0m" % (deauth_packet.summary())
 
-        print "\033[31m[!] Deauthentication Detected from: %s on Access Point %s\033[0m" % (deauth_packet[Dot11].addr1, deauth_packet[Dot11].addr2)
+        print "\033[31m[!] Deauthentication Detected from: %s through default gateway at %s\033[0m" % (deauth_packet[Dot11].addr1, deauth_packet[Dot11].addr2)
 
         logging.warning('Deauth detected from %s' % (deauth_packet[Dot11].addr1))
-        logging.warning('Sending option to repond to deauthentication...')
 
-    #need to write deauth response
+        logging.warning('Sending option to repond to deauthentication...')
 
 
 def detect_router_advertisement_flood(ra_packet):
@@ -866,9 +865,11 @@ ____________________________________________________________
     
             defensive_deauth()
 
+
         elif answer == "5":
 
             defensive_arps()
+
 
         elif answer == "6":
 
@@ -877,6 +878,7 @@ ____________________________________________________________
             GATEWAY_MAC = raw_input("Enter gateway mac address: ")
 
             un_poison_range(n_range, GATEWAY_IP, GATEWAY_MAC)
+
 
         elif answer == "7":
 
@@ -895,6 +897,7 @@ ____________________________________________________________
             print "%s is now up and in monitor mode...\n" % wifi_interface
 
             sniff_networks()
+
 
         elif answer == "8":
 
@@ -916,6 +919,7 @@ ____________________________________________________________
 
                     logging.info("Populating deny list")
 
+
         elif answer =="9":
 
           print("\n\033[35m Exiting...\033[0m") 
@@ -923,6 +927,7 @@ ____________________________________________________________
           answer = None
 
           sys.exit()
+          
     
         elif answer !="":
     
