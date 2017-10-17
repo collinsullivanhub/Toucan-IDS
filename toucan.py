@@ -632,6 +632,7 @@ def sniff_arps():
 
   sniff(filter = "arp", prn = arp_display)
 
+
 def sniff_networks():
 
     sniff(iface="%s" % wifi_interface, prn = scan_network_bssids)
