@@ -797,7 +797,8 @@ ____________________________________________________________
         - [6] Send Def ARPs to Subnet      -
         - [7] Monitor for networks         -   
         - [8] Create Deny List             -      
-        - [9] Exit                         -
+        - [9] Create Accept List           -
+        - [10] Exit                        -
         ____________________________________
         ____________________________________
         
@@ -911,23 +912,26 @@ ____________________________________________________________
 
                     logging.info("Populating deny list")
 
+
+        elif answer == "9":
+
                     l3_deny_list = raw_input("Layer 2 Adresses you want to monitor for: ")
 
-                    fd = open("toucan_deny_list_l3.txt","w")
+                    fd = open("toucan_accept_list.txt","w")
 
                     fd.write(l3_deny_list)
 
                     logging.info("Populating deny list")
 
 
-        elif answer =="9":
+        elif answer =="10":
 
           print("\n\033[35m Exiting...\033[0m") 
 
           answer = None
 
           sys.exit()
-          
+
     
         elif answer !="":
     
@@ -936,4 +940,3 @@ ____________________________________________________________
           print("exiting...")
 
           sys.exit()
-
