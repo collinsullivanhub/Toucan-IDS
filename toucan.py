@@ -910,18 +910,18 @@ ____________________________________________________________
 
                     fd.write(l2_deny_list)
 
-                    logging.info("Populating deny list")
+                    logging.info("Populating deny list...")
 
 
         elif answer == "9":
 
-                    l3_deny_list = raw_input("Layer 2 Adresses you want to monitor for: ")
+                    l2_accept_list = raw_input("Enter all L2 Addresses you want to allow: ")
 
                     fd = open("toucan_accept_list.txt","w")
 
-                    fd.write(l3_deny_list)
+                    fd.write(l2_accept_list)
 
-                    logging.info("Populating deny list")
+                    logging.info("Populating accept list...")
 
 
         elif answer =="10":
