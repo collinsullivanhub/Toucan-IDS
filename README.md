@@ -8,6 +8,7 @@ Toucan is an IDS written in Python that alerts and defends against several commo
 
 If Toucan detects maleficent activity, it can respond. For example, if gratuitous ARPs are discovered being sent across a network, Toucan can unpoison the default gateway and the victim, blacklist the attacker's L2 and deauth them from the network.
 
+Toucan uses *accept groups* and *deny groups* to determine which hosts sending traffic are legitimate, or allowed on the network. For example, in a IPv6 RA Flood, many different layer two addresses are sent accross the network rapidly. Toucan will detect this by checking its accept group to see if that host is allowed on the network and will determine that it is not, and will then send a warning.
 
 *I have included an example log file also in which I ran the program on a /24 network and did an arp-scan just to generate some activity
 
