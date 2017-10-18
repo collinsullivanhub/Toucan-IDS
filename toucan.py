@@ -439,6 +439,12 @@ def na_packet_discovery(neighbor_adv_packet):
 
       logging.info('Neighbor advertisement discovered from unauthorized host at: %s' % (neighbor_adv_packet[Ether].src))
 
+  if neighbor_adv_packet[Ether].src not in open('toucan_accept_list.txt').read():
+
+      print "Neighbor advertisement discovered from unauthorized host at: %s" % (neighbor_adv_packet[Ether].src)
+
+      logging.info('Neighbor advertisement discovered from unauthorized host at: %s' % (neighbor_adv_packet[Ether].src))
+
 
 def na_packet_discovery_v6(neighbor_adv_packet):
 
@@ -472,6 +478,12 @@ def na_packet_discovery_v6(neighbor_adv_packet):
 
     logging.info('Neighbor advertisement discovered from unauthorized host at: %s' % (neighbor_adv_packet[Ether].src))
 
+  if neighbor_adv_packet[Ether].src not in open('toucan_accept_list.txt').read():
+
+    print "Neighbor advertisement discovered from unauthorized host at: %s" % (neighbor_adv_packet[Ether].src)
+
+    logging.info('Neighbor advertisement discovered from unauthorized host at: %s' % (neighbor_adv_packet[Ether].src))
+
 
 def ns_packet_discovery(neighbor_sol_packet):
 
@@ -486,6 +498,12 @@ def ns_packet_discovery(neighbor_sol_packet):
     logging.info('Neighbor solicitation source: %s, destination: %s' % (neighbor_sol_packet[IPv6].src, neighbor_sol_packet[IPv6].dst))
 
   if neighbor_sol_packet[Ether].src in open('toucan_deny_list.txt').read():
+
+    print "Neighbor advertisement discovered from unauthorized host at: %s" % (neighbor_sol_packet[Ether].src)
+
+    logging.info('Neighbor advertisement discovered from unauthorized host at: %s' % (neighbor_sol_packet[Ether].src))
+
+  if neighbor_sol_packet[Ether].src not in open('toucan_accept_list.txt').read():
 
     print "Neighbor advertisement discovered from unauthorized host at: %s" % (neighbor_sol_packet[Ether].src)
 
@@ -510,6 +528,12 @@ def detect_deauth(deauth_packet):
 
         logging.warning('Deauthenticaion packet detected from host not in accept group. Address: %s' % (deauth_packet[Dot11Deauth].addr1))
 
+    if deauth_packet.haslayer(Dot11Deauth) and deauth_packet[Dot11Deauth].addr1 in open('toucan_deny_list.txt').read():
+
+        print "\033[31m[!]Deauthenticaion packet detected from host not in deny group. Address: %s" % (deauth_packet[Dot11Deauth].addr1)
+
+        logging.warning('Deauthenticaion packet detected from host not in deny group. Address: %s' % (deauth_packet[Dot11Deauth].addr1))
+
 
 def detect_router_advertisement_flood(ra_packet):
 
@@ -526,6 +550,13 @@ def detect_router_advertisement_flood(ra_packet):
         print "Router advertisement discovered from unauthorized host at: %s" % (neighbor_sol_packet[Ether].src)
 
         logging.info('Router advertisement discovered from unauthorized host at: %s' % (neighbor_sol_packet[Ether].src))
+
+    if ra_packet[Ether].src not in open('toucan_accept_list.txt').read():
+
+        print "Router advertisement discovered from unauthorized host at: %s" % (neighbor_sol_packet[Ether].src)
+
+        logging.info('Router advertisement discovered from unauthorized host at: %s' % (neighbor_sol_packet[Ether].src))
+
 
 
     if ra_packet[Ether].src != GATEWAY_MAC:
@@ -561,6 +592,12 @@ def detect_router_advertisement_packet(ra_packet):
 
         logging.info('Router advertisement discovered from unauthorized host at: %s' % (ra_packet[Ether].src))
 
+    if ra_packet[Ether].src not in open('toucan_accept_list.txt').read():
+
+        print "Router advertisement discovered from unauthorized host not in accept list at: %s" % (ra_packet[Ether].src)
+
+        logging.info('Router advertisement discovered from unauthorized host not in accept list at: %s' % (ra_packet[Ether].src))
+
 
 def detect_syn_scan(syn_packet):
 
@@ -587,6 +624,14 @@ def detect_syn_scan(syn_packet):
         print "Possible SYN scan discovered from %s, host is probing SSH" % (syn_packet[IP].src)
 
     if syn_packet.haslayer(TCP) and syn_packet[TCP].flags == "S" and syn_packet[TCP].dport == "23" or syn_packet[Ether].src in open('toucan_deny_list.txt').read():
+
+        print "Possible SYN scan discovered from %s, host is probing Telnet" % (syn_packet[IP].src)
+
+    if syn_packet.haslayer(TCP) and syn_packet[TCP].flags == "S" and syn_packet[TCP].dport == "22" or syn_packet[Ether].src not in open('toucan_accept_list.txt').read():
+
+        print "Possible SYN scan discovered from %s, host is probing SSH" % (syn_packet[IP].src)
+
+    if syn_packet.haslayer(TCP) and syn_packet[TCP].flags == "S" and syn_packet[TCP].dport == "23" or syn_packet[Ether].src not in open('toucan_accept_list.txt').read():
 
         print "Possible SYN scan discovered from %s, host is probing Telnet" % (syn_packet[IP].src)
 
@@ -965,11 +1010,16 @@ ____________________________________________________________
 
                     l2_deny_list = raw_input("Layer 2 Adresses you want to monitor for: ")
 
-                    fd = open("toucan_deny_list.txt","w")
+                    fd = open("toucan_deny_list.txt","a")
 
-                    fd.write(l2_deny_list)
+                    fd.write(l2_deny_list + "\n")
 
                     logging.info("Populating deny list...")
+
+                    if l2_accept_list == "exit":
+
+                      break
+
 
 
         elif answer == "9":\
@@ -978,11 +1028,15 @@ ____________________________________________________________
 
                     l2_accept_list = raw_input("Enter all L2 Addresses you want to allow: ")
 
-                    fd = open("toucan_accept_list.txt","w")
+                    fd = open("toucan_accept_list.txt","a")
 
-                    fd.write(l2_accept_list)
+                    fd.write(l2_accept_list+ "\n")
 
                     logging.info("Populating accept list...")
+
+                    if l2_accept_list == "exit":
+                      
+                      break
 
 
         elif answer =="10":
