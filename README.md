@@ -21,9 +21,9 @@ Use toucan3.py for Python 3.4
 
 # Usage:
 - sudo python toucan.py 
-- (enter Default Gateway) 192.168.0.1
-- (enter network to monitor) 192.168.0.0/24
-- (enter interface) wlp2s0
+- (enter Default Gateway) 200.20.0.1
+- (enter network to monitor) 200.20.0.0/24
+- (enter network interface) wlp2s0/enp5s0/etc (if you do not know this do an 'ifconfig' on linux)
 
 # Video Demo:
 https://www.youtube.com/watch?v=EawJJs5iS8A
