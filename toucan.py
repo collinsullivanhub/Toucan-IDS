@@ -989,15 +989,15 @@ ____________________________________________________________
 
             wifi_interface = raw_input("Please enter your wireless interface to sniff on: ")    
 
-            os.system('sudo ifconfig %s down' % wifi_interface) 
+            subprocess.Popen(['sudo','ifconfig',wifi_interface,'down'])
 
             print "Shut %s down...\n" % wifi_interface 
 
-            os.system('sudo iwconfig %s mode monitor'% wifi_interface) 
+            subprocess.Popen(['sudo','iwconfig',wifi_interface,'mode','monitor'])
 
             print "Placing %s into monitor mode...\n" % wifi_interface
 
-            os.system('sudo ifconfig %s up' % wifi_interface) 
+            subprocess.Popen(['sudo','ifconfig',wifi_interface,'up']) 
 
             print "%s is now up and in monitor mode...\n" % wifi_interface
 
