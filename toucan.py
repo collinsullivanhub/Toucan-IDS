@@ -1016,7 +1016,7 @@ ____________________________________________________________
 
                     logging.info("Populating deny list...")
 
-                    if l2_accept_list == "exit":
+                    if l2_deny_list == "exit":
 
                       break
 
