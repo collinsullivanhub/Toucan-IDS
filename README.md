@@ -10,7 +10,7 @@ If Toucan detects maleficent activity, it can respond. For example, if gratuitou
 
 Toucan uses *accept groups* and *deny groups* to determine which hosts sending traffic are legitimate, or allowed on the network. For example, in a IPv6 RA Flood, one attack association pattern Toucan will use is the fact that many different layer two addresses attached to RAs are being sent accross the network rapidly. Toucan will detect this by checking its accept group to see if that host is allowed on the network, allowed to send router advertisements, will determine that it is not, and will then send a warning.
 
-*I have included an example log file also in which I ran the program on a /24 network and did an arp-scan just to generate some activity
+*I have included an example log file also in which I ran the program on a /24 network and did an arp-scan just to generate some activity*
 
 # Toucan supports both python 2 and 3! 
 Use toucan.py for Python 2.7
