@@ -32,10 +32,21 @@
 # 1. Option parser for fast use - but then you don't get to seee my toucan =( 
 # 2. Fix lists for accept/deny
 # 3. MySQL
-
 #--------------------------------------------------------------------------------------------------------------------------------
 
+'''
+Toucan was designed originally as a tool to help me learn, but as I did more research
+I quickly realized that there are few if no existing implementations in place to help
+monitor for certain attacks, especially IPv6 attacks. On most networks today
+without proper hardware, such as a Cisco data center switches, that can be configured
+to monitor for things like gratuitous ARPs, etc., attacks will go unnoticed.
+Toucan was written to help monitor networks that aren't being protected behind an
+expensive range of hardware that only large entrprise organizations may have and be
+actively monitoring. However, that is not to say Toucan is invaluable to enterprise 
+organizations. If your company does not use some form of NAC, Toucan can help you maintain
+a proper view into your network and will tee-up suggestions of interest.
 
+'''
 
 
 import logging
@@ -55,6 +66,14 @@ import signal
 from struct import *
 import time
 import pyshark
+from twilio.rest import Client
+
+# Your Account SID from twilio.com/console
+account_sid = "x"
+# Your Auth Token from twilio.com/console
+auth_token  = "y"
+
+client = Client(account_sid, auth_token)
 
 
 logging.basicConfig(filename='toucan.log',level=logging.DEBUG)
@@ -499,15 +518,15 @@ def ns_packet_discovery(neighbor_sol_packet):
 
   if neighbor_sol_packet[Ether].src in open('toucan_deny_list.txt').read():
 
-    print "Neighbor advertisement discovered from unauthorized host at: %s" % (neighbor_sol_packet[Ether].src)
+    print "Neighbor solicitation discovered from unauthorized host at: %s" % (neighbor_sol_packet[Ether].src)
 
-    logging.info('Neighbor advertisement discovered from unauthorized host at: %s' % (neighbor_sol_packet[Ether].src))
+    logging.info('Neighbor solicitation discovered from unauthorized host at: %s' % (neighbor_sol_packet[Ether].src))
 
   if neighbor_sol_packet[Ether].src not in open('toucan_accept_list.txt').read():
 
-    print "Neighbor advertisement discovered from unauthorized host at: %s" % (neighbor_sol_packet[Ether].src)
+    print "Neighbor solicitation discovered from unauthorized host at: %s" % (neighbor_sol_packet[Ether].src)
 
-    logging.info('Neighbor advertisement discovered from unauthorized host at: %s' % (neighbor_sol_packet[Ether].src))
+    logging.info('Neighbor solicitation discovered from unauthorized host at: %s' % (neighbor_sol_packet[Ether].src))
 
 
 def detect_deauth(deauth_packet):
@@ -557,8 +576,6 @@ def detect_router_advertisement_flood(ra_packet):
 
         logging.info('Router advertisement discovered from unauthorized host at: %s' % (neighbor_sol_packet[Ether].src))
 
-
-
     if ra_packet[Ether].src != GATEWAY_MAC:
 
         print """\033[31m
@@ -594,9 +611,32 @@ def detect_router_advertisement_packet(ra_packet):
 
     if ra_packet[Ether].src not in open('toucan_accept_list.txt').read():
 
-        print "Router advertisement discovered from unauthorized host not in accept list at: %s" % (ra_packet[Ether].src)
+        print "Router advertisement discovered from unauthorized host (not in accept list) at: %s" % (ra_packet[Ether].src)
 
-        logging.info('Router advertisement discovered from unauthorized host not in accept list at: %s' % (ra_packet[Ether].src))
+        logging.info('Router advertisement discovered from unauthorized host (not in accept list) at: %s' % (ra_packet[Ether].src))
+
+
+def detect_router_solicitation(rs_packet):
+
+    if rs_packet.haslayer(IPv6) and rs_packet.haslayer(ICMPv6ND_RS):
+
+      print "\033[37m[RS]Router solicitation discovered: %s\033[0m" % (ra_packet.summary())
+
+      print '\033[37m[RS] Router solicitation discovered from %s with Layer 2 address: %s\033[0m' % (rs_packet[IPv6].src, rs_packet[Ether].src) 
+
+      logging.info('Router advertisement from %s with Layer 2 address: %s' % (rs_packet[IPv6].src, rs_packet[Ether].src))
+
+    if rs_packet[Ether].src in open('toucan_deny_list.txt').read():
+
+      print "Router solicitation discovered from unauthorized host at: %s" % (rs_packet[Ether].src)
+
+      logging.info('Router solicitation discovered from unauthorized host at: %s' % (rs_packet[Ether].src))
+
+    if rs_packet[Ether].src not in open('toucan_accept_list.txt').read():
+
+        print "Router solicitation discovered from unauthorized host (not in accept list) at: %s" % (rs_packet[Ether].src)
+
+        logging.info('Router solicitation discovered from unauthorized host (not in accept list) at: %s' % (rs_packet[Ether].src))  
 
 
 def detect_syn_scan(syn_packet):
@@ -768,6 +808,11 @@ def sniff_syn_scan():
     sniff(iface = "%s" % interface, prn = detect_syn_scan)
 
 
+def sniff_router_sol():
+
+  sniff(iface = "%s" % interface, prn = detect_router_solicitation)
+
+
 if __name__ == '__main__':
 
     #these lists will come into use
@@ -930,6 +975,8 @@ ____________________________________________________________
 
                 Thread(target = sniff_syn_scan).start()
 
+                Thread(target = sniff_router_sol).start()
+
             except KeyboardInterrupt:
 
                 sys.exit()
@@ -952,6 +999,8 @@ ____________________________________________________________
                 Thread(target = sniff_ra_v6_detect_flood).start()
 
                 Thread(target = sniff_syn_scan).start() 
+
+                Thread(target = sniff_router_sol).start()
 
             except KeyboardInterrupt:
 
