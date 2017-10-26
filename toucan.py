@@ -36,7 +36,7 @@
 
 '''
 Toucan was designed originally as a tool to help me learn, but as I did more research
-I quickly realized that there are few if no existing implementations in place to help
+I quickly realized that there are few if no existing systems in place to help
 monitor for certain attacks, especially IPv6 attacks. On most networks today
 without proper hardware, such as a Cisco data center switches, that can be configured
 to monitor for things like gratuitous ARPs, etc., attacks will go unnoticed.
@@ -157,11 +157,11 @@ class colors:
     ENDC = '\033[0m'
 
 
-time_current = time.strftime("%I:%M:%S\n")
+time_current = time.strftime("%I:%M:%S")
 logging.info('%s' % time_current)
 
 
-date_current = time.strftime("%d/%m/%Y\n")
+date_current = time.strftime("%d/%m/%Y")
 logging.info('%s' % date_current)
 
 
@@ -375,6 +375,14 @@ def arp_display(packet):
 
         logging.info('ARP Request discovered from unauthorized host at: %s , %s' % (packet[ARP].psrc, packet[Ether].src))
 
+
+    if packet[ARP].op == 1 and '%s' % (packet[Ether].src) not in open('toucan_accept_list.txt').read():
+
+        print "ARP Request discovered from unauthorized host (not in accept list) at: %s , %s" % (packet[ARP].psrc, packet[Ether].src)
+
+        logging.info('ARP Request discovered from unauthorized host at: %s , %s' % (packet[ARP].psrc, packet[Ether].src))
+
+
     if packet[ARP].op == 1: 
 
         logging.info('[1] ARP Request- %s is asking for L2 of %s' % (packet[ARP].psrc, packet[ARP].pdst))
@@ -416,6 +424,14 @@ def arp_display(packet):
         print "ARP Reply discovered from unauthorized host at: %s , %s" % (packet[ARP].psrc, packet[ARP.pdst])
 
         logging.info('ARP Reply discovered from unauthorized host at: %s , %s' % (packet[ARP].psrc, packet[ARP.pdst]))
+
+
+    if packet[ARP].op == 2 and '%s' % (packet[Ether].src) not in open('toucan_accept_list.txt').read():
+
+        print "ARP Response discovered from unauthorized host (not in accept list) at: %s , %s" % (packet[ARP].psrc, packet[Ether].src)
+
+        logging.info('ARP Response discovered from unauthorized host at: %s , %s' % (packet[ARP].psrc, packet[Ether].src))
+
 
     if packet[ARP].op == 2 and packet[ARP].psrc == GATEWAY_IP and packet[Ether].src != GATEWAY_MAC:
 
@@ -477,15 +493,15 @@ def na_packet_discovery_v6(neighbor_adv_packet):
 
     logging.info('Neighbor advertisement source: %s, destination: %s' % (neighbor_adv_packet[IPv6].src, neighbor_adv_packet[IPv6].dst))
 
-  if neighbor_adv_packet["IPv6"].src == GATEWAY_IP and neighbor_adv_packet["ICMPv6NDOptDstLLAddr"].lladdr != GATEWAY_MAC:
+  if neighbor_adv_packet[IPv6].src == GATEWAY_IP and neighbor_adv_packet["ICMPv6NDOptDstLLAddr"].lladdr != GATEWAY_MAC:
 
     print '\033[31m[!]WARNING: IPv6 GATEWAY IMPERSONATION DETECTED. POSSIBLE MITM ATTACK FROM: %s (L2): %s\033[0m' % (neighbor_adv_packet[IPv6].src, neighbor_adv_packet[Ether].src)
 
-  if neighbor_adv_packet["IPv6"].src == host_ip_address in ip_collection and neighbor_adv_packet["ICMPv6NDOptDstLLAddr"].lladdr != host_eth_address in eth_collection:
+  if neighbor_adv_packet[IPv6].src == host_ip_address in ip_collection and neighbor_adv_packet["ICMPv6NDOptDstLLAddr"].lladdr != host_eth_address in eth_collection:
 
     print '\033[31m[!]WARNING: IPv6 GATEWAY IMPERSONATION DETECTED. POSSIBLE MITM ATTACK FROM: %s (L2): %s\033[0m' % (neighbor_adv_packet[IPv6].src, neighbor_adv_packet[Ether].src)
 
-  if neighbor_adv_packet["ICMPv6NDOptDstLLAddr"].lladdr in open('toucan_deny_list.txt').read():
+  if neighbor_adv_packet[ICMPv6NDOptDstLLAddr].lladdr in open('toucan_deny_list.txt').read():
 
     print "Neighbor Advertisement disovereed from host on monitor list: %s " % (["ICMPv6NDOptDstLLAddr"].lladdr)
 
@@ -556,6 +572,27 @@ def detect_deauth(deauth_packet):
 
 def detect_router_advertisement_flood(ra_packet):
 
+    global ra_counter
+
+    if ra_counter > 10 and ra_packet[Ether].src not in not in open('toucan_accept_list'):
+
+        print "\033[31m[!]WARNING: Over 10 router advertisements from unauthorized hosts have been detected. Flood warning initiated...\033[0m"
+
+        logging.warning('[!]WARNING: Over 10 router advertisements from unauthorized hosts have been detected. Flood warning initiated...')
+
+    if ra_counter > 200 and ra_packet[Ether].src not in not in open('toucan_accept_list'):
+
+        print "\033[31m[!]WARNING: Over 200 router advertisements from unauthorized hosts have been detected. Flood warning initiated...\033[0m"
+
+        logging.warning('[!]WARNING: Over 200 router advertisements from unauthorized hosts have been detected. Flood warning initiated...')
+
+     if ra_counter > 500 and ra_packet[Ether].src not in not in open('toucan_accept_list'):
+
+        print "\033[31m[!]WARNING: Over 500 router advertisements from unauthorized hosts have been detected. Flood warning initiated...\033[0m"
+
+        logging.warning('[!]WARNING: Over 500 router advertisements from unauthorized hosts have been detected. Flood warning initiated...')
+
+
     if ra_packet.haslayer(IPv6) and ra_packet.haslayer(ICMPv6ND_RA):
 
         print "\033[32m[RA]Router advertisement discovered: %s\033[0m" % (ra_packet.summary())   
@@ -592,6 +629,25 @@ def detect_router_advertisement_flood(ra_packet):
 def detect_router_advertisement_packet(ra_packet):
 
     global ra_counter
+
+    if ra_counter > 10 and ra_packet[Ether].src not in not in open('toucan_accept_list'):
+
+        print "\033[31m[!]WARNING: Over 10 router advertisements from unauthorized hosts have been detected. Flood warning initiated...\033[0m"
+
+        logging.warning('[!]WARNING: Over 10 router advertisements from unauthorized hosts have been detected. Flood warning initiated...')
+
+    if ra_counter > 200 and ra_packet[Ether].src not in not in open('toucan_accept_list'):
+
+        print "\033[31m[!]WARNING: Over 200 router advertisements from unauthorized hosts have been detected. Flood warning initiated...\033[0m"
+
+        logging.warning('[!]WARNING: Over 200 router advertisements from unauthorized hosts have been detected. Flood warning initiated...')
+
+     if ra_counter > 500 and ra_packet[Ether].src not in not in open('toucan_accept_list'):
+
+        print "\033[31m[!]WARNING: Over 500 router advertisements from unauthorized hosts have been detected. Flood warning initiated...\033[0m"
+
+        logging.warning('[!]WARNING: Over 500 router advertisements from unauthorized hosts have been detected. Flood warning initiated...')
+
 
     if ra_packet.haslayer(IPv6) and ra_packet.haslayer(ICMPv6ND_RA):
 
@@ -797,6 +853,10 @@ def sniff_ra():
 
   sniff(iface="%s" % interface, prn = detect_router_advertisement_packet)
 
+  global ra_counter
+
+  ra_counter += 1
+
 
 def sniff_ra_v6_detect_flood():
 
@@ -976,6 +1036,7 @@ ____________________________________________________________
                 Thread(target = sniff_syn_scan).start()
 
                 Thread(target = sniff_router_sol).start()
+
 
             except KeyboardInterrupt:
 
