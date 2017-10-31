@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 
 #-------------------------
@@ -45,7 +46,6 @@ expensive range of hardware that only large entrprise organizations may have and
 actively monitoring. However, that is not to say Toucan is invaluable to enterprise 
 organizations. If your company does not use some form of NAC, Toucan can help you maintain
 a proper view into your network and will tee-up suggestions of interest.
-
 '''
 
 
@@ -220,8 +220,6 @@ def print_toucan_1():
 def print_toucan_2():
 
     print"""\33[31m
-
-
                                                                                                                                                                                                         
                                                                                                                                                                                                         
                                                                                                                                                                                                         
@@ -272,10 +270,8 @@ def print_toucan_2():
                                                                                    `#+''+++##++#++#########################################.                                                            
                                                                                   .#++'++++#+++++#######+#+++#############################;                                                             
                                                                                  .#++'+++#+#++++#####+++##+++++##########################'  
-
                                                                     TOUCAN SNIFFING WILL NOW COMMENSE (IPv6)                                                            
                                                              
-
     """
 
 
@@ -574,19 +570,19 @@ def detect_router_advertisement_flood(ra_packet):
 
     global ra_counter
 
-    if ra_counter > 10 and ra_packet[Ether].src not in not in open('toucan_accept_list'):
+    if ra_counter > 10 and ra_packet[Ether].src not in open('toucan_accept_list'):
 
         print "\033[31m[!]WARNING: Over 10 router advertisements from unauthorized hosts have been detected. Flood warning initiated...\033[0m"
 
         logging.warning('[!]WARNING: Over 10 router advertisements from unauthorized hosts have been detected. Flood warning initiated...')
 
-    if ra_counter > 200 and ra_packet[Ether].src not in not in open('toucan_accept_list'):
+    if ra_counter > 200 and ra_packet[Ether].src not in open('toucan_accept_list'):
 
         print "\033[31m[!]WARNING: Over 200 router advertisements from unauthorized hosts have been detected. Flood warning initiated...\033[0m"
 
         logging.warning('[!]WARNING: Over 200 router advertisements from unauthorized hosts have been detected. Flood warning initiated...')
 
-     if ra_counter > 500 and ra_packet[Ether].src not in not in open('toucan_accept_list'):
+    if ra_counter > 500 and ra_packet[Ether].src not in open('toucan_accept_list'):
 
         print "\033[31m[!]WARNING: Over 500 router advertisements from unauthorized hosts have been detected. Flood warning initiated...\033[0m"
 
@@ -616,9 +612,7 @@ def detect_router_advertisement_flood(ra_packet):
     if ra_packet[Ether].src != GATEWAY_MAC:
 
         print """\033[31m
-
         [RA] POSSIBLE MALICIOUS ROUTER ADVERTISEMENT DISCOVERED: 
-
         Layer 2 Source: %s
         Layer 3 Source: %s 
         Prefix: %s
@@ -630,19 +624,19 @@ def detect_router_advertisement_packet(ra_packet):
 
     global ra_counter
 
-    if ra_counter > 10 and ra_packet[Ether].src not in not in open('toucan_accept_list'):
+    if ra_counter > 10 and ra_packet[Ether].src not in open('toucan_accept_list.txt'):
 
         print "\033[31m[!]WARNING: Over 10 router advertisements from unauthorized hosts have been detected. Flood warning initiated...\033[0m"
 
         logging.warning('[!]WARNING: Over 10 router advertisements from unauthorized hosts have been detected. Flood warning initiated...')
 
-    if ra_counter > 200 and ra_packet[Ether].src not in not in open('toucan_accept_list'):
+    if ra_counter > 200 and ra_packet[Ether].src not in open('toucan_accept_list'):
 
         print "\033[31m[!]WARNING: Over 200 router advertisements from unauthorized hosts have been detected. Flood warning initiated...\033[0m"
 
         logging.warning('[!]WARNING: Over 200 router advertisements from unauthorized hosts have been detected. Flood warning initiated...')
 
-     if ra_counter > 500 and ra_packet[Ether].src not in not in open('toucan_accept_list'):
+    if ra_counter > 500 and ra_packet[Ether].src not in open('toucan_accept_list'):
 
         print "\033[31m[!]WARNING: Over 500 router advertisements from unauthorized hosts have been detected. Flood warning initiated...\033[0m"
 
@@ -676,23 +670,23 @@ def detect_router_solicitation(rs_packet):
 
     if rs_packet.haslayer(IPv6) and rs_packet.haslayer(ICMPv6ND_RS):
 
-      print "\033[37m[RS]Router solicitation discovered: %s\033[0m" % (ra_packet.summary())
+      print "\033[34m[RS]Router solicitation discovered: %s\033[0m" % (rs_packet.summary())
 
-      print '\033[37m[RS] Router solicitation discovered from %s with Layer 2 address: %s\033[0m' % (rs_packet[IPv6].src, rs_packet[Ether].src) 
+      print '\033[34m[RS] Router solicitation discovered from %s with Layer 2 address: %s\033[0m' % (rs_packet[IPv6].src, rs_packet[Ether].src) 
 
-      logging.info('Router advertisement from %s with Layer 2 address: %s' % (rs_packet[IPv6].src, rs_packet[Ether].src))
+      logging.info('Router solicitation from %s with Layer 2 address: %s' % (rs_packet[IPv6].src, rs_packet[Ether].src))
 
     if rs_packet[Ether].src in open('toucan_deny_list.txt').read():
 
-      print "Router solicitation discovered from unauthorized host at: %s" % (rs_packet[Ether].src)
+      print "\033[34m[!]Router solicitation discovered from unauthorized host at: %s" % (rs_packet[Ether].src)
 
       logging.info('Router solicitation discovered from unauthorized host at: %s' % (rs_packet[Ether].src))
 
     if rs_packet[Ether].src not in open('toucan_accept_list.txt').read():
 
-        print "Router solicitation discovered from unauthorized host (not in accept list) at: %s" % (rs_packet[Ether].src)
+      print "\033[34m[!]Router solicitation discovered from unauthorized host (not in accept list) at: %s" % (rs_packet[Ether].src)
 
-        logging.info('Router solicitation discovered from unauthorized host (not in accept list) at: %s' % (rs_packet[Ether].src))  
+      logging.info('Router solicitation discovered from unauthorized host (not in accept list) at: %s' % (rs_packet[Ether].src))  
 
 
 def detect_syn_scan(syn_packet):
@@ -921,7 +915,6 @@ ____________________________________________________________
 - 2. IPv6                                                  -
 ____________________________________________________________
 ____________________________________________________________
-
 \033[0m\n""")
 
 
@@ -989,12 +982,10 @@ ____________________________________________________________
         answer =raw_input("""\033[33m
         ____________________________________
         ____________________________________
-
          -           TOUCAN MENU           -
          Its' a menu... but not for toucans
         ____________________________________
         ____________________________________
-
         - [1] Scan for hosts to protect    -
         - [2] Start Monitoring (IPv4)      -
         - [3] Start Monitoring (IPv6)      -
@@ -1032,8 +1023,6 @@ ____________________________________________________________
                 Thread(target = sniff_na).start()           
 
                 Thread(target = sniff_ra).start() 
-
-                Thread(target = sniff_syn_scan).start()
 
                 Thread(target = sniff_router_sol).start()
 
@@ -1165,3 +1154,4 @@ ____________________________________________________________
           print("exiting...")
 
           sys.exit()
+
