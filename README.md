@@ -14,7 +14,6 @@ Toucan uses *accept groups* and *deny groups* to determine which hosts sending t
 
 # Toucan supports both python 2 and 3! 
 Use toucan.py for Python 2.7
-
 Use toucan3.py for Python 3.4
 
 *I try to keep them both updated equally, but the python 2 version will likely always be updated with new features before the python 3 version*
