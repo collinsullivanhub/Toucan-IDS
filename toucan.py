@@ -713,17 +713,25 @@ def detect_syn_scan(syn_packet):
 
         print "Possible SYN scan discovered from %s, host is probing SSH" % (syn_packet[IP].src)
 
+        print syn_packet.summary()
+
     if syn_packet.haslayer(TCP) and syn_packet[TCP].flags == "S" and syn_packet[TCP].dport == "23" or syn_packet[Ether].src in open('toucan_deny_list.txt').read():
 
         print "Possible SYN scan discovered from %s, host is probing Telnet" % (syn_packet[IP].src)
+
+        print syn_packet.summary()
 
     if syn_packet.haslayer(TCP) and syn_packet[TCP].flags == "S" and syn_packet[TCP].dport == "22" or syn_packet[Ether].src not in open('toucan_accept_list.txt').read():
 
         print "Possible SYN scan discovered from %s, host is probing SSH" % (syn_packet[IP].src)
 
+        print syn_packet.summary()
+
     if syn_packet.haslayer(TCP) and syn_packet[TCP].flags == "S" and syn_packet[TCP].dport == "23" or syn_packet[Ether].src not in open('toucan_accept_list.txt').read():
 
         print "Possible SYN scan discovered from %s, host is probing Telnet" % (syn_packet[IP].src)
+
+        print syn_packet.summary()
 
 
 def defensive_arps(GATEWAY_IP, GATEWAY_MAC, victim_L3, victim_MAC):
