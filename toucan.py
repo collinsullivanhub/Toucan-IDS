@@ -39,7 +39,7 @@
 Toucan was designed originally as a tool to help me learn, but as I did more research
 I quickly realized that there are few if no existing systems in place to help
 monitor for certain attacks, especially IPv6 attacks. On most networks today
-without proper hardware, such as a Cisco data center switches, that can be configured
+without proper hardware, such as Cisco data center switches, that can be configured
 to monitor for things like gratuitous ARPs, etc., attacks will go unnoticed.
 Toucan was written to help monitor networks that aren't being protected behind an
 expensive range of hardware that only large entrprise organizations may have and be
