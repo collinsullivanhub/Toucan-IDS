@@ -1,7 +1,7 @@
 #                                                           Toucan
 
 <p align="center">
-  <src="https://github.com/collinsullivanhub/Toucan/blob/master/toucanlogo2.png">
+  <img width="247" height="209" src="https://github.com/collinsullivanhub/Toucan/blob/master/toucanlogo2.png">
 </p>
 
 **"The world is a jungle in general, and the networking game contributes many animals" - RFC 826**
