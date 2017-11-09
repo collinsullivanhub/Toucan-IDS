@@ -1,6 +1,8 @@
 #                                                           Toucan
- ![alt text](https://github.com/collinsullivanhub/Toucan/blob/master/toucanlogo2.png "Toucan Network Defender")
 
+<p align="center">
+  <img width="460" height="300" src="https://github.com/collinsullivanhub/Toucan/blob/master/toucanlogo2.png">
+</p>
 
 **"The world is a jungle in general, and the networking game contributes many animals" - RFC 826**
  
