@@ -4,8 +4,8 @@
   <img width="247" height="209" src="https://github.com/collinsullivanhub/Toucan/blob/master/toucanlogo2.png">
 </p>
 
-→→
-→→
+<br/>
+<br/>
 
 **"The world is a jungle in general, and the networking game contributes many animals" - RFC 826**
  
