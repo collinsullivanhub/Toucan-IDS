@@ -320,6 +320,33 @@ def get_mac_address_v6(ip_address):
     GATEWAY_MAC = "%s" % r[Ether].src
 
 
+def detect_unauth_arp(unauthorized_arp_packet):
+
+    if unauthorized_arp_packet[ARP].hwsrc not in open('toucan_accept_list_arp.txt').read():
+
+      print "[!]Warning: Host not in ARP allowed group send an ARP packet"
+
+      print "Unauthorized ARP address: %s" % (unauthorized_arp_packet[Ether].src)
+
+
+def detect_unauth_na(unauthorized_na_packet):
+
+    if unauthorized_na_packet.haslayer(ICMPv6ND_NA) and unauthorized_na_packet[Ether].src not in open('toucan_accept_list_neighbadv.txt').read():
+
+      print "[!]Warning: Host not in Neighbor Advertisement allowed group send a NA packet"
+
+      print "Unauthorized NA address: %s" % (unauthorized_na_packet[Ether].src)
+
+
+def detect_unauth_ra(unauthorized_ra_packet):
+
+    if unauthorized_nr_packet.haslayer(ICMPv6ND_RA) and unauthorized_na_packet[Ether].src not in open('toucan_accept_list_routeradv.txt').read():
+
+      print "[!]Warning: Host not in Router Advertisement allowed group sent a Router Advertisement"
+
+      print "Unauthorized RA address: %s" % (unauthorized_ra_packet[Ether].src)
+
+
 def arp_network_range(iprange):
 
     logging.info('Sending ARPs to network range')
@@ -830,6 +857,20 @@ def scan_network_bssids(pkt) :
 
 #These all use prn to use the proper above function on trigger
 
+def detect_bad_arps():
+
+  sniff(iface="%s" % interface, prn = detect_unauth_arp)
+
+
+def detect_bad_na():
+
+  sniff(iface="%s" % interface, prn = detect_unauth_na)
+
+
+def detect_bad_ra():
+
+  sniff(iface="%s" % interface, prn = detect_unauth_ra)
+
 
 def sniff_arps():
 
@@ -950,8 +991,16 @@ ____________________________________________________________
     if input_one == "1" or "yes" or "Yes" or "Y" or "y":
         GATEWAY_MAC = get_mac_address(GATEWAY_IP)
 
-    elif input_one == "2" or "no" or "No" or "N" or "n":
+    if input_one == "2" or "no" or "No" or "N" or "n":
         GATEWAY_MAC = get_mac_address_v6(GATEWAY_IP)
+
+    elif answer !="":
+    
+        print("\033[35m[!]Not Valid Option...\033[0m") 
+
+        print("exiting...")
+
+        sys.exit()
 
     if input_two == "1":
 
@@ -961,8 +1010,7 @@ ____________________________________________________________
 
         os.system('sudo iwconfig %s mode monitor') % wifi_interface
 
-        os.system('sudo ifconfig %s up') % wifi_interface
-
+        os.system('sudo ifconfig %s up') % wifi_interfaces
 
     elif input_two == "2":
         print "Ok"
@@ -1043,6 +1091,12 @@ ____________________________________________________________
 
                 Thread(target = sniff_router_sol).start()
 
+                Thread(target = detect_bad_arps).start()
+
+                Thread(target = detect_bad_na).start()
+
+                Thread(target = detect_bad_ra).start()
+
 
             except KeyboardInterrupt:
 
@@ -1068,6 +1122,12 @@ ____________________________________________________________
                 Thread(target = sniff_syn_scan).start() 
 
                 Thread(target = sniff_router_sol).start()
+
+                Thread(target = detect_bad_arps).start()
+
+                Thread(target = detect_bad_na).start()
+
+                Thread(target = detect_bad_ra).start()
 
             except KeyboardInterrupt:
 
@@ -1171,7 +1231,7 @@ ____________________________________________________________
                       
                       break
                         
-          elif answer == "11":\
+        elif answer == "11":
 
                   while True:
 
@@ -1187,7 +1247,7 @@ ____________________________________________________________
                       
                       break
                         
-           elif answer == "12":\
+        elif answer == "12":
 
                   while True:
 
