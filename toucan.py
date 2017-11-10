@@ -340,7 +340,7 @@ def detect_unauth_na(unauthorized_na_packet):
 
 def detect_unauth_ra(unauthorized_ra_packet):
 
-    if unauthorized_nr_packet.haslayer(ICMPv6ND_RA) and unauthorized_na_packet[Ether].src not in open('toucan_accept_list_routeradv.txt').read():
+    if unauthorized_ra_packet.haslayer(ICMPv6ND_RA) and unauthorized_ra_packet[Ether].src not in open('toucan_accept_list_routeradv.txt').read():
 
       print "[!]Warning: Host not in Router Advertisement allowed group sent a Router Advertisement"
 
@@ -620,7 +620,7 @@ def detect_router_advertisement_flood(ra_packet_flood):
 
         logging.info('Router advertisement from %s with Layer 2 address: %s' % (ra_packet_flood[IPv6].src, ra_packet_flood[Ether].src))
 
-    if ra_packet_flood[Ether].src in open('toucan_deny_list.txt').read():
+    if ra_packet_flood.haslayer(IPv6) and ra_packet_flood[Ether].src in open('toucan_deny_list.txt').read():
 
         print "Router advertisement discovered from unauthorized host at: %s" % (neighbor_sol_packet[Ether].src)
 
@@ -628,7 +628,7 @@ def detect_router_advertisement_flood(ra_packet_flood):
 
         increment_counter()
 
-    if ra_packet_flood[Ether].src not in open('toucan_accept_list.txt').read():
+    if ra_packet_flood.haslayer(IPv6) and ra_packet_flood[Ether].src not in open('toucan_accept_list.txt').read():
 
         print "Router advertisement discovered from unauthorized host at: %s" % (neighbor_sol_packet[Ether].src)
 
@@ -679,7 +679,7 @@ def detect_router_advertisement_packet(ra_packet):
 
         logging.info('Router advertisement from %s with Layer 2 address: %s' % (ra_packet[IPv6].src, ra_packet[Ether].src))  
 
-    if ra_packet[Ether].src in open('toucan_deny_list.txt').read():
+    if ra_packet.haslayer(IPv6) and ra_packet[Ether].src in open('toucan_deny_list.txt').read():
 
         print "Router advertisement discovered from unauthorized host at: %s" % (ra_packet[Ether].src)
 
@@ -687,7 +687,7 @@ def detect_router_advertisement_packet(ra_packet):
 
         increment_counter()
 
-    if ra_packet[Ether].src not in open('toucan_accept_list.txt').read():
+    if ra_packet.haslayer(IPv6) and ra_packet[Ether].src not in open('toucan_accept_list.txt').read():
 
         print "Router advertisement discovered from unauthorized host (not in accept list) at: %s" % (ra_packet[Ether].src)
 
@@ -853,13 +853,13 @@ def scan_network_bssids(pkt) :
                 print "\033[33mAP MAC:\033[0m\033[31m %s \033[0m\033[33mBSSID:\033[31m %s " %(pkt.addr2, pkt.info)
 
                 
-#Multithreading
+#For Multithreading
 
 #These all use prn to use the proper above function on trigger
 
 def detect_bad_arps():
 
-  sniff(iface="%s" % interface, prn = detect_unauth_arp)
+  sniff(iface="%s" % interface, prn = detect_unauth_arp, count = 0)
 
 
 def detect_bad_na():
@@ -874,7 +874,7 @@ def detect_bad_ra():
 
 def sniff_arps():
 
-  sniff(filter = "arp", prn = arp_display)
+  sniff(iface = "%s" % interface, prn = arp_display, count = 0)
 
 
 def sniff_networks():
