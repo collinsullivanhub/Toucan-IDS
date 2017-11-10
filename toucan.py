@@ -371,13 +371,11 @@ def arp_display(packet):
 
         logging.info('ARP Request discovered from unauthorized host at: %s , %s' % (packet[ARP].psrc, packet[Ether].src))
 
-
     if packet[ARP].op == 1 and '%s' % (packet[Ether].src) not in open('toucan_accept_list.txt').read():
 
         print "ARP Request discovered from unauthorized host (not in accept list) at: %s , %s" % (packet[ARP].psrc, packet[Ether].src)
 
         logging.info('ARP Request discovered from unauthorized host at: %s , %s' % (packet[ARP].psrc, packet[Ether].src))
-
 
     if packet[ARP].op == 1: 
 
@@ -421,13 +419,11 @@ def arp_display(packet):
 
         logging.info('ARP Reply discovered from unauthorized host at: %s , %s' % (packet[ARP].psrc, packet[ARP.pdst]))
 
-
     if packet[ARP].op == 2 and '%s' % (packet[Ether].src) not in open('toucan_accept_list.txt').read():
 
         print "ARP Response discovered from unauthorized host (not in accept list) at: %s , %s" % (packet[ARP].psrc, packet[Ether].src)
 
         logging.info('ARP Response discovered from unauthorized host at: %s , %s' % (packet[ARP].psrc, packet[Ether].src))
-
 
     if packet[ARP].op == 2 and packet[ARP].psrc == GATEWAY_IP and packet[Ether].src != GATEWAY_MAC:
 
@@ -636,20 +632,17 @@ def detect_router_advertisement_packet(ra_packet):
 
         logging.warning('[!]WARNING: Over 10 router advertisements from unauthorized hosts have been detected. Flood warning initiated...')
 
-
     if ra_counter > 200 and ra_packet[Ether].src not in open('toucan_accept_list.txt'):
 
         print "\033[31m[!]WARNING: Over 200 router advertisements from unauthorized hosts have been detected. Flood warning initiated...\033[0m"
 
         logging.warning('[!]WARNING: Over 200 router advertisements from unauthorized hosts have been detected. Flood warning initiated...')
 
-
     if ra_counter > 500 and ra_packet[Ether].src not in open('toucan_accept_list.txt'):
 
         print "\033[31m[!]WARNING: Over 500 router advertisements from unauthorized hosts have been detected. Flood warning initiated...\033[0m"
 
         logging.warning('[!]WARNING: Over 500 router advertisements from unauthorized hosts have been detected. Flood warning initiated...')
-
 
     if ra_packet.haslayer(IPv6) and ra_packet.haslayer(ICMPv6ND_RA):
 
@@ -658,7 +651,6 @@ def detect_router_advertisement_packet(ra_packet):
         print '\033[33m[RA] Router advertisement discovered from %s with Layer 2 address: %s\033[0m' % (ra_packet[IPv6].src, ra_packet[Ether].src) 
 
         logging.info('Router advertisement from %s with Layer 2 address: %s' % (ra_packet[IPv6].src, ra_packet[Ether].src))  
-
 
     if ra_packet[Ether].src in open('toucan_deny_list.txt').read():
 
@@ -705,7 +697,7 @@ def detect_syn_scan(syn_packet):
     if syn_packet.haslayer(TCP) and syn_packet[TCP].flags == "S":
 
         print "________________________________________________"
-
+        print"\n"
         print "------------------------------------------------"
         print "Syn discovered"
         print "------------------------------------------------"
@@ -827,16 +819,16 @@ def defensive_deauth(GATEWAY_MAC, Attacker_Deauth_Layer2):
 def scan_network_bssids(pkt) :
 
   ap_list = []
-
   if pkt.haslayer(Dot11) :
         if pkt.type == 0 and pkt.subtype == 8 :
             if pkt.addr2 not in ap_list :
                 ap_list.append(pkt.addr2)
                 print "\033[33mAP MAC:\033[0m\033[31m %s \033[0m\033[33mBSSID:\033[31m %s " %(pkt.addr2, pkt.info)
 
+                
 #Multithreading
 
-#These are all functions that sniff for a certain packet and then use prn to use the proper above function on trigger
+#These all use prn to use the proper above function on trigger
 
 
 def sniff_arps():
@@ -899,8 +891,6 @@ if __name__ == '__main__':
     l3_deny_list = []
 
     ra_counter = 0
-
-    arp_display.counter = 0
 
     attacker_L2 = ''    
 
