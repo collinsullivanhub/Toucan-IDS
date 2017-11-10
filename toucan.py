@@ -68,13 +68,13 @@ import time
 import pyshark
 from twilio.rest import Client
 
+#//////////////////////////////////////////////////
 # Your Account SID from twilio.com/console
 account_sid = "x"
 # Your Auth Token from twilio.com/console
 auth_token  = "y"
-
 client = Client(account_sid, auth_token)
-
+#/////////////////////////////////////////////////
 
 logging.basicConfig(filename='toucan.log',level=logging.DEBUG)
 
@@ -1009,7 +1009,10 @@ ____________________________________________________________
         - [7] Monitor for networks         -   
         - [8] Create Deny List             -      
         - [9] Create Accept List           -
-        - [10] Exit                        -
+        - [10] Create ARP List             -
+        - [11] Create NA List              -
+        - [12] Create RA List              -
+        - [13] Exit                        -
         ____________________________________
         ____________________________________
         
@@ -1151,8 +1154,57 @@ ____________________________________________________________
                       
                       break
 
+                        
+        elif answer == "10":\
 
-        elif answer =="10":
+                  while True:
+
+                    l2_accept_list = raw_input("Enter all L2 Addresses you want to allow: ")
+
+                    fd = open("toucan_accept_list_arp.txt","a")
+
+                    fd.write(l2_accept_list+ "\n")
+
+                    logging.info("Populating accept list...")
+
+                    if l2_accept_list == "exit":
+                      
+                      break
+                        
+          elif answer == "11":\
+
+                  while True:
+
+                    l2_accept_list = raw_input("Enter all L2 Addresses you want to allow: ")
+
+                    fd = open("toucan_accept_list_neighbadv.txt","a")
+
+                    fd.write(l2_accept_list+ "\n")
+
+                    logging.info("Populating accept list...")
+
+                    if l2_accept_list == "exit":
+                      
+                      break
+                        
+           elif answer == "12":\
+
+                  while True:
+
+                    l2_accept_list = raw_input("Enter all L2 Addresses you want to allow: ")
+
+                    fd = open("toucan_accept_list_routeradv.txt","a")
+
+                    fd.write(l2_accept_list+ "\n")
+
+                    logging.info("Populating accept list...")
+
+                    if l2_accept_list == "exit":
+                      
+                      break
+                        
+
+        elif answer =="13":
 
           print("\n\033[35m Exiting...\033[0m") 
 
