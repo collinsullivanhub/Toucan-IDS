@@ -178,7 +178,7 @@ print date_current
 
 def print_toucan_1():
 
-    print"""\033[31m                                                                                                                                                  
+    print"""\033[32m                                                                                                                                                  
                                                                                                                                                                                                         
                                                                                                                                                                                                         
                                                                          ````````````                                                                                                                   
@@ -235,7 +235,7 @@ def print_toucan_1():
 
 def print_toucan_2():
 
-    print"""\33[31m
+    print"""\33[32m
                                                                                                                                                                                                         
                                                                                                                                                                                                         
                                                                                                                                                                                                         
@@ -852,7 +852,7 @@ def defensive_deauth(GATEWAY_MAC, Attacker_Deauth_Layer2):
   
   bssid = GATEWAY_MAC 
 
-  count = 77
+  count = 20
 
   conf.verb = 0 
 
@@ -864,7 +864,7 @@ def defensive_deauth(GATEWAY_MAC, Attacker_Deauth_Layer2):
 
     sendp(packet)
 
-    print '\033[32mRemoving malicious host at with Layer 2 address:' + Attacker_Deauth_Layer2 + 'off of network.\033[0m'
+    print '\033[32mRemoving malicious host at with Layer 2 address:' + Attacker_Deauth_Layer2 + ' off of network.\033[0m'
 
 def scan_network_bssids(pkt) :
 
@@ -1167,7 +1167,7 @@ ____________________________________________________________
 
             print "Sending Deauthentication Packets to %s " % (Attacker_Deauth_Layer2)
     
-            defensive_deauth()
+            defensive_deauth(GATEWAY_MAC, Attacker_Deauth_Layer2)
 
 
         elif answer == "5":
