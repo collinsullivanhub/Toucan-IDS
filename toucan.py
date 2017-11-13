@@ -364,6 +364,8 @@ def detect_unauth_ra(unauthorized_ra_packet):
       print "[!]Warning: Host not in Router Advertisement allowed group sent a Router Advertisement"
 
       print "Unauthorized RA address: %s" % (unauthorized_ra_packet[Ether].src)
+        
+      increment_counter()
 
 
 def arp_network_range(iprange):
