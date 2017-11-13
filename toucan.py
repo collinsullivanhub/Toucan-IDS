@@ -543,19 +543,19 @@ def na_packet_discovery_v6(neighbor_adv_packet):
 
     print '\033[31m[!]WARNING: IPv6 GATEWAY IMPERSONATION DETECTED. POSSIBLE MITM ATTACK FROM: %s (L2): %s\033[0m' % (neighbor_adv_packet[IPv6].src, neighbor_adv_packet[Ether].src)
 
-  if neighbor_adv_packet[ICMPv6NDOptDstLLAddr].lladdr in open('toucan_deny_list.txt').read():
+  if neighbor_adv_packet.haslayer(ICMPv6ND_NA) and neighbor_adv_packet[ICMPv6NDOptDstLLAddr].lladdr in open('toucan_deny_list.txt').read():
 
     print "Neighbor Advertisement disovereed from host on monitor list: %s " % (["ICMPv6NDOptDstLLAddr"].lladdr)
 
     logging.info('ARP Request discovered from unauthorized host at: %s ' % (["ICMPv6NDOptDstLLAddr"].lladdr))
 
-  if neighbor_adv_packet[Ether].src in open('toucan_deny_list.txt').read():
+  if neighbor_adv_packet.haslayer(ICMPv6ND_NA) and neighbor_adv_packet[Ether].src in open('toucan_deny_list.txt').read():
 
     print "Neighbor advertisement discovered from unauthorized host at: %s" % (neighbor_adv_packet[Ether].src)
 
     logging.info('Neighbor advertisement discovered from unauthorized host at: %s' % (neighbor_adv_packet[Ether].src))
 
-  if neighbor_adv_packet[Ether].src not in open('toucan_accept_list.txt').read():
+  if neighbor_adv_packet.haslayer(ICMPv6ND_NA) and neighbor_adv_packet[Ether].src not in open('toucan_accept_list.txt').read():
 
     print "Neighbor advertisement discovered from unauthorized host at: %s" % (neighbor_adv_packet[Ether].src)
 
@@ -574,13 +574,13 @@ def ns_packet_discovery(neighbor_sol_packet):
 
     logging.info('Neighbor solicitation source: %s, destination: %s' % (neighbor_sol_packet[IPv6].src, neighbor_sol_packet[IPv6].dst))
 
-  if neighbor_sol_packet[Ether].src in open('toucan_deny_list.txt').read():
+  if neighbor_sol_packet.haslayer(ICMPv6ND_NS) and neighbor_sol_packet[Ether].src in open('toucan_deny_list.txt').read():
 
     print "Neighbor solicitation discovered from unauthorized host at: %s" % (neighbor_sol_packet[Ether].src)
 
     logging.info('Neighbor solicitation discovered from unauthorized host at: %s' % (neighbor_sol_packet[Ether].src))
 
-  if neighbor_sol_packet[Ether].src not in open('toucan_accept_list.txt').read():
+  if neighbor_sol_packet.haslayer(ICMPv6ND_NS) and neighbor_sol_packet[Ether].src not in open('toucan_accept_list.txt').read():
 
     print "Neighbor solicitation discovered from unauthorized host at: %s" % (neighbor_sol_packet[Ether].src)
 
@@ -643,7 +643,7 @@ def detect_router_advertisement_flood(ra_packet_flood):
 
         logging.info('Router advertisement from %s with Layer 2 address: %s' % (ra_packet_flood[IPv6].src, ra_packet_flood[Ether].src))
 
-    if ra_packet_flood.haslayer(IPv6) and ra_packet_flood[Ether].src in open('toucan_deny_list.txt').read():
+    if ra_packet_flood.haslayer(ICMPv6ND_RA) and ra_packet_flood[Ether].src in open('toucan_deny_list.txt').read():
 
         print "Router advertisement discovered from unauthorized host at: %s" % (neighbor_sol_packet[Ether].src)
 
@@ -651,7 +651,7 @@ def detect_router_advertisement_flood(ra_packet_flood):
 
         increment_counter()
 
-    if ra_packet_flood.haslayer(IPv6) and ra_packet_flood[Ether].src not in open('toucan_accept_list.txt').read():
+    if ra_packet_flood.haslayer(ICMPv6ND_RA) and ra_packet_flood[Ether].src not in open('toucan_accept_list.txt').read():
 
         print "Router advertisement discovered from unauthorized host at: %s" % (neighbor_sol_packet[Ether].src)
 
@@ -702,7 +702,7 @@ def detect_router_advertisement_packet(ra_packet):
 
         logging.info('Router advertisement from %s with Layer 2 address: %s' % (ra_packet[IPv6].src, ra_packet[Ether].src))  
 
-    if ra_packet.haslayer(IPv6) and ra_packet[Ether].src in open('toucan_deny_list.txt').read():
+    if ra_packet.haslayer(ICMPv6ND_RA) and ra_packet[Ether].src in open('toucan_deny_list.txt').read():
 
         print "Router advertisement discovered from unauthorized host at: %s" % (ra_packet[Ether].src)
 
@@ -710,7 +710,7 @@ def detect_router_advertisement_packet(ra_packet):
 
         increment_counter()
 
-    if ra_packet.haslayer(IPv6) and ra_packet[Ether].src not in open('toucan_accept_list.txt').read():
+    if ra_packet.haslayer(ICMPv6ND_RA) and ra_packet[Ether].src not in open('toucan_accept_list.txt').read():
 
         print "Router advertisement discovered from unauthorized host (not in accept list) at: %s" % (ra_packet[Ether].src)
 
@@ -729,13 +729,13 @@ def detect_router_solicitation(rs_packet):
 
       logging.info('Router solicitation from %s with Layer 2 address: %s' % (rs_packet[IPv6].src, rs_packet[Ether].src))
 
-    if rs_packet[Ether].src in open('toucan_deny_list.txt').read():
+    if rs_packet.haslayer(ICMPv6ND_RS) and rs_packet[Ether].src in open('toucan_deny_list.txt').read():
 
       print "\033[34m[!]Router solicitation discovered from unauthorized host at: %s" % (rs_packet[Ether].src)
 
       logging.info('Router solicitation discovered from unauthorized host at: %s' % (rs_packet[Ether].src))
 
-    if rs_packet[Ether].src not in open('toucan_accept_list.txt').read():
+    if rs_packet.haslayer(ICMPv6ND_RS) and rs_packet[Ether].src not in open('toucan_accept_list.txt').read():
 
       print "\033[34m[!]Router solicitation discovered from unauthorized host (not in accept list) at: %s" % (rs_packet[Ether].src)
 
