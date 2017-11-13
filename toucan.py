@@ -364,8 +364,6 @@ def detect_unauth_ra(unauthorized_ra_packet):
       print "[!]Warning: Host not in Router Advertisement allowed group sent a Router Advertisement"
 
       print "Unauthorized RA address: %s" % (unauthorized_ra_packet[Ether].src)
-        
-      increment_counter()
 
 
 def arp_network_range(iprange):
@@ -848,9 +846,9 @@ def increment_counter():
   ra_counter += 1
 
 
-def defensive_deauth(GATEWAY_MAC, Attacker_Deauth_Layer2):
+def defensive_deauth(GATEWAY_MAC, Attacker_Deauth_Layer2, interface_for_deauth):
 
-  conf.iface = interface
+  conf.iface = interface_for_deauth
   
   bssid = GATEWAY_MAC 
 
@@ -866,7 +864,7 @@ def defensive_deauth(GATEWAY_MAC, Attacker_Deauth_Layer2):
 
     sendp(packet)
 
-    print '\033[32mRemoving malicious host at with Layer 2 address:' + Attacker_Deauth_Layer2 + ' off of network.\033[0m'
+    print '\033[36mRemoving malicious host at with Layer 2 address: ' + Attacker_Deauth_Layer2 + ' off of network.\033[0m'
 
 def scan_network_bssids(pkt) :
 
@@ -1161,6 +1159,8 @@ ____________________________________________________________
     
         elif answer =="4":
 
+            interface_for_deauth = raw_input("Enter your interface to send deauth on: ")
+
             GATEWAY_MAC = raw_input("Enter L2 of Dfeault Gateway: ")
 
             DeauthAttacker = raw_input("Please enter attacker's layer 3 address: ")
@@ -1169,7 +1169,7 @@ ____________________________________________________________
 
             print "Sending Deauthentication Packets to %s " % (Attacker_Deauth_Layer2)
     
-            defensive_deauth(GATEWAY_MAC, Attacker_Deauth_Layer2)
+            defensive_deauth(GATEWAY_MAC, Attacker_Deauth_Layer2, interface_for_deauth)
 
 
         elif answer == "5":
