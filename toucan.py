@@ -168,7 +168,8 @@ logging.info('%s' % date_current)
 print colors.Yellow + """
 Toucan is an Intrusion Detection System. Capabilities include scanning and defending hosts on a network by actively 
 monitoring traffic for different types of known attacks by maleficent users. This program is not to be used on an
-unauthorized network and the creator is not responsible for any damage done. Using this programmeans you understand and agree to these conditions.
+unauthorized network and the creator is not responsible for any damage done. Using this program means you understand 
+and agree to these conditions.
 \n""" + colors.ENDC
 
 print time_current
