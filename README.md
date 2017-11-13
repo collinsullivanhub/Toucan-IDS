@@ -30,6 +30,8 @@ Use toucan3.py for Python 3.4
 - enter Default Gateway (200.20.0.1)
 - enter network to monitor with netmask in format /X (200.20.0.0/24)
 - enter network interface (wlp2s0/enp5s0/etc) (if you do not know this do an 'ifconfig' on linux)
+- Populate the accept, deny, and traffic group lists (.txt files) with the layer 2 addresses of your choice
+- Run the sniffer
 
 # Video Demo:
 https://www.youtube.com/watch?v=EawJJs5iS8A
