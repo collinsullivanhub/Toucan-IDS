@@ -341,29 +341,31 @@ def get_mac_address_v6(ip_address):
 
 def detect_unauth_arp(unauthorized_arp_packet):
 
-    if unauthorized_arp_packet[ARP].hwsrc not in open('toucan_accept_list_arp.txt').read():
+    if unauthorized_arp_packet.haslayer(ARP) and unauthorized_arp_packet[Ether].src not in open('toucan_accept_list_arp.txt').read():
 
-      print "[!]Warning: Host not in ARP allowed group send an ARP packet"
+      print time.strftime("%I:%M:%S") + " " + "[!]Warning: Host not in ARP allowed group send an ARP packet"
 
-      print "Unauthorized ARP address: %s" % (unauthorized_arp_packet[Ether].src)
+      print time.strftime("%I:%M:%S") + " " + "Unauthorized ARP address: %s" % (unauthorized_arp_packet[Ether].src)
 
 
 def detect_unauth_na(unauthorized_na_packet):
 
     if unauthorized_na_packet.haslayer(ICMPv6ND_NA) and unauthorized_na_packet[Ether].src not in open('toucan_accept_list_neighbadv.txt').read():
 
-      print "[!]Warning: Host not in Neighbor Advertisement allowed group send a NA packet"
+      print time.strftime("%I:%M:%S") + " " + "[!]Warning: Host not in Neighbor Advertisement allowed group send a NA packet"
 
-      print "Unauthorized NA address: %s" % (unauthorized_na_packet[Ether].src)
+      print time.strftime("%I:%M:%S") + " " + "Unauthorized NA address: %s" % (unauthorized_na_packet[Ether].src)
 
 
 def detect_unauth_ra(unauthorized_ra_packet):
 
     if unauthorized_ra_packet.haslayer(ICMPv6ND_RA) and unauthorized_ra_packet[Ether].src not in open('toucan_accept_list_routeradv.txt').read():
 
-      print "[!]Warning: Host not in Router Advertisement allowed group sent a Router Advertisement"
+      print time.strftime("%I:%M:%S") + " " + "[!]Warning: Host not in Router Advertisement allowed group sent a Router Advertisement"
 
-      print "Unauthorized RA address: %s" % (unauthorized_ra_packet[Ether].src)
+      print time.strftime("%I:%M:%S") + " " + "Unauthorized RA address: %s" % (unauthorized_ra_packet[Ether].src)
+        
+      increment_counter()
 
 
 def arp_network_range(iprange):
@@ -415,15 +417,15 @@ def arp_display(packet):
     global victim_L3
     global victim_MAC
 
-    if packet[ARP].op == 1 and '%s' % (packet[Ether].src) in open('toucan_deny_list.txt').read():
+    if packet.haslayer(ARP) and '%s' % (packet[Ether].src) in open('toucan_deny_list.txt').read():
 
-        print "ARP Request discovered from unauthorized host at: %s , %s" % (packet[ARP].psrc, packet[Ether].src)
+        print time.strftime("%I:%M:%S") + " " + "ARP Request discovered from unauthorized host at: %s , %s" % (packet[ARP].psrc, packet[Ether].src)
 
         logging.info('ARP Request discovered from unauthorized host at: %s , %s' % (packet[ARP].psrc, packet[Ether].src))
 
-    if packet[ARP].op == 1 and '%s' % (packet[Ether].src) not in open('toucan_accept_list.txt').read():
+    if packet.haslayer(ARP) and '%s' % (packet[Ether].src) not in open('toucan_accept_list.txt').read():
 
-        print "ARP Request discovered from unauthorized host (not in accept list) at: %s , %s" % (packet[ARP].psrc, packet[Ether].src)
+        print time.strftime("%I:%M:%S") + " " + "ARP Request discovered from unauthorized host (not in accept list) at: %s , %s" % (packet[ARP].psrc, packet[Ether].src)
 
         logging.info('ARP Request discovered from unauthorized host at: %s , %s' % (packet[ARP].psrc, packet[Ether].src))
 
@@ -431,7 +433,7 @@ def arp_display(packet):
 
         logging.info('[1] ARP Request- %s is asking for L2 of %s' % (packet[ARP].psrc, packet[ARP].pdst))
 
-        print "\033[31m[1] ARP Request Ethernet Info: [Source] = %s + [Destination] = %s\033[0m" % (packet[Ether].src, packet[Ether].dst)
+        print time.strftime("%I:%M:%S") + " " + "\033[31m[1] ARP Request Ethernet Info: [Source] = %s + [Destination] = %s\033[0m" % (packet[Ether].src, packet[Ether].dst)
 
         return '\033[31m[1] ARP Request- %s is asking for L2 of %s\033[0m' % (packet[ARP].psrc, packet[ARP].pdst)
 
@@ -447,7 +449,7 @@ def arp_display(packet):
 
     if packet[ARP].op == 1 and packet[ARP].psrc == GATEWAY_IP and packet[ARP].hwsrc != GATEWAY_MAC:
 
-        print "\033[31m[!]WARNING: GATEWAY IMPERSONTATION DETECTED. POSSIBLE MITM ATTACK FROM %s\033[31m" % (packet[ARP].hwsrc)
+        print time.strftime("%I:%M:%S") + " " + "\033[31m[!]WARNING: GATEWAY IMPERSONTATION DETECTED. POSSIBLE MITM ATTACK FROM %s\033[31m" % (packet[ARP].hwsrc)
 
         attacker_L2 = packet[ARP].hwsrc
 
@@ -459,25 +461,25 @@ def arp_display(packet):
 
         logging.info('[2] ARP Response- %s has layer 2 address: %s' % (packet[ARP].psrc, packet[ARP].hwsrc))
 
-        print "\033[33m[2] Reponse Ethernet Info: [Source] = %s + [Destination] = %s\033[0m" % (packet[Ether].src, packet[Ether].dst)
+        print time.strftime("%I:%M:%S") + " " + "\033[33m[2] Reponse Ethernet Info: [Source] = %s + [Destination] = %s\033[0m" % (packet[Ether].src, packet[Ether].dst)
 
         return '\033[33m[2] ARP Response- %s has layer 2 address: %s\033[0m' % (packet[ARP].psrc, packet[ARP].hwsrc)
 
     if packet[ARP].op == 2 and '%s' % (packet[Ether].src) in open('toucan_deny_list.txt').read():
 
-        print "ARP Reply discovered from unauthorized host at: %s , %s" % (packet[ARP].psrc, packet[ARP.pdst])
+        print time.strftime("%I:%M:%S") + " " + "ARP Reply discovered from unauthorized host at: %s , %s" % (packet[ARP].psrc, packet[ARP.pdst])
 
         logging.info('ARP Reply discovered from unauthorized host at: %s , %s' % (packet[ARP].psrc, packet[ARP.pdst]))
 
     if packet[ARP].op == 2 and '%s' % (packet[Ether].src) not in open('toucan_accept_list.txt').read():
 
-        print "ARP Response discovered from unauthorized host (not in accept list) at: %s , %s" % (packet[ARP].psrc, packet[Ether].src)
+        print time.strftime("%I:%M:%S") + " " + "ARP Response discovered from unauthorized host (not in accept list) at: %s , %s" % (packet[ARP].psrc, packet[Ether].src)
 
         logging.info('ARP Response discovered from unauthorized host at: %s , %s' % (packet[ARP].psrc, packet[Ether].src))
 
     if packet[ARP].op == 2 and packet[ARP].psrc == GATEWAY_IP and packet[Ether].src != GATEWAY_MAC:
 
-        print "\033[31m[!]WARNING: GATEWAY IMPERSONTATION DETECTED. POSSIBLE MITM ATTACK FROM %s\033[31m" % (packet[ARP].hwsrc)
+        print time.strftime("%I:%M:%S") + " " + "\033[31m[!]WARNING: GATEWAY IMPERSONTATION DETECTED. POSSIBLE MITM ATTACK FROM %s\033[31m" % (packet[ARP].hwsrc)
 
         os.system("espeak 'WARNING GATEWAY IMPERSONATION DETECTED from %s'" % (packet[ARP].hwsrc)) 
 
@@ -489,7 +491,7 @@ def arp_display(packet):
 
     if packet[ARP].op == 2 and packet[ARP].psrc == GATEWAY_IP and packet[ARP].hwsrc != GATEWAY_MAC:
 
-        print "\033[31m[!]WARNING: GATEWAY IMPERSONTATION DETECTED. POSSIBLE MITM ATTACK FROM %s\033[31m" % (packet[ARP].hwsrc)
+        print time.strftime("%I:%M:%S") + " " + "\033[31m[!]WARNING: GATEWAY IMPERSONTATION DETECTED. POSSIBLE MITM ATTACK FROM %s\033[31m" % (packet[ARP].hwsrc)
 
         attacker_L2 = packet[ARP].hwsrc
 
@@ -502,23 +504,23 @@ def na_packet_discovery(neighbor_adv_packet):
 
   if neighbor_adv_packet.haslayer(IPv6) and neighbor_adv_packet.haslayer(ICMPv6ND_NA):
 
-    print "[NA] Neighbor advertisement discovered: %s" % (neighbor_adv_packet.summary())
+    print time.strftime("%I:%M:%S") + " " + "[NA] Neighbor advertisement discovered: %s" % (neighbor_adv_packet.summary())
 
-    print "[NA-Ether] Neighbor advertisement layer 2 information: Source- %s, Destination- %s" % (neighbor_adv_packet[Ether].src, neighbor_adv_packet[Ether].dst)
+    print time.strftime("%I:%M:%S") + " " + "[NA-Ether] Neighbor advertisement layer 2 information: Source- %s, Destination- %s" % (neighbor_adv_packet[Ether].src, neighbor_adv_packet[Ether].dst)
 
-    print '[NA] Neighbor advertisement layer 3 information: Source- %s, Destination- %s ' % (neighbor_adv_packet[IPv6].src, neighbor_adv_packet[IPv6].dst)  
+    print time.strftime("%I:%M:%S") + " " + '[NA] Neighbor advertisement layer 3 information: Source- %s, Destination- %s ' % (neighbor_adv_packet[IPv6].src, neighbor_adv_packet[IPv6].dst)  
 
     logging.info('Neighbor advertisement source: %s, destination: %s' % (neighbor_adv_packet[IPv6].src, neighbor_adv_packet[IPv6].dst))
 
   if neighbor_adv_packet[Ether].src in open('toucan_deny_list.txt').read():
 
-      print "Neighbor advertisement discovered from unauthorized host at: %s" % (neighbor_adv_packet[Ether].src)
+      print time.strftime("%I:%M:%S") + " " + "Neighbor advertisement discovered from unauthorized host at: %s" % (neighbor_adv_packet[Ether].src)
 
       logging.info('Neighbor advertisement discovered from unauthorized host at: %s' % (neighbor_adv_packet[Ether].src))
 
   if neighbor_adv_packet[Ether].src not in open('toucan_accept_list.txt').read():
 
-      print "Neighbor advertisement discovered from unauthorized host at: %s" % (neighbor_adv_packet[Ether].src)
+      print time.strftime("%I:%M:%S") + " " + "Neighbor advertisement discovered from unauthorized host at: %s" % (neighbor_adv_packet[Ether].src)
 
       logging.info('Neighbor advertisement discovered from unauthorized host at: %s' % (neighbor_adv_packet[Ether].src))
 
@@ -527,37 +529,37 @@ def na_packet_discovery_v6(neighbor_adv_packet):
 
   if neighbor_adv_packet.haslayer(IPv6) and neighbor_adv_packet.haslayer(ICMPv6ND_NA):
 
-    print "[NA] Neighbor advertisement discovered: %s" % (neighbor_adv_packet.summary())
+    print time.strftime("%I:%M:%S") + " " + "[NA] Neighbor advertisement discovered: %s" % (neighbor_adv_packet.summary())
 
-    print "[NA-Ether] Neighbor advertisement layer 2 information: Source- %s, Destination- %s" % (neighbor_adv_packet[Ether].src, neighbor_adv_packet[Ether].dst)
+    print time.strftime("%I:%M:%S") + " " + "[NA-Ether] Neighbor advertisement layer 2 information: Source- %s, Destination- %s" % (neighbor_adv_packet[Ether].src, neighbor_adv_packet[Ether].dst)
 
-    print '[NA] Neighbor advertisement layer 3 information: Source- %s, Destination- %s ' % (neighbor_adv_packet[IPv6].src, neighbor_adv_packet[IPv6].dst)  
+    print time.strftime("%I:%M:%S") + " " + '[NA] Neighbor advertisement layer 3 information: Source- %s, Destination- %s ' % (neighbor_adv_packet[IPv6].src, neighbor_adv_packet[IPv6].dst)  
 
     logging.info('Neighbor advertisement source: %s, destination: %s' % (neighbor_adv_packet[IPv6].src, neighbor_adv_packet[IPv6].dst))
 
   if neighbor_adv_packet[IPv6].src == GATEWAY_IP and neighbor_adv_packet["ICMPv6NDOptDstLLAddr"].lladdr != GATEWAY_MAC:
 
-    print '\033[31m[!]WARNING: IPv6 GATEWAY IMPERSONATION DETECTED. POSSIBLE MITM ATTACK FROM: %s (L2): %s\033[0m' % (neighbor_adv_packet[IPv6].src, neighbor_adv_packet[Ether].src)
+    print time.strftime("%I:%M:%S") + " " + '\033[31m[!]WARNING: IPv6 GATEWAY IMPERSONATION DETECTED. POSSIBLE MITM ATTACK FROM: %s (L2): %s\033[0m' % (neighbor_adv_packet[IPv6].src, neighbor_adv_packet[Ether].src)
 
   if neighbor_adv_packet[IPv6].src == host_ip_address in ip_collection and neighbor_adv_packet["ICMPv6NDOptDstLLAddr"].lladdr != host_eth_address in eth_collection:
 
-    print '\033[31m[!]WARNING: IPv6 GATEWAY IMPERSONATION DETECTED. POSSIBLE MITM ATTACK FROM: %s (L2): %s\033[0m' % (neighbor_adv_packet[IPv6].src, neighbor_adv_packet[Ether].src)
+    print time.strftime("%I:%M:%S") + " " + '\033[31m[!]WARNING: IPv6 GATEWAY IMPERSONATION DETECTED. POSSIBLE MITM ATTACK FROM: %s (L2): %s\033[0m' % (neighbor_adv_packet[IPv6].src, neighbor_adv_packet[Ether].src)
 
   if neighbor_adv_packet.haslayer(ICMPv6ND_NA) and neighbor_adv_packet[ICMPv6NDOptDstLLAddr].lladdr in open('toucan_deny_list.txt').read():
 
-    print "Neighbor Advertisement disovereed from host on monitor list: %s " % (["ICMPv6NDOptDstLLAddr"].lladdr)
+    print time.strftime("%I:%M:%S") + " " + "Neighbor Advertisement disovereed from host on monitor list: %s " % (["ICMPv6NDOptDstLLAddr"].lladdr)
 
     logging.info('ARP Request discovered from unauthorized host at: %s ' % (["ICMPv6NDOptDstLLAddr"].lladdr))
 
   if neighbor_adv_packet.haslayer(ICMPv6ND_NA) and neighbor_adv_packet[Ether].src in open('toucan_deny_list.txt').read():
 
-    print "Neighbor advertisement discovered from unauthorized host at: %s" % (neighbor_adv_packet[Ether].src)
+    print time.strftime("%I:%M:%S") + " " + "Neighbor advertisement discovered from unauthorized host at: %s" % (neighbor_adv_packet[Ether].src)
 
     logging.info('Neighbor advertisement discovered from unauthorized host at: %s' % (neighbor_adv_packet[Ether].src))
 
   if neighbor_adv_packet.haslayer(ICMPv6ND_NA) and neighbor_adv_packet[Ether].src not in open('toucan_accept_list.txt').read():
 
-    print "Neighbor advertisement discovered from unauthorized host at: %s" % (neighbor_adv_packet[Ether].src)
+    print time.strftime("%I:%M:%S") + " " + "Neighbor advertisement discovered from unauthorized host at: %s" % (neighbor_adv_packet[Ether].src)
 
     logging.info('Neighbor advertisement discovered from unauthorized host at: %s' % (neighbor_adv_packet[Ether].src))
 
@@ -566,23 +568,23 @@ def ns_packet_discovery(neighbor_sol_packet):
 
   if neighbor_sol_packet.haslayer(IPv6) and neighbor_sol_packet.haslayer(ICMPv6ND_NS):
 
-    print "\033[35m[NS] Neighbor solicitation discovered: %s\033[0m" % (neighbor_sol_packet.summary())
+    print time.strftime("%I:%M:%S") + " " + "\033[35m[NS] Neighbor solicitation discovered: %s\033[0m" % (neighbor_sol_packet.summary())
 
-    print "[NS-Ether] Neighbor solicitation layer 2 information: Source- %s, Destination- %s" % (neighbor_sol_packet[Ether].src, neighbor_sol_packet[Ether].dst)    
+    print time.strftime("%I:%M:%S") + " " + "[NS-Ether] Neighbor solicitation layer 2 information: Source- %s, Destination- %s" % (neighbor_sol_packet[Ether].src, neighbor_sol_packet[Ether].dst)    
 
-    print '\033[35m[NS] Neighbor solicitation source: %s, destination: %s\033[0m' % (neighbor_sol_packet[IPv6].src, neighbor_sol_packet[IPv6].dst)  
+    print time.strftime("%I:%M:%S") + " " + '\033[35m[NS] Neighbor solicitation source: %s, destination: %s\033[0m' % (neighbor_sol_packet[IPv6].src, neighbor_sol_packet[IPv6].dst)  
 
     logging.info('Neighbor solicitation source: %s, destination: %s' % (neighbor_sol_packet[IPv6].src, neighbor_sol_packet[IPv6].dst))
 
   if neighbor_sol_packet.haslayer(ICMPv6ND_NS) and neighbor_sol_packet[Ether].src in open('toucan_deny_list.txt').read():
 
-    print "Neighbor solicitation discovered from unauthorized host at: %s" % (neighbor_sol_packet[Ether].src)
+    print time.strftime("%I:%M:%S") + " " + "Neighbor solicitation discovered from unauthorized host at: %s" % (neighbor_sol_packet[Ether].src)
 
     logging.info('Neighbor solicitation discovered from unauthorized host at: %s' % (neighbor_sol_packet[Ether].src))
 
   if neighbor_sol_packet.haslayer(ICMPv6ND_NS) and neighbor_sol_packet[Ether].src not in open('toucan_accept_list.txt').read():
 
-    print "Neighbor solicitation discovered from unauthorized host at: %s" % (neighbor_sol_packet[Ether].src)
+    print time.strftime("%I:%M:%S") + " " + "Neighbor solicitation discovered from unauthorized host at: %s" % (neighbor_sol_packet[Ether].src)
 
     logging.info('Neighbor solicitation discovered from unauthorized host at: %s' % (neighbor_sol_packet[Ether].src))
 
@@ -591,9 +593,9 @@ def detect_deauth(deauth_packet):
 
     if deauth_packet.haslayer(Dot11) and deauth_packet.haslayer(Dot11Deauth):
 
-        print "\033[31m[!] DEAUTH DETECTED: %s\033[0m" % (deauth_packet.summary())
+        print time.strftime("%I:%M:%S") + " " + "\033[31m[!] DEAUTH DETECTED: %s\033[0m" % (deauth_packet.summary())
 
-        print "\033[31m[!] Deauthentication Detected from: %s through default gateway at %s\033[0m" % (deauth_packet[Dot11].addr1, deauth_packet[Dot11].addr2)
+        print time.strftime("%I:%M:%S") + " " + "\033[31m[!] Deauthentication Detected from: %s through default gateway at %s\033[0m" % (deauth_packet[Dot11].addr1, deauth_packet[Dot11].addr2)
 
         logging.warning('Deauth detected from %s' % (deauth_packet[Dot11].addr1))
 
@@ -601,13 +603,13 @@ def detect_deauth(deauth_packet):
 
     if deauth_packet.haslayer(Dot11Deauth) and deauth_packet[Dot11Deauth].addr1 not in open('toucan_accept_list.txt').read():
 
-        print "\033[31m[!]Deauthenticaion packet detected from host not in accept group. Address: %s" % (deauth_packet[Dot11Deauth].addr1)
+        print time.strftime("%I:%M:%S") + " " + "\033[31m[!]Deauthenticaion packet detected from host not in accept group. Address: %s" % (deauth_packet[Dot11Deauth].addr1)
 
         logging.warning('Deauthenticaion packet detected from host not in accept group. Address: %s' % (deauth_packet[Dot11Deauth].addr1))
 
     if deauth_packet.haslayer(Dot11Deauth) and deauth_packet[Dot11Deauth].addr1 in open('toucan_deny_list.txt').read():
 
-        print "\033[31m[!]Deauthenticaion packet detected from host not in deny group. Address: %s" % (deauth_packet[Dot11Deauth].addr1)
+        print time.strftime("%I:%M:%S") + " " + "\033[31m[!]Deauthenticaion packet detected from host not in deny group. Address: %s" % (deauth_packet[Dot11Deauth].addr1)
 
         logging.warning('Deauthenticaion packet detected from host not in deny group. Address: %s' % (deauth_packet[Dot11Deauth].addr1))
 
@@ -618,34 +620,34 @@ def detect_router_advertisement_flood(ra_packet_flood):
 
     if ra_counter > 10 and ra_packet_flood[Ether].src not in open('toucan_accept_list'):
 
-        print "\033[31m[!]WARNING: Over 10 router advertisements from unauthorized hosts have been detected. Flood warning initiated...\033[0m"
+        print time.strftime("%I:%M:%S") + " " + "\033[31m[!]WARNING: Over 10 router advertisements from unauthorized hosts have been detected. Flood warning initiated...\033[0m"
 
         logging.warning('[!]WARNING: Over 10 router advertisements from unauthorized hosts have been detected. Flood warning initiated...')
 
     if ra_counter > 200 and ra_packet_flood[Ether].src not in open('toucan_accept_list'):
 
-        print "\033[31m[!]WARNING: Over 200 router advertisements from unauthorized hosts have been detected. Flood warning initiated...\033[0m"
+        print time.strftime("%I:%M:%S") + " " + "\033[31m[!]WARNING: Over 200 router advertisements from unauthorized hosts have been detected. Flood warning initiated...\033[0m"
 
         logging.warning('[!]WARNING: Over 200 router advertisements from unauthorized hosts have been detected. Flood warning initiated...')
 
     if ra_counter > 500 and ra_packet_flood[Ether].src not in open('toucan_accept_list'):
 
-        print "\033[31m[!]WARNING: Over 500 router advertisements from unauthorized hosts have been detected. Flood warning initiated...\033[0m"
+        print time.strftime("%I:%M:%S") + " " + "\033[31m[!]WARNING: Over 500 router advertisements from unauthorized hosts have been detected. Flood warning initiated...\033[0m"
 
         logging.warning('[!]WARNING: Over 500 router advertisements from unauthorized hosts have been detected. Flood warning initiated...')
 
 
     if ra_packet_flood.haslayer(IPv6) and ra_packet_flood.haslayer(ICMPv6ND_RA):
 
-        print "\033[32m[RA]Router advertisement discovered: %s\033[0m" % (ra_packet_flood.summary())   
+        print time.strftime("%I:%M:%S") + " " + "\033[32m[RA]Router advertisement discovered: %s\033[0m" % (ra_packet_flood.summary())   
 
-        print '[RA] Router advertisement discovered from %s with Layer 2 address: %s' % (ra_packet_flood[IPv6].src, ra_packet_flood[Ether].src) 
+        print time.strftime("%I:%M:%S") + " " + '[RA] Router advertisement discovered from %s with Layer 2 address: %s' % (ra_packet_flood[IPv6].src, ra_packet_flood[Ether].src) 
 
         logging.info('Router advertisement from %s with Layer 2 address: %s' % (ra_packet_flood[IPv6].src, ra_packet_flood[Ether].src))
 
     if ra_packet_flood.haslayer(ICMPv6ND_RA) and ra_packet_flood[Ether].src in open('toucan_deny_list.txt').read():
 
-        print "Router advertisement discovered from unauthorized host at: %s" % (neighbor_sol_packet[Ether].src)
+        print time.strftime("%I:%M:%S") + " " + "Router advertisement discovered from unauthorized host at: %s" % (neighbor_sol_packet[Ether].src)
 
         logging.info('Router advertisement discovered from unauthorized host at: %s' % (neighbor_sol_packet[Ether].src))
 
@@ -653,7 +655,7 @@ def detect_router_advertisement_flood(ra_packet_flood):
 
     if ra_packet_flood.haslayer(ICMPv6ND_RA) and ra_packet_flood[Ether].src not in open('toucan_accept_list.txt').read():
 
-        print "Router advertisement discovered from unauthorized host at: %s" % (neighbor_sol_packet[Ether].src)
+        print time.strftime("%I:%M:%S") + " " + "Router advertisement discovered from unauthorized host at: %s" % (neighbor_sol_packet[Ether].src)
 
         logging.info('Router advertisement discovered from unauthorized host at: %s' % (neighbor_sol_packet[Ether].src))
 
@@ -696,15 +698,15 @@ def detect_router_advertisement_packet(ra_packet):
 
     if ra_packet.haslayer(IPv6) and ra_packet.haslayer(ICMPv6ND_RA):
 
-        print "\033[32m[RA]Router advertisement discovered: %s\033[0m" % (ra_packet.summary())   
+        print time.strftime("%I:%M:%S") + " " + "\033[32m[RA]Router advertisement discovered: %s\033[0m" % (ra_packet.summary())   
 
-        print '\033[33m[RA] Router advertisement discovered from %s with Layer 2 address: %s\033[0m' % (ra_packet[IPv6].src, ra_packet[Ether].src) 
+        print time.strftime("%I:%M:%S") + " " + '\033[33m[RA] Router advertisement discovered from %s with Layer 2 address: %s\033[0m' % (ra_packet[IPv6].src, ra_packet[Ether].src) 
 
         logging.info('Router advertisement from %s with Layer 2 address: %s' % (ra_packet[IPv6].src, ra_packet[Ether].src))  
 
     if ra_packet.haslayer(ICMPv6ND_RA) and ra_packet[Ether].src in open('toucan_deny_list.txt').read():
 
-        print "Router advertisement discovered from unauthorized host at: %s" % (ra_packet[Ether].src)
+        print time.strftime("%I:%M:%S") + " " + "Router advertisement discovered from unauthorized host at: %s" % (ra_packet[Ether].src)
 
         logging.info('Router advertisement discovered from unauthorized host at: %s' % (ra_packet[Ether].src))
 
@@ -712,7 +714,7 @@ def detect_router_advertisement_packet(ra_packet):
 
     if ra_packet.haslayer(ICMPv6ND_RA) and ra_packet[Ether].src not in open('toucan_accept_list.txt').read():
 
-        print "Router advertisement discovered from unauthorized host (not in accept list) at: %s" % (ra_packet[Ether].src)
+        print time.strftime("%I:%M:%S") + "" + "Router advertisement discovered from unauthorized host (not in accept list) at: %s" % (ra_packet[Ether].src)
 
         logging.info('Router advertisement discovered from unauthorized host (not in accept list) at: %s' % (ra_packet[Ether].src))
 
@@ -723,21 +725,21 @@ def detect_router_solicitation(rs_packet):
 
     if rs_packet.haslayer(IPv6) and rs_packet.haslayer(ICMPv6ND_RS):
 
-      print "\033[34m[RS]Router solicitation discovered: %s\033[0m" % (rs_packet.summary())
+      print time.strftime("%I:%M:%S") + " " + "\033[34m[RS]Router solicitation discovered: %s\033[0m" % (rs_packet.summary())
 
-      print '\033[34m[RS] Router solicitation discovered from %s with Layer 2 address: %s\033[0m' % (rs_packet[IPv6].src, rs_packet[Ether].src) 
+      print time.strftime("%I:%M:%S") + " " + '\033[34m[RS] Router solicitation discovered from %s with Layer 2 address: %s\033[0m' % (rs_packet[IPv6].src, rs_packet[Ether].src) 
 
       logging.info('Router solicitation from %s with Layer 2 address: %s' % (rs_packet[IPv6].src, rs_packet[Ether].src))
 
     if rs_packet.haslayer(ICMPv6ND_RS) and rs_packet[Ether].src in open('toucan_deny_list.txt').read():
 
-      print "\033[34m[!]Router solicitation discovered from unauthorized host at: %s" % (rs_packet[Ether].src)
+      print time.strftime("%I:%M:%S") + " " + "\033[34m[!]Router solicitation discovered from unauthorized host at: %s" % (rs_packet[Ether].src)
 
       logging.info('Router solicitation discovered from unauthorized host at: %s' % (rs_packet[Ether].src))
 
     if rs_packet.haslayer(ICMPv6ND_RS) and rs_packet[Ether].src not in open('toucan_accept_list.txt').read():
 
-      print "\033[34m[!]Router solicitation discovered from unauthorized host (not in accept list) at: %s" % (rs_packet[Ether].src)
+      print time.strftime("%I:%M:%S") + " " + "\033[34m[!]Router solicitation discovered from unauthorized host (not in accept list) at: %s" % (rs_packet[Ether].src)
 
       logging.info('Router solicitation discovered from unauthorized host (not in accept list) at: %s' % (rs_packet[Ether].src))  
 
@@ -764,19 +766,19 @@ def detect_syn_scan(syn_packet):
 
     if syn_packet.haslayer(TCP) and syn_packet[TCP].flags == "S" and syn_packet[TCP].dport == "22" or syn_packet[Ether].src in open('toucan_deny_list.txt').read():
 
-        print "Possible SYN scan discovered from %s, host is probing SSH" % (syn_packet[IP].src)
+        print time.strftime("%I:%M:%S") + " " + "Possible SYN scan discovered from %s, host is probing SSH" % (syn_packet[IP].src)
 
         print syn_packet.summary()
 
     if syn_packet.haslayer(TCP) and syn_packet[TCP].flags == "S" and syn_packet[TCP].dport == "23" or syn_packet[Ether].src in open('toucan_deny_list.txt').read():
 
-        print "Possible SYN scan discovered from %s, host is probing Telnet" % (syn_packet[IP].src)
+        print time.strftime("%I:%M:%S") + " " + "Possible SYN scan discovered from %s, host is probing Telnet" % (syn_packet[IP].src)
 
         print syn_packet.summary()
 
     if syn_packet.haslayer(TCP) and syn_packet[TCP].flags == "S" and syn_packet[TCP].dport == "22" or syn_packet[Ether].src not in open('toucan_accept_list.txt').read():
 
-        print "Possible SYN scan discovered from %s, host is probing SSH" % (syn_packet[IP].src)
+        print time.strftime("%I:%M:%S") + " " + "Possible SYN scan discovered from %s, host is probing SSH" % (syn_packet[IP].src)
 
         print syn_packet.summary()
 
@@ -846,9 +848,9 @@ def increment_counter():
   ra_counter += 1
 
 
-def defensive_deauth(GATEWAY_MAC, Attacker_Deauth_Layer2, interface_for_deauth):
+def defensive_deauth(GATEWAY_MAC, Attacker_Deauth_Layer2):
 
-  conf.iface = interface_for_deauth
+  conf.iface = interface
   
   bssid = GATEWAY_MAC 
 
@@ -864,7 +866,7 @@ def defensive_deauth(GATEWAY_MAC, Attacker_Deauth_Layer2, interface_for_deauth):
 
     sendp(packet)
 
-    print '\033[36mRemoving malicious host at with Layer 2 address: ' + Attacker_Deauth_Layer2 + ' off of network.\033[0m'
+    print '\033[32mRemoving malicious host at with Layer 2 address:' + Attacker_Deauth_Layer2 + ' off of network.\033[0m'
 
 def scan_network_bssids(pkt) :
 
@@ -1027,13 +1029,19 @@ ____________________________________________________________
 
     if input_two == "1":
 
-        wifi_interface = raw_input("Please enter your wireless interface to sniff on: ")
+        wifi_interface = raw_input("Please enter your wireless interface to sniff on: ")    
 
-        os.system('sudo ifconfig %s down') % wifi_interface
+        subprocess.Popen(['sudo','ifconfig',wifi_interface,'down'])
 
-        os.system('sudo iwconfig %s mode monitor') % wifi_interface
+        print "Shut %s down...\n" % wifi_interface 
 
-        os.system('sudo ifconfig %s up') % wifi_interfaces
+        subprocess.Popen(['sudo','iwconfig',wifi_interface,'mode','monitor'])
+
+        print "Placing %s into monitor mode...\n" % wifi_interface
+
+        subprocess.Popen(['sudo','ifconfig',wifi_interface,'up']) 
+
+        print "%s is now up and in monitor mode...\n" % wifi_interface
 
     elif input_two == "2":
         print "Ok"
@@ -1159,8 +1167,6 @@ ____________________________________________________________
     
         elif answer =="4":
 
-            interface_for_deauth = raw_input("Enter your interface to send deauth on: ")
-
             GATEWAY_MAC = raw_input("Enter L2 of Dfeault Gateway: ")
 
             DeauthAttacker = raw_input("Please enter attacker's layer 3 address: ")
@@ -1169,7 +1175,7 @@ ____________________________________________________________
 
             print "Sending Deauthentication Packets to %s " % (Attacker_Deauth_Layer2)
     
-            defensive_deauth(GATEWAY_MAC, Attacker_Deauth_Layer2, interface_for_deauth)
+            defensive_deauth(GATEWAY_MAC, Attacker_Deauth_Layer2)
 
 
         elif answer == "5":
@@ -1220,7 +1226,6 @@ ____________________________________________________________
                     if l2_deny_list == "exit":
 
                       break
-
 
 
         elif answer == "9":
@@ -1305,3 +1310,4 @@ ____________________________________________________________
           print("exiting...")
 
           sys.exit()
+
