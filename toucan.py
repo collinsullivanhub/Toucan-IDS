@@ -848,9 +848,9 @@ def increment_counter():
   ra_counter += 1
 
 
-def defensive_deauth(GATEWAY_MAC, Attacker_Deauth_Layer2):
+def defensive_deauth(GATEWAY_MAC, Attacker_Deauth_Layer2, deauth_interface):
 
-  conf.iface = interface
+  conf.iface = deauth_interface
   
   bssid = GATEWAY_MAC 
 
@@ -1166,6 +1166,8 @@ ____________________________________________________________
                 
     
         elif answer =="4":
+            
+            deauth_interface = raw_input("Enter the interface you want to use (must be in monitor mode): ")
 
             GATEWAY_MAC = raw_input("Enter L2 of Dfeault Gateway: ")
 
@@ -1175,7 +1177,7 @@ ____________________________________________________________
 
             print "Sending Deauthentication Packets to %s " % (Attacker_Deauth_Layer2)
     
-            defensive_deauth(GATEWAY_MAC, Attacker_Deauth_Layer2)
+            defensive_deauth(GATEWAY_MAC, Attacker_Deauth_Layer2, deauth_interface)
 
 
         elif answer == "5":
