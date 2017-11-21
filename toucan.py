@@ -1131,7 +1131,7 @@ ____________________________________________________________
 
             except KeyboardInterrupt:
 
-                sys.exit()
+                 thread.exit()
 
 
         elif answer =="3":
