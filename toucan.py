@@ -429,7 +429,7 @@ def arp_display(packet):
 
         logging.info('ARP Request discovered from unauthorized host at: %s , %s' % (packet[ARP].psrc, packet[Ether].src))
 
-    if packet[ARP].op == 1: 
+    if packet.haslayer(ARP).op == 1: 
 
         logging.info('[1] ARP Request- %s is asking for L2 of %s' % (packet[ARP].psrc, packet[ARP].pdst))
 
@@ -437,7 +437,7 @@ def arp_display(packet):
 
         return '\033[31m[1] ARP Request- %s is asking for L2 of %s\033[0m' % (packet[ARP].psrc, packet[ARP].pdst)
 
-    if packet[ARP].op == 1 and packet[ARP].psrc == GATEWAY_IP and packet[Ether].src != GATEWAY_MAC:
+    if packet.haslayer(ARP).op == 1 and packet[ARP].psrc == GATEWAY_IP and packet[Ether].src != GATEWAY_MAC:
 
         return "\033[31m[!]WARNING: GATEWAY IMPERSONTATION DETECTED. POSSIBLE MITM ATTACK FROM %s\033[31m" % (packet[ARP].hwsrc)
 
