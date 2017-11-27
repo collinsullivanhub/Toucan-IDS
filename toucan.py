@@ -50,7 +50,7 @@ a proper view into your network and will tee-up suggestions of interest.
 
 
 import logging
-import socket, sys
+import socket
 from scapy.error import Scapy_Exception
 from scapy.all import sr1,IP,ICMP
 from scapy.all import srp
