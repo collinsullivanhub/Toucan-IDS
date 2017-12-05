@@ -512,13 +512,13 @@ def na_packet_discovery(neighbor_adv_packet):
 
     logging.info('Neighbor advertisement source: %s, destination: %s' % (neighbor_adv_packet[IPv6].src, neighbor_adv_packet[IPv6].dst))
 
-  if neighbor_adv_packet[Ether].src in open('toucan_deny_list.txt').read():
+  if neighbor_adv_packet.haslayer(ICMPv6ND_NA) and neighbor_adv_packet[Ether].src in open('toucan_deny_list.txt').read():
 
       print time.strftime("%I:%M:%S") + " " + "Neighbor advertisement discovered from unauthorized host at: %s" % (neighbor_adv_packet[Ether].src)
 
       logging.info('Neighbor advertisement discovered from unauthorized host at: %s' % (neighbor_adv_packet[Ether].src))
 
-  if neighbor_adv_packet[Ether].src not in open('toucan_accept_list.txt').read():
+  if neighbor_adv_packet.haslayer(ICMPv6ND_NA) and neighbor_adv_packet[Ether].src not in open('toucan_accept_list.txt').read():
 
       print time.strftime("%I:%M:%S") + " " + "Neighbor advertisement discovered from unauthorized host at: %s" % (neighbor_adv_packet[Ether].src)
 
