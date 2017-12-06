@@ -65,7 +65,6 @@ from optparse import OptionParser
 import signal
 from struct import *
 import time
-import pyshark
 from twilio.rest import Client
 
 #//////////////////////////////////////////////////
