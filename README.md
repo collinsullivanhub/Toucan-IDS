@@ -30,9 +30,9 @@ Toucan uses *accept groups* and *deny groups* to determine which hosts sending t
 - The first thing you want to do is fill the accept and deny lists with physical addresses, as toucan uses these to mark accetped and denied hosts, and as a basis to find new malicious hosts. If you are running a v4/v6 combined network like most, select the "IPv4" option when starting the program. 
 
 # Rules to follow (generally)
--Accepted hosts should be put in the accepted ARP, NS, and NA files
--Accepted gateways should be put in accepted ARP, NA, NS, and RA files
--Denied hosts placed in deny file
+- Accepted hosts should be put in the accepted ARP, NS, and NA files
+- Accepted gateways should be put in accepted ARP, NA, NS, and RA files
+- Denied hosts placed in deny file
 
 # Video Demo:
 https://www.youtube.com/watch?v=EawJJs5iS8A
