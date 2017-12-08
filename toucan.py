@@ -418,15 +418,15 @@ def arp_display(packet):
 
     if packet.haslayer(ARP) and '%s' % (packet[Ether].src) in open('toucan_deny_list.txt').read():
 
-        print time.strftime("%I:%M:%S") + " " + "ARP Request discovered from unauthorized host at: %s , %s" % (packet[ARP].psrc, packet[Ether].src)
+        print time.strftime("%I:%M:%S") + " " + "ARP Request discovered from unauthorized host (in deny list) at: %s , %s" % (packet[ARP].psrc, packet[Ether].src)
 
-        logging.info('ARP Request discovered from unauthorized host at: %s , %s' % (packet[ARP].psrc, packet[Ether].src))
+        logging.info('ARP Request discovered from unauthorized host (in deny list) at: %s , %s' % (packet[ARP].psrc, packet[Ether].src))
 
     if packet.haslayer(ARP) and '%s' % (packet[Ether].src) not in open('toucan_accept_list.txt').read():
 
         print time.strftime("%I:%M:%S") + " " + "ARP Request discovered from unauthorized host (not in accept list) at: %s , %s" % (packet[ARP].psrc, packet[Ether].src)
 
-        logging.info('ARP Request discovered from unauthorized host at: %s , %s' % (packet[ARP].psrc, packet[Ether].src))
+        logging.info('ARP Request discovered from unauthorized host (not in accept list) at: %s , %s' % (packet[ARP].psrc, packet[Ether].src))
 
     if packet[ARP].op == 1: 
 
@@ -513,13 +513,13 @@ def na_packet_discovery(neighbor_adv_packet):
 
   if neighbor_adv_packet.haslayer(ICMPv6ND_NA) and neighbor_adv_packet[Ether].src in open('toucan_deny_list.txt').read():
 
-      print time.strftime("%I:%M:%S") + " " + "Neighbor advertisement discovered from unauthorized host at: %s" % (neighbor_adv_packet[Ether].src)
+      print time.strftime("%I:%M:%S") + " " + "Neighbor advertisement discovered from unauthorized host (in deny list) at: %s" % (neighbor_adv_packet[Ether].src)
 
       logging.info('Neighbor advertisement discovered from unauthorized host at: %s' % (neighbor_adv_packet[Ether].src))
 
   if neighbor_adv_packet.haslayer(ICMPv6ND_NA) and neighbor_adv_packet[Ether].src not in open('toucan_accept_list.txt').read():
 
-      print time.strftime("%I:%M:%S") + " " + "Neighbor advertisement discovered from unauthorized host at: %s" % (neighbor_adv_packet[Ether].src)
+      print time.strftime("%I:%M:%S") + " " + "Neighbor advertisement discovered from unauthorized host (not in accept list) at: %s" % (neighbor_adv_packet[Ether].src)
 
       logging.info('Neighbor advertisement discovered from unauthorized host at: %s' % (neighbor_adv_packet[Ether].src))
 
@@ -546,19 +546,19 @@ def na_packet_discovery_v6(neighbor_adv_packet):
 
   if neighbor_adv_packet.haslayer(ICMPv6ND_NA) and neighbor_adv_packet[ICMPv6NDOptDstLLAddr].lladdr in open('toucan_deny_list.txt').read():
 
-    print time.strftime("%I:%M:%S") + " " + "Neighbor Advertisement disovereed from host on monitor list: %s " % (["ICMPv6NDOptDstLLAddr"].lladdr)
+    print time.strftime("%I:%M:%S") + " " + "Neighbor Advertisement disovereed from host in deny list: %s " % (["ICMPv6NDOptDstLLAddr"].lladdr)
 
     logging.info('ARP Request discovered from unauthorized host at: %s ' % (["ICMPv6NDOptDstLLAddr"].lladdr))
 
   if neighbor_adv_packet.haslayer(ICMPv6ND_NA) and neighbor_adv_packet[Ether].src in open('toucan_deny_list.txt').read():
 
-    print time.strftime("%I:%M:%S") + " " + "Neighbor advertisement discovered from unauthorized host at: %s" % (neighbor_adv_packet[Ether].src)
+    print time.strftime("%I:%M:%S") + " " + "Neighbor advertisement discovered from unauthorized host (in deny list) at: %s" % (neighbor_adv_packet[Ether].src)
 
     logging.info('Neighbor advertisement discovered from unauthorized host at: %s' % (neighbor_adv_packet[Ether].src))
 
   if neighbor_adv_packet.haslayer(ICMPv6ND_NA) and neighbor_adv_packet[Ether].src not in open('toucan_accept_list.txt').read():
 
-    print time.strftime("%I:%M:%S") + " " + "Neighbor advertisement discovered from unauthorized host at: %s" % (neighbor_adv_packet[Ether].src)
+    print time.strftime("%I:%M:%S") + " " + "Neighbor advertisement discovered from unauthorized host (not in accept list) at: %s" % (neighbor_adv_packet[Ether].src)
 
     logging.info('Neighbor advertisement discovered from unauthorized host at: %s' % (neighbor_adv_packet[Ether].src))
 
@@ -583,7 +583,7 @@ def ns_packet_discovery(neighbor_sol_packet):
 
   if neighbor_sol_packet.haslayer(ICMPv6ND_NS) and neighbor_sol_packet[Ether].src not in open('toucan_accept_list.txt').read():
 
-    print time.strftime("%I:%M:%S") + " " + "Neighbor solicitation discovered from unauthorized host at: %s" % (neighbor_sol_packet[Ether].src)
+    print time.strftime("%I:%M:%S") + " " + "Neighbor solicitation discovered from unauthorized host (not in accept list) at: %s" % (neighbor_sol_packet[Ether].src)
 
     logging.info('Neighbor solicitation discovered from unauthorized host at: %s' % (neighbor_sol_packet[Ether].src))
 
@@ -619,19 +619,19 @@ def detect_router_advertisement_flood(ra_packet_flood):
 
     if ra_counter > 10 and ra_packet_flood[Ether].src not in open('toucan_accept_list'):
 
-        print time.strftime("%I:%M:%S") + " " + "\033[31m[!]WARNING: Over 10 router advertisements from unauthorized hosts have been detected. Flood warning initiated...\033[0m"
+        print time.strftime("%I:%M:%S") + " " + "\033[31m[!]WARNING: Over 10 router advertisements from unauthorized hosts have been detected. Possible Flood...\033[0m"
 
         logging.warning('[!]WARNING: Over 10 router advertisements from unauthorized hosts have been detected. Flood warning initiated...')
 
     if ra_counter > 200 and ra_packet_flood[Ether].src not in open('toucan_accept_list'):
 
-        print time.strftime("%I:%M:%S") + " " + "\033[31m[!]WARNING: Over 200 router advertisements from unauthorized hosts have been detected. Flood warning initiated...\033[0m"
+        print time.strftime("%I:%M:%S") + " " + "\033[31m[!]WARNING: Over 200 router advertisements from unauthorized hosts have been detected. Flood WARNING...\033[0m"
 
         logging.warning('[!]WARNING: Over 200 router advertisements from unauthorized hosts have been detected. Flood warning initiated...')
 
     if ra_counter > 500 and ra_packet_flood[Ether].src not in open('toucan_accept_list'):
 
-        print time.strftime("%I:%M:%S") + " " + "\033[31m[!]WARNING: Over 500 router advertisements from unauthorized hosts have been detected. Flood warning initiated...\033[0m"
+        print time.strftime("%I:%M:%S") + " " + "\033[31m[!]WARNING: Over 500 router advertisements from unauthorized hosts have been detected. Flood WARNING...\033[0m"
 
         logging.warning('[!]WARNING: Over 500 router advertisements from unauthorized hosts have been detected. Flood warning initiated...')
 
@@ -646,7 +646,7 @@ def detect_router_advertisement_flood(ra_packet_flood):
 
     if ra_packet_flood.haslayer(ICMPv6ND_RA) and ra_packet_flood[Ether].src in open('toucan_deny_list.txt').read():
 
-        print time.strftime("%I:%M:%S") + " " + "Router advertisement discovered from unauthorized host at: %s" % (neighbor_sol_packet[Ether].src)
+        print time.strftime("%I:%M:%S") + " " + "Router advertisement discovered from unauthorized host (in deny list) at: %s" % (neighbor_sol_packet[Ether].src)
 
         logging.info('Router advertisement discovered from unauthorized host at: %s' % (neighbor_sol_packet[Ether].src))
 
@@ -654,7 +654,7 @@ def detect_router_advertisement_flood(ra_packet_flood):
 
     if ra_packet_flood.haslayer(ICMPv6ND_RA) and ra_packet_flood[Ether].src not in open('toucan_accept_list.txt').read():
 
-        print time.strftime("%I:%M:%S") + " " + "Router advertisement discovered from unauthorized host at: %s" % (neighbor_sol_packet[Ether].src)
+        print time.strftime("%I:%M:%S") + " " + "Router advertisement discovered from unauthorized host (not in accept list) at: %s" % (neighbor_sol_packet[Ether].src)
 
         logging.info('Router advertisement discovered from unauthorized host at: %s' % (neighbor_sol_packet[Ether].src))
 
@@ -732,7 +732,7 @@ def detect_router_solicitation(rs_packet):
 
     if rs_packet.haslayer(ICMPv6ND_RS) and rs_packet[Ether].src in open('toucan_deny_list.txt').read():
 
-      print time.strftime("%I:%M:%S") + " " + "\033[34m[!]Router solicitation discovered from unauthorized host at: %s" % (rs_packet[Ether].src)
+      print time.strftime("%I:%M:%S") + " " + "\033[34m[!]Router solicitation discovered from unauthorized host (in deny list) at: %s" % (rs_packet[Ether].src)
 
       logging.info('Router solicitation discovered from unauthorized host at: %s' % (rs_packet[Ether].src))
 
