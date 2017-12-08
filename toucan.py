@@ -1209,7 +1209,7 @@ ____________________________________________________________
 
                 while True:
 
-                    l2_deny_list = raw_input("Layer 2 Adresses you want to monitor for: ")
+                    l2_deny_list = raw_input("Layer 2 Adresses you want to monitor for: (type exit to escape) ")
 
                     fd = open("toucan_deny_list.txt","a")
 
@@ -1226,7 +1226,7 @@ ____________________________________________________________
 
                   while True:
 
-                    l2_accept_list = raw_input("Enter all L2 Addresses you want to allow: ")
+                    l2_accept_list = raw_input("Enter all L2 Addresses you want to allow: (type exit to escape)")
 
                     fd = open("toucan_accept_list.txt","a")
 
@@ -1243,7 +1243,7 @@ ____________________________________________________________
 
                   while True:
 
-                    l2_accept_list = raw_input("Enter all L2 Addresses you want to allow: ")
+                    l2_accept_list = raw_input("Enter all L2 Addresses you want to allow: (type exit to escape)")
 
                     fd = open("toucan_accept_list_arp.txt","a")
 
@@ -1259,7 +1259,7 @@ ____________________________________________________________
 
                   while True:
 
-                    l2_accept_list = raw_input("Enter all L2 Addresses you want to allow: ")
+                    l2_accept_list = raw_input("Enter all L2 Addresses you want to allow: (type exit to escape)")
 
                     fd = open("toucan_accept_list_neighbadv.txt","a")
 
@@ -1275,7 +1275,7 @@ ____________________________________________________________
 
                   while True:
 
-                    l2_accept_list = raw_input("Enter all L2 Addresses you want to allow: ")
+                    l2_accept_list = raw_input("Enter all L2 Addresses you want to allow: (type exit to escape)")
 
                     fd = open("toucan_accept_list_routeradv.txt","a")
 
