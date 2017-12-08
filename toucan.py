@@ -416,87 +416,89 @@ def arp_display(packet):
     global victim_L3
     global victim_MAC
 
-    if packet.haslayer(ARP) and '%s' % (packet[Ether].src) in open('toucan_deny_list.txt').read():
+    if packet.haslayer(ARP):
 
-        print time.strftime("%I:%M:%S") + " " + "ARP Request discovered from unauthorized host (in deny list) at: %s , %s" % (packet[ARP].psrc, packet[Ether].src)
+      if packet.haslayer(ARP) and '%s' % (packet[Ether].src) in open('toucan_deny_list.txt').read():
 
-        logging.info('ARP Request discovered from unauthorized host (in deny list) at: %s , %s' % (packet[ARP].psrc, packet[Ether].src))
+          print time.strftime("%I:%M:%S") + " " + "ARP Request discovered from unauthorized host (in deny list) at: %s , %s" % (packet[ARP].psrc, packet[Ether].src)
 
-    if packet.haslayer(ARP) and '%s' % (packet[Ether].src) not in open('toucan_accept_list.txt').read():
+          logging.info('ARP Request discovered from unauthorized host (in deny list) at: %s , %s' % (packet[ARP].psrc, packet[Ether].src))
 
-        print time.strftime("%I:%M:%S") + " " + "ARP Request discovered from unauthorized host (not in accept list) at: %s , %s" % (packet[ARP].psrc, packet[Ether].src)
+      if packet.haslayer(ARP) and '%s' % (packet[Ether].src) not in open('toucan_accept_list.txt').read():
 
-        logging.info('ARP Request discovered from unauthorized host (not in accept list) at: %s , %s' % (packet[ARP].psrc, packet[Ether].src))
+          print time.strftime("%I:%M:%S") + " " + "ARP Request discovered from unauthorized host (not in accept list) at: %s , %s" % (packet[ARP].psrc, packet[Ether].src)
 
-    if packet[ARP].op == 1: 
+          logging.info('ARP Request discovered from unauthorized host (not in accept list) at: %s , %s' % (packet[ARP].psrc, packet[Ether].src))
 
-        logging.info('[1] ARP Request- %s is asking for L2 of %s' % (packet[ARP].psrc, packet[ARP].pdst))
+      if packet[ARP].op == 1: 
 
-        print time.strftime("%I:%M:%S") + " " + "\033[31m[1] ARP Request Ethernet Info: [Source] = %s + [Destination] = %s\033[0m" % (packet[Ether].src, packet[Ether].dst)
+          logging.info('[1] ARP Request- %s is asking for L2 of %s' % (packet[ARP].psrc, packet[ARP].pdst))
 
-        return '\033[31m[1] ARP Request- %s is asking for L2 of %s\033[0m' % (packet[ARP].psrc, packet[ARP].pdst)
+          print time.strftime("%I:%M:%S") + " " + "\033[31m[1] ARP Request Ethernet Info: [Source] = %s + [Destination] = %s\033[0m" % (packet[Ether].src, packet[Ether].dst)
 
-    if packetpacket[ARP].op == 1 and packet[ARP].psrc == GATEWAY_IP and packet[Ether].src != GATEWAY_MAC:
+          return time.strftime("%I:%M:%S") + " " + '\033[31m[1] ARP Request- %s is asking for L2 of %s\033[0m' % (packet[ARP].psrc, packet[ARP].pdst)
 
-        return "\033[31m[!]WARNING: GATEWAY IMPERSONTATION DETECTED. POSSIBLE MITM ATTACK FROM %s\033[31m" % (packet[ARP].hwsrc)
+      if packet[ARP].op == 1 and packet[ARP].psrc == GATEWAY_IP and packet[Ether].src != GATEWAY_MAC:
 
-        attacker_L2 = packet[ARP].hwsrc
+          return "\033[31m[!]WARNING: GATEWAY IMPERSONTATION DETECTED. POSSIBLE MITM ATTACK FROM %s\033[31m" % (packet[ARP].hwsrc)
 
-        victim_L3 = packet[ARP].dst
+          attacker_L2 = packet[ARP].hwsrc
 
-        victim_MAC = packet[Ether].dst
+          victim_L3 = packet[ARP].dst
 
-    if packet[ARP].op == 1 and packet[ARP].psrc == GATEWAY_IP and packet[ARP].hwsrc != GATEWAY_MAC:
+          victim_MAC = packet[Ether].dst
 
-        print time.strftime("%I:%M:%S") + " " + "\033[31m[!]WARNING: GATEWAY IMPERSONTATION DETECTED. POSSIBLE MITM ATTACK FROM %s\033[31m" % (packet[ARP].hwsrc)
+      if packet[ARP].op == 1 and packet[ARP].psrc == GATEWAY_IP and packet[ARP].hwsrc != GATEWAY_MAC:
 
-        attacker_L2 = packet[ARP].hwsrc
+          print time.strftime("%I:%M:%S") + " " + "\033[31m[!]WARNING: GATEWAY IMPERSONTATION DETECTED. POSSIBLE MITM ATTACK FROM %s\033[31m" % (packet[ARP].hwsrc)
 
-        victim_L3 = packet[ARP].dst
+          attacker_L2 = packet[ARP].hwsrc
 
-        victim_MAC = packet[Ether].dst
+          victim_L3 = packet[ARP].dst
 
-    if packet[ARP].op == 2: 
+          victim_MAC = packet[Ether].dst
 
-        logging.info('[2] ARP Response- %s has layer 2 address: %s' % (packet[ARP].psrc, packet[ARP].hwsrc))
+      if packet[ARP].op == 2: 
 
-        print time.strftime("%I:%M:%S") + " " + "\033[33m[2] Reponse Ethernet Info: [Source] = %s + [Destination] = %s\033[0m" % (packet[Ether].src, packet[Ether].dst)
+          logging.info('[2] ARP Response- %s has layer 2 address: %s' % (packet[ARP].psrc, packet[ARP].hwsrc))
 
-        return '\033[33m[2] ARP Response- %s has layer 2 address: %s\033[0m' % (packet[ARP].psrc, packet[ARP].hwsrc)
+          print time.strftime("%I:%M:%S") + " " + "\033[33m[2] Reponse Ethernet Info: [Source] = %s + [Destination] = %s\033[0m" % (packet[Ether].src, packet[Ether].dst)
 
-    if packet[ARP].op == 2 and '%s' % (packet[Ether].src) in open('toucan_deny_list.txt').read():
+          return '\033[33m[2] ARP Response- %s has layer 2 address: %s\033[0m' % (packet[ARP].psrc, packet[ARP].hwsrc)
 
-        print time.strftime("%I:%M:%S") + " " + "ARP Reply discovered from unauthorized host at: %s , %s" % (packet[ARP].psrc, packet[ARP.pdst])
+      if packet[ARP].op == 2 and '%s' % (packet[Ether].src) in open('toucan_deny_list.txt').read():
 
-        logging.info('ARP Reply discovered from unauthorized host at: %s , %s' % (packet[ARP].psrc, packet[ARP.pdst]))
+          print time.strftime("%I:%M:%S") + " " + "ARP Reply discovered from unauthorized host at: %s , %s" % (packet[ARP].psrc, packet[ARP.pdst])
 
-    if packet[ARP].op == 2 and '%s' % (packet[Ether].src) not in open('toucan_accept_list.txt').read():
+          logging.info('ARP Reply discovered from unauthorized host at: %s , %s' % (packet[ARP].psrc, packet[ARP.pdst]))
 
-        print time.strftime("%I:%M:%S") + " " + "ARP Response discovered from unauthorized host (not in accept list) at: %s , %s" % (packet[ARP].psrc, packet[Ether].src)
+      if packet[ARP].op == 2 and '%s' % (packet[Ether].src) not in open('toucan_accept_list.txt').read():
 
-        logging.info('ARP Response discovered from unauthorized host at: %s , %s' % (packet[ARP].psrc, packet[Ether].src))
+          print time.strftime("%I:%M:%S") + " " + "ARP Response discovered from unauthorized host (not in accept list) at: %s , %s" % (packet[ARP].psrc, packet[Ether].src)
 
-    if packet[ARP].op == 2 and packet[ARP].psrc == GATEWAY_IP and packet[Ether].src != GATEWAY_MAC:
+          logging.info('ARP Response discovered from unauthorized host at: %s , %s' % (packet[ARP].psrc, packet[Ether].src))
 
-        print time.strftime("%I:%M:%S") + " " + "\033[31m[!]WARNING: GATEWAY IMPERSONTATION DETECTED. POSSIBLE MITM ATTACK FROM %s\033[31m" % (packet[ARP].hwsrc)
+      if packet[ARP].op == 2 and packet[ARP].psrc == GATEWAY_IP and packet[Ether].src != GATEWAY_MAC:
 
-        os.system("espeak 'WARNING GATEWAY IMPERSONATION DETECTED from %s'" % (packet[ARP].hwsrc)) 
+          print time.strftime("%I:%M:%S") + " " + "\033[31m[!]WARNING: GATEWAY IMPERSONTATION DETECTED. POSSIBLE MITM ATTACK FROM %s\033[31m" % (packet[ARP].hwsrc)
 
-        attacker_L2 = packet[ARP].hwsrc
+          os.system("espeak 'WARNING GATEWAY IMPERSONATION DETECTED from %s'" % (packet[ARP].hwsrc)) 
 
-        victim_L3 = packet[ARP].dst
+          attacker_L2 = packet[ARP].hwsrc
 
-        victim_MAC = packet[Ether].dst
+          victim_L3 = packet[ARP].dst
 
-    if packet[ARP].op == 2 and packet[ARP].psrc == GATEWAY_IP and packet[ARP].hwsrc != GATEWAY_MAC:
+          victim_MAC = packet[Ether].dst
 
-        print time.strftime("%I:%M:%S") + " " + "\033[31m[!]WARNING: GATEWAY IMPERSONTATION DETECTED. POSSIBLE MITM ATTACK FROM %s\033[31m" % (packet[ARP].hwsrc)
+      if packet[ARP].op == 2 and packet[ARP].psrc == GATEWAY_IP and packet[ARP].hwsrc != GATEWAY_MAC:
 
-        attacker_L2 = packet[ARP].hwsrc
+          print time.strftime("%I:%M:%S") + " " + "\033[31m[!]WARNING: GATEWAY IMPERSONTATION DETECTED. POSSIBLE MITM ATTACK FROM %s\033[31m" % (packet[ARP].hwsrc)
 
-        victim_L3 = packet[ARP].dst
+          attacker_L2 = packet[ARP].hwsrc
 
-        victim_MAC = packet[Ether].dst
+          victim_L3 = packet[ARP].dst
+
+          victim_MAC = packet[Ether].dst
       
 
 def na_packet_discovery(neighbor_adv_packet):
