@@ -31,7 +31,7 @@ Toucan uses *accept groups* and *deny groups* to determine which hosts sending t
 
 # Rules to follow (generally)
 - Accepted hosts should be put in the accepted ARP, NS, and NA files
-- Accepted gateways should be put in accepted ARP, NA, NS, and RA files
+- Accepted gateways should be put in accepted ARP, NA, and RA files
 - Denied hosts placed in deny file
 
 # Video Demo:
