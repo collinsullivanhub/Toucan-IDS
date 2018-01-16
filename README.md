@@ -21,8 +21,8 @@ Toucan uses *accept groups* and *deny groups* to determine which hosts sending t
 
 # Usage:
 - sudo python toucan.py 
-- enter Default Gateway (200.20.0.1)
-- enter network to monitor with netmask in format /X (200.20.0.0/24)
+- enter Default Gateway (192.168.0.1)
+- enter network to monitor with netmask in format /X (192.168.0.1/24)
 - enter network interface (wlp2s0/enp5s0/etc) (if you do not know this do an 'ifconfig' on linux)
 - Populate the accept, deny, and traffic group lists (.txt files) with the layer 2 addresses of your choice
 - Run the sniffer
