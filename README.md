@@ -27,7 +27,6 @@ Toucan uses *accept groups* and *deny groups* to determine which hosts sending t
 - Populate the accept, deny, and traffic group lists (.txt files) with the layer 2 addresses of your choice
 - Run the sniffer
 
-- The first thing you want to do is fill the accept and deny lists with physical addresses, as toucan uses these to mark accetped and denied hosts, and as a basis to find new malicious hosts. If you are running a v4/v6 combined network like most, select the "IPv4" option when starting the program. 
 
 # Rules to follow (generally)
 - Accepted hosts should be put in the accepted ARP, NS, and NA files
