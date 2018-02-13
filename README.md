@@ -12,7 +12,7 @@
  
 Toucan is an IDS written in Python that alerts and defends against several common types of network attacks. For example, "Man in the middle" attacks will be used by hackers to intercept traffic on a network. This is accomplished by sending gratuitous ARPs across a network to "poison" the default gateway and hosts. While ARPs are sent on IPv4 networks to poison targets, IPv6 networks also fall victim to impersonation through gratuitous neighbor advertisements being sent.
 
-If Toucan detects malicious activity, it can respond. For example, if a gratuitous ARP were discovered being sent across a network, Toucan can unpoison the default gateway and the victim, blacklist the attacker's L2, and de-authenticate them from the network.
+If Toucan detects malicious activity, it can respond. For example, if a gratuitous ARP were discovered being sent across a network, Toucan can unpoison the default gateway and the victim, and blacklist the attacker's L2.
 
 Toucan uses *accept groups* and *deny groups* to determine which hosts sending traffic are legitimate, or allowed on the network. For example, in a IPv6 RA Flood, one attack association pattern Toucan will use is the fact that many different layer two addresses attached to RAs are being sent accross the network rapidly. Toucan will detect this by checking its accept group to see if that host is allowed on the network, allowed to send router advertisements, will determine that it is not, and will proceed to send a warning.
 
