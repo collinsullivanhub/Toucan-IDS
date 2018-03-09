@@ -2,7 +2,7 @@
 <br/>
 <br/>
 <p align="center">
-  <img width="247" height="209" src="https://github.com/collinsullivanhub/Toucan/blob/master/toucanlogo2.png">
+  <img src="https://github.com/collinsullivanhub/Toucan-IDS/blob/master/toucanpic.png">
 </p>
 
 <br/>
