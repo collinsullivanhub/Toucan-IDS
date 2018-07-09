@@ -1041,7 +1041,6 @@ ____________________________________________________________
 
     print colors.Red + "\n [*] Gateway %s is locked in at %s" % (GATEWAY_IP, GATEWAY_MAC) + colors.ENDC
 
-
     answer = True
     
     while answer:
@@ -1270,8 +1269,7 @@ ____________________________________________________________
                     if l2_accept_list == "exit":
                       
                       break
-                        
-
+                      
         elif answer =="13":
 
           print("\n\033[35m Exiting...\033[0m") 
