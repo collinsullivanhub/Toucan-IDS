@@ -8,7 +8,6 @@
 #
 # Created: 2017
 #-------------------------
-
 #--------------------------------------------------------------------------------------------------------------------------------
 # Monitors a LAN and will protect against spoofing attacks for MITM purposes
 # 1. Scans Network for Active Hosts
