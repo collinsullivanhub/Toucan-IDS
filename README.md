@@ -36,7 +36,7 @@ Toucan uses *accept groups* and *deny groups* to determine which hosts sending t
 # Video Demo:
 https://www.youtube.com/watch?v=EawJJs5iS8A
 
-# Additional Library Requirements
+# Dependencies
 
 - Pyshark (https://github.com/KimiNewt/pyshark)
 - Scapy (https://github.com/secdev/scapy)
