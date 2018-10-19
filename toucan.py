@@ -276,15 +276,10 @@ def print_toucan_2():
 def print_progress(iteration, total, prefix='', suffix='', decimals=1, bar_length=100):
 
     str_format = "{0:." + str(decimals) + "f}"
-
     percents = str_format.format(100 * (iteration / float(total)))
-
     filled_length = int(round(bar_length * iteration / float(total)))
-
     bar = '\033[32m■\033[0m' * filled_length + '-' * (bar_length - filled_length)
-
     sys.stdout.write('\r%s |%s| %s%s %s' % (prefix, bar, percents, '%', suffix)),
-
     if iteration == total:
         sys.stdout.write('\n')
     sys.stdout.flush()
@@ -294,13 +289,10 @@ def get_mac_address(ip_address):
 
     response, unanswered = srp(Ether(dst='ff:ff:ff:ff:ff:ff')/ARP(pdst=ip_address), \
         timeout=2, retry=2)
-
     for s, r in response:
         return r[Ether].src
     return None
-
     logging.info('Gateway Layer 2 address is: %s' % r[Ether].src)
-
     GATEWAY_MAC = "%s" % r[Ether].src
 
     
@@ -308,15 +300,10 @@ def get_mac_address_v6(ip_address):
 
     response, unanswered = srp(Ether(dst='33:33:00:00:00:02')/IPv6(dst="FF02::2")/ICMPv6ND_RS(code = 133), \
         timeout = 2, retry = 2)
-
     for s, r in response:
-
         return r[Ether].src
-
     return None
-
     logging.info('Gateway Layer 2 address is: %s' % r[Ether].src)
-
     GATEWAY_MAC = "%s" % r[Ether].src
 
 
@@ -325,7 +312,6 @@ def detect_unauth_arp(unauthorized_arp_packet):
     if unauthorized_arp_packet.haslayer(ARP) and unauthorized_arp_packet[Ether].src not in open('toucan_accept_list_arp.txt').read():
 
       print time.strftime("%I:%M:%S") + " " + "[!]Warning: Host not in ARP allowed group send an ARP packet"
-
       print time.strftime("%I:%M:%S") + " " + "Unauthorized ARP address: %s" % (unauthorized_arp_packet[Ether].src)
 
 
@@ -334,7 +320,6 @@ def detect_unauth_na(unauthorized_na_packet):
     if unauthorized_na_packet.haslayer(ICMPv6ND_NA) and unauthorized_na_packet[Ether].src not in open('toucan_accept_list_neighbadv.txt').read():
 
       print time.strftime("%I:%M:%S") + " " + "[!]Warning: Host not in Neighbor Advertisement allowed group send a NA packet"
-
       print time.strftime("%I:%M:%S") + " " + "Unauthorized NA address: %s" % (unauthorized_na_packet[Ether].src)
 
 
@@ -343,50 +328,31 @@ def detect_unauth_ra(unauthorized_ra_packet):
     if unauthorized_ra_packet.haslayer(ICMPv6ND_RA) and unauthorized_ra_packet[Ether].src not in open('toucan_accept_list_routeradv.txt').read():
 
       print time.strftime("%I:%M:%S") + " " + "[!]Warning: Host not in Router Advertisement allowed group sent a Router Advertisement"
-
       print time.strftime("%I:%M:%S") + " " + "Unauthorized RA address: %s" % (unauthorized_ra_packet[Ether].src)
-        
       increment_counter()
 
 
 def arp_network_range(iprange):
 
     logging.info('Sending ARPs to network range')
-
     ans, unans = srp(Ether(dst="ff:ff:ff:ff:ff:ff")/ARP(pdst=iprange), timeout=5)
-
     ip_collection = []
-
     eth_collection = []
-
     for snd, rcv in ans:
-
         host_ip_address = rcv.sprintf(r"%ARP.psrc%")
-
         host_eth_address = rcv.sprintf(r"%Ether.src%")
-
         logging.info('%s' % host_ip_address)
-
         logging.info('%s' % host_eth_address)
-        
         ip_collection.append(host_ip_address)
-
         eth_collection.append(host_eth_address)
 
     print "Host List IP Addresses:"
-
     for host_ip in ip_collection:
-
         print host_ip
-
     print "Host List Ethernet Addresses:"
-
     for host_eth in eth_collection:
-      
         print host_eth
-
     with open("toucan_hosts.txt", "w") as output:
-
         output.write(str(ip_collection))
         output.write(str(eth_collection))
 
@@ -399,7 +365,6 @@ def arp_display(packet):
     global victim_MAC
 
     if packet.haslayer(ARP):
-
       if packet.haslayer(ARP) and '%s' % (packet[Ether].src) in open('toucan_deny_list.txt').read():
 
           print time.strftime("%I:%M:%S") + " " + "ARP Request discovered from unauthorized host (in deny list) at: %s , %s" % (packet[ARP].psrc, packet[Ether].src)
