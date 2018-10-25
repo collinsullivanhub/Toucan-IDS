@@ -4,14 +4,14 @@
 #------------------------------------------
 # Toucan Network Defender
 # 
-# Author: Splithor1zon (Collin Sullivan)
+# Author: Collin Sullivan
 #-----------------------------------------
 
 #--------------------------------------------------------------------------------------------------------------------------------
 # Monitors a LAN and will protect against spoofing attacks for MITM purposes
 # 1. Scans Network for Active Hosts
 # 2. Scans hosts for Layer 2 Addresses and can "attack back" when a MITM is discovered by correcting poisoned hosts
-# 3. Monitors for gratuitous NA
+# 3. Monitors for gratuitous NDP packets
 # 4. Monitors for SYN Scans on a network
 
 # Needs to be run as ROOT
@@ -26,8 +26,6 @@
 # of this license document, but changing it is not allowed.
 #--------------------------------------------------------------------------------------------------------------------------------
 
-#--------------------------------------------------------------------------------------------------------------------------------
-#--------------------------------------------------------------------------------------------------------------------------------
 
 
 
